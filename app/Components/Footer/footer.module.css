@@ -1,0 +1,8 @@
+.footer {
+    max-width: 100%;
+    height: auto;
+    padding: 20px 5px;
+    /* background: var(--gray-alpha-200); */
+    color: aliceblue;
+    background-color: rgb(104, 101, 101);
+}
