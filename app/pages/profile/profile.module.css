@@ -1,0 +1,63 @@
+.ProfilePage {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(245, 245, 245);
+}
+
+.header {
+    width: 100%;
+    height: 150px;
+    background-color: rgb(104, 101, 101);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.mainContainer {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 100px;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+@media screen and (max-width: 567px){
+    .mainContainer {
+        padding: 120px 7px;
+        display: grid;
+        grid-template-columns: 1fr ;
+        grid-template-rows: 1;
+        grid-column-gap: 1px;
+        gap: 15;
+    }
+}
+.mainContainer .div1{
+}
+.mainContainer .div2{
+    border-left: solid 1px #ccc;
+}
+
+
+.section {
+    padding: 20px;
+    text-align: left;
+    
+}
+
+.textContainer {
+    margin-top: 10px;
+    height: 100%;
+}
+.textContainer p {
+    padding-top: 12px;
+}
