@@ -14,6 +14,14 @@ export default function Home() {
       </Head>
       <div className="container main">
         <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
+        <h2>Fake Store</h2>
       </div>
     </>
   );
