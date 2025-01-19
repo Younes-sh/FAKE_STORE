@@ -11,7 +11,7 @@ export default function LoginPage() {
         <div className={Style.containerText}>
           <h2>Login</h2>
           <br />
-          <h3>Sign up to receive Fake Store</h3>
+          <h3>Sign in to receive Fake Store</h3>
           <br />
           {/* <input type="email" placeholder="Email address"/>
           <br />
@@ -29,7 +29,7 @@ export default function LoginPage() {
           <br />
           <br />
 
-          <Link href={'/auth/register'}>Register</Link>
+          <Link href='/auth/register'>Register</Link>
         </div>
       </div>
     </div>
