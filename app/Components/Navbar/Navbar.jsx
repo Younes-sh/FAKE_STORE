@@ -1,7 +1,17 @@
 import Style from "./navbar.module.css";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Navbar () {
+
+    const router = useRouter();
+    const loginPage = () => {
+        router.push('/auth/login');
+    }
+    
+        
+
     return (
         <div className={Style.navContainer}>
 
@@ -16,7 +26,7 @@ export default function Navbar () {
                     <li><Link href="/contact">Contact</Link></li>
                 </ul>
                 {/* Login */}
-                <button className={Style.loginBtn}>Login</button>
+                <button onClick={loginPage} className={Style.loginBtn}>Login</button>
             </nav>
         </div>
     )
