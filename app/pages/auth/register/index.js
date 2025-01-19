@@ -1,12 +1,12 @@
-import Link from "next/link";
 import Style from './register.module.css';
 import Image from "next/image";
 import watch from '@/public/watch.jpg'
 
 export default function RegisterPage() {
   return (
-    <div className="container main">
-      <div className={Style.Container}>
+    <div className={Style.background}>
+        <div className="container main">
+        <div className={Style.Container}>
         <Image src={watch} alt="image" />
         <div className={Style.containerText}>
           <h2>Register</h2>
@@ -31,6 +31,7 @@ export default function RegisterPage() {
           <br />
           <br />
           <br />
+        </div>
         </div>
       </div>
     </div>
