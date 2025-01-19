@@ -1,16 +1,25 @@
-
+.background {
+  background: rgb(77,34,179);
+  background: linear-gradient(90deg, rgba(77,34,179,0.8603816526610644) 40%, rgba(151, 32, 117, 0.782) 100%);
+  background-image: url('../../../public/backgroundWatch.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+}
   
   .Container {
-    background-color: #fff;
+    background-color: #dadada;
     max-width: 1000px;
+    padding: 0 10px;
     height: 520px;
-    margin: 200px auto;
+    margin: 70px auto;
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr;
     place-items: center;
     line-height: 1.5;
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.185);
+    border-radius: 5px;
   }
   /* .container::after {
     content: "";
