@@ -20,7 +20,10 @@ export default function NavProfile() {
   return (
     <div>
       <div onClick={OpenMenuProfile}>
-        <Image src={User} alt="Image" width={30} height={30} />
+        {/* <Image src={User} alt="Image" width={30} height={30} /> */}
+        <Link href={''}>
+          <i className="fa-solid fa-user"></i>
+        </Link>
       </div>
 
 
