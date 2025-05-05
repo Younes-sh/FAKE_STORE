@@ -1,0 +1,38 @@
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr 3fr;
+    grid-template-areas: "header header" "sidebar main";
+    min-height: 100vh;
+}
+
+.layout  nav, .layout main{
+    padding: 20px;
+    border: solid 1px #ccc;
+    height: 100%;
+}
+.fixedPosition {
+    position: fixed;
+}
+
+.layout nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.layout nav ul li {
+    margin-bottom: 10px;
+}
+
+.layout nav ul li a {
+    color: #333;
+    text-decoration: none;
+    box-shadow: -10px 0 5px rgba(0, 0, 0, 0.219);
+}
+.layout nav ul li a:hover {
+    transition: all 0.3s;
+    box-shadow: 20px 0 5px rgba(0, 0, 0, 0.219);
+}
