@@ -1,0 +1,130 @@
+.singleItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 20px;
+  z-index: 3;
+  margin-top: 50px;
+    /* background-color: #f1f1f1;   */
+}
+  
+  .image {
+    width: 40%;
+    margin-right: 20px;
+    height: auto;
+    /* border: solid 2px #ccc; */
+    /* border-left: transparent; */
+    /* border-bottom: transparent; */
+    /* border-top: transparent; */
+    cursor: pointer;
+    position: relative; /* اضافه شده برای موقعیت دهی imageMaximize */
+  }
+  .imageMaximize {
+    width: 780px; /* یا هر اندازه دلخواه */
+    height: 900px; /* یا هر اندازه دلخواه */
+    border: solid 2px #ccc;
+    position: absolute;
+    top: 100px; /* یا هر موقعیت دلخواه */
+    border-radius: 7px;
+    background-color: rgb(255,255,255);
+    overflow: hidden;
+  }
+  .imageMaximizeContainer {
+    margin: 290px 350px;
+    padding: 50px;
+    position: absolute;
+    width: 500px; /* یا هر اندازه دلخواه */
+    height: auto; /* یا هر اندازه دلخواه */
+    border-radius: 7px;
+    object-fit: contain;
+  }
+  .imageMaximize img {
+    object-fit: cover;
+    height: auto;
+    position: absolute;
+  }
+  
+
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 60%;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    margin-top: 20px;
+    line-height: 1.75;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .buttonContainer button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btnAddtoCard {
+    background-color: #6c8dad;
+    color: #fff;
+  }
+  .btnAddtoCard:hover {
+    background-color: #4f6e8d;
+  }
+  .btnBack {
+    padding: 7px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #999;
+    color: #fff;
+    text-decoration: none;
+  }
+  .btnBack:hover {
+    background-color: #777;
+  }
+  .btnBuyNow {
+    background-color: #7bb36e;
+    color: #ffffff;
+  }
+  .btnBuyNow:hover {
+    background-color: #5f8d4f;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .singleItem {
+      flex-direction: column;
+    }
+    .image {
+      width: 70%;
+      margin-right: 0;
+      margin-bottom: 20px;
+      border: none;
+    }
+    .text {
+      width: 100%;
+    }
+    .buttonContainer {
+      flex-direction: column;
+    }
+    .buttonContainer button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
