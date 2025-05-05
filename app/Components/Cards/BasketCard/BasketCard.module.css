@@ -1,0 +1,110 @@
+.basketCard {
+    width: 100%;
+    height: 150px;
+    padding: 0 10px;
+    border-radius: 5px;
+    margin-top: 10px ;
+    box-shadow: 0 3px 12px #000000b4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    button {
+        cursor: pointer;
+        border: none;
+        padding: 4px;
+        font-weight: 900;
+    }
+
+    a {
+        text-decoration: none;
+    }
+    .imageContainer {
+        width: 120px;
+        height: 120px;
+        border-radius: 3px;
+        border: solid 1px #ccc;
+
+        .image {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    .info {
+        text-align: left;
+        line-height: 22px;
+    }
+
+    .controlItem {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .btnRemove {
+            background-color: transparent;
+        }
+        .btnRemove:hover {
+            color: red;
+        }
+    }
+    .quantity {
+        width: 200px;
+        height: 100%;
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: space-around; */
+    
+        .counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            border-bottom: solid 2px #000;
+            border-radius: 20px;
+            overflow: hidden;
+            button {
+                width: 30%;
+            }
+        }
+        .deacreseBtn {
+            background-color: rgb(241, 219, 18);
+        }
+        .increaseBtn {
+            background-color: rgb(65, 180, 65);
+        }
+    
+        .Btn  {
+            display: flex;
+            flex-direction: column;
+            button {
+                width: 100%;
+                border-radius: 20px;
+            }
+            button:hover {
+                cursor: pointer;
+            }
+        
+            .btnBuy {
+                background-color: #0B3C74;
+                color: #ccc;
+                margin-top: 2px;
+            }
+            .btnBuy:hover {
+                color: aliceblue;
+                background-color: #0739c4;
+            }
+        }
+        
+    }
+    
+}
+.basketCard:hover {
+    box-shadow: 0 5px 17px #000000b4;
+    cursor: pointer;
+}
+
+
+
+
