@@ -1,0 +1,31 @@
+.basket {
+    padding: 60px 10px;
+    text-align:center;
+}
+.Subtotal {
+    position: absolute;
+    width: 300px;
+    min-height: 400px;
+    margin-top: 70px;
+    padding: 0 10px;
+    right: 20;
+    border-left: solid 1px;
+
+    p {
+        margin-top: 10px;
+    }
+    .checkoutBtn {
+
+        margin-top: 100px;
+
+        a {
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 9px;
+            color: aliceblue;
+            background-color: rgb(13, 121, 4);
+        }
+    }
+
+    
+}
