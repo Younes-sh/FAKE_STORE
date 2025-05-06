@@ -1,0 +1,177 @@
+.container {
+    max-width: 500px;
+    margin: 12rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+  }
+  
+  .paymentForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .formGroup label {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 600;
+  }
+  
+  .formGroup input {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .formGroup input:focus {
+    outline: none;
+    border-color: #4a6cf7;
+  }
+  
+  .row {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .expiryGroup {
+    flex: 2;
+  }
+  
+  .cvvGroup {
+    flex: 1;
+  }
+  
+  .payButton {
+    background-color: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+  }
+  
+  .payButton:hover {
+    background-color: #3a5bd9;
+  }
+  
+  .payButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .cardIcons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .visaIcon,
+  .mastercardIcon,
+  .amexIcon {
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .visaIcon {
+    background-image: url('https://younessheikhlar.com/static/media/visa.4ebdd02c8b9e8d2bdbda546dda28682d.svg');
+  }
+  
+  .mastercardIcon {
+    background-image: url('https://younessheikhlar.com/static/media/mastercard.1e87384d57b62f4e3177f16b8f7bafb6.svg');
+  }
+  
+  .amexIcon {
+    background-image: url('https://younessheikhlar.com/static/media/paypal.649d40e0dbb9da74c928c352809c98a5.svg');
+  }
+  
+  .successContainer {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .successIcon {
+    width: 60px;
+    height: 60px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .successContainer h2 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .successContainer p {
+    color: #555;
+    margin-bottom: 2rem;
+  }
+  
+  .continueButton {
+    background-color: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .continueButton:hover {
+    background-color: #3a5bd9;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 600px) {
+    .container {
+      margin: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .row {
+      flex-direction: column;
+    }
+    
+    .expiryGroup, .cvvGroup {
+      flex: auto;
+    }
+  }
