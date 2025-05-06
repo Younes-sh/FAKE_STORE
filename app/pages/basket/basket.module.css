@@ -29,3 +29,16 @@
 
     
 }
+
+@media screen and (max-width: 1844px) {
+    .Subtotal {
+        position: relative;
+        min-height: 100px;
+        margin-left: 20px;
+        border: none;
+        .checkoutBtn {
+            margin-top: 20px;
+        }
+    }
+    
+}
