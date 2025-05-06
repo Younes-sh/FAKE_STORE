@@ -23,7 +23,7 @@
         width: 120px;
         height: 120px;
         border-radius: 3px;
-        border: solid 1px #ccc;
+        /* border: solid 1px #ccc; */
 
         .image {
             width: 100%;
@@ -105,6 +105,11 @@
     cursor: pointer;
 }
 
-
+@media screen and (max-width: 666px) {
+    .basketCard {
+        flex-direction: column;
+        height: auto;
+    }
+}
 
 
