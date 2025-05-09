@@ -1,22 +1,29 @@
+
 .productCard {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 100%;
-    height: 100%;
     padding: 0.5rem;
     border-radius: 1rem;
-    background-color: #fff;
+    background-color: #ffffff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #000;
+}
+.Link {
+    text-decoration: none;
+    color: #000;
 }
 
 .imageContainer {
-    width: 100%;
+    width: 200px;
     height: 200px;
     overflow: hidden;
     border-radius: 5px 5px 0 0;
-    border: solid 1px #ccc;
     cursor: pointer;
+    margin: 0 auto;
 }
 
 .imageContainer img {
@@ -66,4 +73,9 @@
 }
 .btnAddToCard:hover {
     background-color: #a18e4f;
+}
+
+.link{
+    text-decoration: none;
+    color: #000;
 }
