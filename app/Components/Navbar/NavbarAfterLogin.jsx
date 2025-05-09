@@ -2,11 +2,17 @@ import Style from "./navbarAfterLogin.module.css";
 import Link from "next/link";
 import Basket from '@/public/basket.png'
 import Image from "next/image";
-import User from "@/public/user.png"
+import User from "@/public/user.png";
+import NavProfile from "./components/NavProfile/NavProfile";
+import {useContext} from "react";
+import {AppContext} from "@/pages/_app";
+import Script from "next/script";
 
 export default function NavbarAfterLogin () {
+    const {addToCard} = useContext(AppContext);
     return (
         <div className={Style.navbar}>
+            <Script src="https://kit.fontawesome.com/24d3f7dfbb.js" crossorigin="anonymous"></Script>
 
             <div className="navbar-brand">
                 <Link href="/">Fake Store</Link>
@@ -14,18 +20,22 @@ export default function NavbarAfterLogin () {
 
             <nav className={`container ${Style.menuContainer}`}>
                 
-                <Link href="/product">Products</Link>
-                <Link href="/orders">Orders</Link>
+                <Link href="/">Home</Link>
+                <Link href="/products">Products</Link>
+                <Link href="/about">About</Link>
                 <Link href="/basket">
-                    <Image src={Basket} alt="Basket" width={20} height={20}/>
-                    <span className="badge">17{/* TODO: Get basket count */}</span>
+                    {/* <Image src={Basket} alt="Basket" width={20} height={20}/> */}
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    {addToCard > 0 ? (<span className="badge">
+                        {addToCard}
+                        {/* TODO: Get basket count */}
+                        </span>) : ('') }
+                        
                 </Link>
             </nav>
 
             <div className="navbar-brand">
-                <Link href="/">
-                    <Image src={User} alt="Image" width={30} height={30} />
-                </Link>
+                <NavProfile/>
             </div>
         </div>
     )
