@@ -46,6 +46,33 @@ export default function BasketCard ({
             alert('متاسفانه در کپی کردن لینک مشکلی پیش آمد.');
         }
     };
+
+     const checkoutHandler = () => {
+    if (addProduct.length === 0) {
+      alert('سبد خرید شما خالی است');
+      return;
+    }
+
+    const order = {
+      items: addProduct.map(product => ({
+        _id: product._id,
+        productName: product.productName,
+        price: product.price,
+        count: product.count,
+        totalPrice: product.totalPrice,
+        image: product.image
+      })),
+        totalAmount: addProduct.reduce((sum, product) => sum + product.totalPrice, 0)
+        };
+
+      localStorage.setItem('tempOrder', JSON.stringify(order));
+      router.push('/checkout');
+    };
+
+        const continueShopping = () => {
+          router.push('/products');
+        };
+
     return (
         <div className={Style.basketCard}>
             <Head>
@@ -85,7 +112,7 @@ export default function BasketCard ({
                     {/*  Container Delete */}
                     <div className={Style.Btn}>
                         {/* Remove the reduction Button of the product number  */}
-                        <button className={Style.btnBuy}>Buy</button>
+                        <button className={Style.btnBuy} onClick={checkoutHandler}>Buy</button>
                     </div>
                 </div>
 
@@ -100,6 +127,3 @@ export default function BasketCard ({
 };
 
 
-{/* <button className={Style.btnRemove} onClick={deleteItem}>
-                        <i data-fa-symbol="delete" color='red' class="fa-solid fa-trash fa-fw"></i>
-                    </button> */}
