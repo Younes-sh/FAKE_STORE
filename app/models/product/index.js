@@ -7,7 +7,8 @@ const ProductSchema = new Schema ({
     price: String,
     model: String,
     section: String,
-    image: String
+    image: String,
+    
 });
 
 const Product = models.Product || model ('Product', ProductSchema);
