@@ -1,0 +1,225 @@
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: #6b7280;
+  position: relative;
+}
+
+.tab:hover {
+  color: #4f46e5;
+}
+
+.activeTab {
+  color: #4f46e5;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #4f46e5;
+}
+
+/* Tab Content */
+.tabContent {
+  margin-bottom: 2rem;
+}
+
+.tabTitle {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+/* Products List */
+.productsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.productItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.productInfo h4 {
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+}
+
+.smallBtn {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* Product Statuses */
+.status-delivered {
+  color: #10b981;
+}
+
+.status-shipping {
+  color: #f59e0b;
+}
+
+.status-cancelled {
+  color: #ef4444;
+}
+
+/* Favorites */
+.favoritesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.favoriteItem {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.favoriteImage {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.favoriteDetails {
+  margin-bottom: 0.5rem;
+}
+
+.favoriteDetails h4 {
+  margin: 0 0 0.25rem 0;
+}
+
+.favoriteActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+/* Order Tracking Form */
+.trackingForm {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.trackingInput {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.closeButton:hover {
+  color: #4f46e5;
+}
+
+.modalForm {
+  padding: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.formGroup textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.passwordSection {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.passwordSection h3 {
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
