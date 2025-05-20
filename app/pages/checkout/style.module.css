@@ -1,0 +1,234 @@
+.checkoutContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .checkoutContainer {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.header {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: #7f8c8d;
+}
+
+/* بخش خلاصه سفارش */
+.orderSummary {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.orderSummary h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.orderItem {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #ecf0f1;
+  align-items: center;
+}
+
+.orderItem:last-child {
+  border-bottom: none;
+}
+
+.orderItem img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.orderItemDetails h4 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.orderItemDetails p {
+  margin: 0.3rem 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.orderTotal {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #ecf0f1;
+  text-align: right;
+}
+
+.orderTotal h3 {
+  font-size: 1.3rem;
+  color: #2c3e50;
+}
+
+/* اضافه کردن استایل دکمه حذف در صفحه پرداخت */
+.checkoutItem {
+  position: relative;
+  padding-right: 30px;
+}
+
+.removeItemBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.removeItemBtn:hover {
+  color: #c0392b;
+}
+
+.priceUpdateAnimation {
+  animation: priceUpdate 0.5s ease;
+}
+
+@keyframes priceUpdate {
+  0% { background-color: rgba(255, 235, 59, 0.3); }
+  100% { background-color: transparent; }
+}
+
+/* بخش پرداخت */
+.paymentSection {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  align-self: start;
+  position: sticky;
+  top: 1rem;
+}
+
+.paymentSection h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.paymentMethods label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.paymentMethods label:hover {
+  border-color: #3498db;
+  background: #f8f9fa;
+}
+
+.paymentMethods input[type="radio"] {
+  accent-color: #3498db;
+}
+
+.payButton {
+  width: 100%;
+  padding: 1rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.payButton:hover {
+  background: #2980b9;
+}
+
+/* بخش آدرس */
+.shippingAddress {
+  margin-top: 2rem;
+}
+
+.shippingAddress h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.addressForm {
+  display: grid;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: inherit;
+}
+
+/* انیمیشن‌ها */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.orderItem {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.orderItem:nth-child(1) { animation-delay: 0.1s; }
+.orderItem:nth-child(2) { animation-delay: 0.2s; }
+.orderItem:nth-child(3) { animation-delay: 0.3s; }
