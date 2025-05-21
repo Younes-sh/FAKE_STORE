@@ -89,7 +89,7 @@ export default function ProfilePage() {
               className={`${Styles.tab} ${activeTab === 'tracking' ? Styles.activeTab : ''}`}
               onClick={() => setActiveTab('tracking')}
             >
-              Order Tracking
+              Order Trackinggit
             </button>
           </div>
 
