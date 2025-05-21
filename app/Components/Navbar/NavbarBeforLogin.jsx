@@ -6,7 +6,7 @@ export default function Navbar () {
 
     const router = useRouter();
     const loginPage = () => {
-        router.push('/auth/login');
+        router.push('/login');
     }
     
         
