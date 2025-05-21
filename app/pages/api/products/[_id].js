@@ -1,4 +1,4 @@
-import mongoose from "@/utils/mongoose"; 
+import mongoose from "@/lib/dbConnect"; 
 import Product from "@/models/product";
 import { isValidObjectId } from "mongoose";
 

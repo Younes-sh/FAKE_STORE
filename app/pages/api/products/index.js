@@ -1,4 +1,4 @@
-import MongoDB from "@/utils/mongoose";
+import MongoDB from "@/lib/dbConnect";
 import Product from "@/models/product";
 
 export default async function handlerProduct (req , res) {
