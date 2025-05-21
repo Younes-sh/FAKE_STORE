@@ -23,7 +23,7 @@ export default function BasketPage () {
                         <h3>Subtotal</h3>
                         <p>Total pay: $ {totalPaye}</p>
                         <div className={Style.checkoutBtn}>
-                            <Link href={''}>purchase to checkout</Link>
+                            <Link href={'/PaymentPage'}>purchase to checkout</Link>
                         </div>
                     </div>
                     <div className={Style.basket}>
