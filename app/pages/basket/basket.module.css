@@ -1,6 +1,7 @@
 .basket {
     padding: 60px 10px;
     text-align:center;
+    height: auto;
 }
 .Subtotal {
     position: absolute;
