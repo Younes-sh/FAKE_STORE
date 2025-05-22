@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import EditProfileModal from '@/Components/Profile/EditProfile/EditProfileModal';
 
+import DefaultImage from '@/public/user.png'
+
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [darkMode, setDarkMode] = useState(false);
@@ -58,7 +60,7 @@ export default function ProfilePage() {
         {/* Profile Header */}
         <div className={Styles.profileHeader}>
           <Image 
-            src={session.user.image || '/default-avatar.jpg'} 
+            src={session.user.image || DefaultImage} 
             alt="User Avatar" 
             className={Styles.avatar}
             width={100}
@@ -66,7 +68,7 @@ export default function ProfilePage() {
           />
           <h1 className={Styles.userName}>{session.user.name}</h1>
           <p className={Styles.userEmail}>{session.user.email}</p>
-          <p className={Styles.joinDate}>Member since {joinDate}</p>
+          {/* <p className={Styles.joinDate}>Member since {joinDate}</p> */}
         </div>
 
         {/* Profile Content */}
