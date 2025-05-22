@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vscode/
+.cursor/
+bash.exe.stackdump
+desktop.ini
+*.log
+*.swp
