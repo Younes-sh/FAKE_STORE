@@ -1,12 +1,13 @@
 /* Main Layout */
 .profileContainer {
   min-height: 100vh;
-  padding: 5rem 2rem; /* Reduced from 15rem to 5rem for better spacing */
+  padding: 7rem 2rem; /* Reduced from 15rem to 5rem for better spacing */
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .profileCard {
-  max-width: 1000px; /* Increased from 800px to accommodate more content */
+  width: 100%; /* Increased from 800px to accommodate more content */
+  min-height: 800px; /* Added minimum height for better layout */
   margin: 0 auto;
   background: white;
   border-radius: 20px;
