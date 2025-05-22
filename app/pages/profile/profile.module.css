@@ -90,7 +90,7 @@
 .tabTitle {
   font-size: 1.1rem;
   margin-bottom: 1rem;
-  color: #374151;
+  color: #9bbdf3;
 }
 
 /* Product Lists */
@@ -174,10 +174,22 @@
   outline: none;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
+/* Account Settings */
+.actions {
+  margin-top: 2rem;
+}
+.settingsList {
+  margin-top: 1rem;
+  .settingItem {
+    padding: .5rem;
+    list-style: none;
+  }
+}
 
 /* Buttons */
 .btn {
   padding: 0.75rem 1.5rem;
+  margin-right: 0.5rem;
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
