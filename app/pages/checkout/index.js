@@ -39,24 +39,22 @@ export default function CheckoutPage() {
 
   const handlePayment = () => {
     if (!shippingAddress.fullName || !shippingAddress.address || !shippingAddress.phone) {
-      alert('لطفا اطلاعات آدرس را کامل کنید');
+      alert('Please complete all required shipping information');
       return;
     }
 
-    // اینجا می‌توانید منطق پرداخت واقعی را پیاده‌سازی کنید
-    alert(`پرداخت ${order.totalAmount} با روش ${paymentMethod === 'online' ? 'آنلاین' : 'در محل'} با موفقیت انجام شد`);
+    // Here you can implement real payment logic
+    alert(`Payment of ${order.totalAmount} via ${paymentMethod === 'online' ? 'online' : 'cash on delivery'} was successful`);
     localStorage.removeItem('tempOrder');
-    router.push('/order-success');
+    router.push('/orderSuccess');
   };
 
   if (loading) return (
     <div className={Style.loading}>
       <div className={Style.spinner}></div>
-      <p>در حال بارگذاری اطلاعات پرداخت...</p>
+      <p>Loading payment information...</p>
     </div>
   );
-
-   
 
   const removeItem = (itemId) => {
     const updatedItems = order.items.filter(item => item._id !== itemId);
@@ -78,7 +76,6 @@ export default function CheckoutPage() {
     setTimeout(() => setRemovingItem(null), 500);
   };
 
-
   return (
     <>
       <Head>
@@ -98,32 +95,31 @@ export default function CheckoutPage() {
                 <button 
                   className={Style.removeItemBtn}
                   onClick={() => removeItem(item._id)}
-                  aria-label="حذف محصول"
+                  aria-label="Remove product"
                 >
                   ×
                 </button>
-              <Image src={item.image} alt={item.productName} width={500}
-      height={500} />
+              <Image src={item.image} alt={item.productName} width={500} height={500} />
               <div className={Style.orderItemDetails}>
                 <h4>{item.productName}</h4>
-                <p>Number: {item.count}</p>
-                <p> Unit price: {item.price}</p>
+                <p>Quantity: {item.count}</p>
+                <p>Unit price: {item.price}</p>
                 <p>Total: {item.totalPrice}</p>
               </div>
             </div>
           ))}
           
           <div className={Style.orderTotal}>
-            <h3>Amount payable: {order.totalAmount}</h3>
+            <h3>Total amount: {order.totalAmount}</h3>
           </div>
         </div>
 
         <div className={Style.paymentSection}>
           <div className={Style.shippingAddress}>
-            <h3>Shipping information</h3>
+            <h3>Shipping Information</h3>
             <div className={Style.addressForm}>
               <div className={Style.formGroup}>
-                <label htmlFor="fullName"> Full name</label>
+                <label htmlFor="fullName">Full name</label>
                 <input 
                   type="text" 
                   id="fullName" 
@@ -135,7 +131,7 @@ export default function CheckoutPage() {
               </div>
               
               <div className={Style.formGroup}>
-                <label htmlFor="address">Full address</label>
+                <label htmlFor="address">Complete address</label>
                 <textarea 
                   id="address" 
                   name="address"
@@ -170,7 +166,7 @@ export default function CheckoutPage() {
               </div>
               
               <div className={Style.formGroup}>
-                <label htmlFor="phone">Mobile phone</label>
+                <label htmlFor="phone">Phone number</label>
                 <input 
                   type="tel" 
                   id="phone" 
@@ -183,7 +179,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           
-          <h2>Payment method</h2>
+          <h2>Payment Method</h2>
           <div className={Style.paymentMethods}>
             <label>
               <input 
@@ -193,7 +189,7 @@ export default function CheckoutPage() {
                 checked={paymentMethod === 'online'}
                 onChange={() => setPaymentMethod('online')}
               />
-               Online payment
+              Online payment
             </label>
             <label>
               <input 
@@ -203,7 +199,7 @@ export default function CheckoutPage() {
                 checked={paymentMethod === 'cash'}
                 onChange={() => setPaymentMethod('cash')}
               />
-               Payment on site 
+              Cash on delivery
             </label>
           </div>
 
@@ -211,7 +207,7 @@ export default function CheckoutPage() {
             className={Style.payButton}
             onClick={handlePayment}
           >
-            Final payment 
+            Complete Payment
           </button>
         </div>
       </div>
