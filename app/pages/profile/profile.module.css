@@ -27,6 +27,16 @@
   justify-content: center;
   text-align: center;
   position: relative; /* Added for potential absolute positioning of children */
+
+  img {
+    border-radius: 50%;
+    width: 100px; /* Adjusted for better visibility */
+    height: 100px; /* Adjusted for better visibility */
+    margin-bottom: 1rem;
+    border: 2px solid white; /* Added border for better contrast */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+  }
 }
 
 /* ... (keep existing avatar, userName, userEmail, joinDate styles) ... */
@@ -51,7 +61,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   color: #6b7280;
   position: relative;
   transition: all 0.3s ease;
@@ -69,11 +79,11 @@
 .activeTab::after {
   content: '';
   position: absolute;
-  bottom: -1px;
+  bottom: -2px;
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #4f46e5;
+  background-color: #613aef;
 }
 
 /* Tab Content */
