@@ -26,6 +26,7 @@ export default function NavbarAfterLogin () {
                 <Link href="/">Home</Link>
                 <Link href="/products">Products</Link>
                 <Link href="/about">About</Link>
+                <Link href="/contact">Contact</Link>
                 <Link href="/basket">
                     {/* <Image src={Basket} alt="Basket" width={20} height={20}/> */}
                     <i class="fa-solid fa-basket-shopping"></i>
