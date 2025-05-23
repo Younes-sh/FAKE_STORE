@@ -7,6 +7,7 @@ import NavProfile from "./components/NavProfile/NavProfile";
 import {useContext} from "react";
 import {AppContext} from "@/pages/_app";
 import Script from "next/script";
+import GEM from '@/public/asset/Logo/GEM.png'
 
 export default function NavbarAfterLogin () {
     const {addToCard} = useContext(AppContext);
@@ -15,7 +16,9 @@ export default function NavbarAfterLogin () {
             <Script src="https://kit.fontawesome.com/24d3f7dfbb.js" crossorigin="anonymous"></Script>
 
             <div className="navbar-brand">
-                <Link href="/">Fake Store</Link>
+                <Link href="/">
+                    <Image src={GEM} alt="GEM" width={80} height={80} />
+                </Link>
             </div>
 
             <nav className={`container ${Style.menuContainer}`}>
