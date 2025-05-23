@@ -1,6 +1,8 @@
 import Style from "./navbarBeforLogin.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import GEM from '@/public/asset/Logo/GEM.png';
 
 export default function Navbar () {
 
@@ -16,7 +18,11 @@ export default function Navbar () {
 
             <nav className={`  container ${Style.navbar}`}>
                 {/* Logo */}
-                <h1>Fake Store</h1>
+                <h1>
+                    <Link href="/">
+                        <Image src={GEM} alt="GEM" width={80} height={80} />
+                    </Link>
+                </h1>
 
                 {/* Menue */}
                 <ul>
