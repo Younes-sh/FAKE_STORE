@@ -4,8 +4,9 @@ import Styles from './profile.module.css';
 import { useState } from 'react';
 import Image from 'next/image';
 import EditProfileModal from '@/Components/Profile/EditProfile/EditProfileModal';
+import DefaultImage from '@/public/user.png';
+import Tabs from '@/Components/Profile/TabProfile/TabProfile';
 
-import DefaultImage from '@/public/user.png'
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -13,6 +14,8 @@ export default function ProfilePage() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [activeTab, setActiveTab] = useState('purchases');
+
+
 
   if (!session) {
     return (
@@ -74,7 +77,7 @@ export default function ProfilePage() {
         {/* Profile Content */}
         <div className={Styles.profileContent}>
           {/* User Activity Tabs */}
-          <div className={Styles.tabs}>
+          {/* <div className={Styles.tabs}>
             <button 
               className={`${Styles.tab} ${activeTab === 'purchases' ? Styles.activeTab : ''}`}
               onClick={() => setActiveTab('purchases')}
@@ -93,83 +96,10 @@ export default function ProfilePage() {
             >
               Order Trackinggit
             </button>
-          </div>
+          </div> */}
 
           {/* Tab Content */}
-          <div className={Styles.tabContent}>
-            {activeTab === 'purchases' && (
-              <div>
-                <h3 className={Styles.tabTitle}>Purchase History</h3>
-                <div className={Styles.productsList}>
-                  {purchasedProducts.map(product => (
-                    <div key={product.id} className={Styles.productItem}>
-                      <div className={Styles.productInfo}>
-                        <h4>{product.name}</h4>
-                        <p>Purchase Date: {product.date}</p>
-                        <p className={Styles[`status-${product.status.toLowerCase()}`]}>
-                          Status: {product.status}
-                        </p>
-                      </div>
-                      <button className={`${Styles.btn} ${Styles.smallBtn}`}>
-                        Details
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'favorites' && (
-              <div>
-                <h3 className={Styles.tabTitle}>Favorite Products</h3>
-                <div className={Styles.favoritesGrid}>
-                  {favoriteProducts.map(product => (
-                    <div key={product.id} className={Styles.favoriteItem}>
-                      <div className={Styles.favoriteImage}>
-                        <Image 
-                          src={`/products/${product.id}.jpg`} 
-                          alt={product.name}
-                          width={80}
-                          height={80}
-                        />
-                      </div>
-                      <div className={Styles.favoriteDetails}>
-                        <h4>{product.name}</h4>
-                        <p>{product.price}</p>
-                      </div>
-                      <div className={Styles.favoriteActions}>
-                        <button className={`${Styles.btn} ${Styles.smallBtn}`}>
-                          Add to Cart
-                        </button>
-                        <button className={`${Styles.btn} ${Styles.smallBtn} ${Styles.dangerBtn}`}>
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'tracking' && (
-              <div>
-                <h3 className={Styles.tabTitle}>Track Your Order</h3>
-                <div className={Styles.trackingForm}>
-                  <input 
-                    type="text" 
-                    placeholder="Enter order number or tracking code"
-                    className={Styles.trackingInput}
-                  />
-                  <button className={`${Styles.btn} ${Styles.primaryBtn}`}>
-                    Track
-                  </button>
-                </div>
-                <div className={Styles.trackingInfo}>
-                  {/* Tracking information will appear here */}
-                </div>
-              </div>
-            )}
-          </div>
+         <Tabs />
 
           {/* Account Settings */}
           <h2 className={Styles.sectionTitle}>Account Settings</h2>
