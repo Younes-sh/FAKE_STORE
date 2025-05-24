@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import styles from './paymentPage.module.css';
+import { useContext } from 'react';
+import { AppContext } from '@/pages/_app';
+import { useRouter } from 'next/router';
 
 const PaymentPage = () => {
+  const { addProduct, setAddProduct,addToCard, setAddToCard, orders, setOrders } = useContext(AppContext);
+  const router = useRouter();
   const [cardNumber, setCardNumber] = useState('');
   const [cardName, setCardName] = useState('');
   const [expiry, setExpiry] = useState('');
@@ -9,15 +14,59 @@ const PaymentPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
     
     // Simulate payment processing
     setTimeout(() => {
-      setIsProcessing(false);
-      setPaymentSuccess(true);
+      try {
+        // 1. ایجاد سفارش جدید
+        const newOrder = {
+          id: Date.now().toString(),
+          createdAt: new Date().toISOString(),
+          items: [...addProduct],
+          totalAmount: addProduct.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+          shippingAddress: {
+            fullName: cardName || "Unknown", // استفاده از نام وارد شده در فرم
+            address: "Not specified", // می‌توانید فیلد آدرس هم به فرم اضافه کنید
+            city: "Not specified",
+            postalCode: "00000",
+            phone: "Not specified"
+          },
+          paymentMethod: "online",
+          status: "completed" // اضافه کردن وضعیت سفارش
+        };
+
+        // 2. فقط در صورت موفقیت‌آمیز بودن پرداخت:
+        // - اضافه کردن به لیست سفارشات
+        setOrders([...orders, newOrder]);
+        // - خالی کردن سبد خرید
+        setAddProduct([]);
+        setAddToCard(0);
+        
+        // 3. ذخیره در localStorage
+        localStorage.setItem('userOrders', JSON.stringify([...orders, newOrder]));
+        localStorage.removeItem('cartProducts');
+        localStorage.removeItem('cartCount');
+
+        setIsProcessing(false);
+        setPaymentSuccess(true);
+        
+        // 4. هدایت به صفحه تأیید سفارش
+        router.push({
+          pathname: '/orderSuccess',
+          query: { orderId: newOrder.id }
+        });
+      } catch (error) {
+        setIsProcessing(false);
+        alert('Payment failed. Please try again.');
+      }
     }, 2000);
+  };
+   // Add a return to cart button
+   const handleBackToCart = () => {
+    router.push('/basket');
   };
 
   const formatCardNumber = (value) => {
@@ -58,6 +107,13 @@ const PaymentPage = () => {
 
   return (
     <div className={styles.container}>
+      <button 
+        onClick={handleBackToCart}
+        className={styles.backButton}
+      >
+        ← Back to Cart
+      </button>
+
       <h1 className={styles.title}>Payment Details</h1>
       <form onSubmit={handleSubmit} className={styles.paymentForm}>
         <div className={styles.formGroup}>

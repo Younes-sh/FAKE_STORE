@@ -25,11 +25,12 @@ function Layout({ children }) {
 export default function App({ Component, pageProps: { session, ...pageProps } }) {
   const [addToCard, setAddToCard] = useState(0);
   const [addProduct, setAddProduct] = useState([]);
-
+  const [orders, setOrders] = useState([]); // اضافه کردن state سفارشات
 
   useEffect(() => {
     const storedProducts = localStorage.getItem("cartProducts");
     const storedCount = localStorage.getItem("cartCount");
+    const storedOrders = localStorage.getItem("userOrders"); // بارگذاری سفارشات از localSto
 
     if (storedProducts) {
       setAddProduct(JSON.parse(storedProducts));
@@ -37,18 +38,24 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
     if (storedCount) {
       setAddToCard(parseInt(storedCount));
     }
+    if (storedOrders) {
+      setOrders(JSON.parse(storedOrders));
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("cartProducts", JSON.stringify(addProduct));
     localStorage.setItem("cartCount", addToCard.toString());
-  }, [addProduct, addToCard]);
+    localStorage.setItem("userOrders", JSON.stringify(orders)); // Save orders in localSto
+  }, [addProduct, addToCard, orders]);
 
   return (
     <div className="appContainer">
       <AppContext.Provider value={{
         addToCard, setAddToCard,
-        addProduct, setAddProduct
+        addProduct, setAddProduct,
+        orders, setOrders, // Add orders to context
+        // addNewOrder // Add custom function
       }}>
        
         <div className="app">
