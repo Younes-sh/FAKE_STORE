@@ -28,6 +28,7 @@
   justify-content: center;
   text-align: center;
   position: relative; /* Added for potential absolute positioning of children */
+  
 
   img {
     border-radius: 50%;
@@ -37,6 +38,15 @@
     border: 2px solid white; /* Added border for better contrast */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     object-fit: cover;
+    position: absolute;
+    top: 20;
+    z-index: 100;
+  }
+  .userInfo {
+    position: absolute;
+    top: 150;
+    left: 100;
+    z-index: 100;
   }
 }
 
@@ -47,6 +57,12 @@
   padding: 2rem;
   overflow-y: auto; /* Added for scrollable content */
   max-height: 80vh; /* Added to prevent page from growing too tall */
+
+  p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
 }
 
 /* Tabs */
@@ -188,6 +204,10 @@
 /* Account Settings */
 .actions {
   margin-top: 2rem;
+  a {
+    text-decoration: none;
+    color: #ceab12;
+  }
 }
 .settingsList {
   margin-top: 1rem;
@@ -225,6 +245,11 @@
   
   .profileHeader {
     padding: 1.5rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
   }
   
   .tabs {

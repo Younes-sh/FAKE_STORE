@@ -6,6 +6,8 @@ import Image from 'next/image';
 import EditProfileModal from '@/Components/Profile/EditProfile/EditProfileModal';
 import DefaultImage from '@/public/user.png';
 import Tabs from '@/Components/Profile/TabProfile/TabProfile';
+import { useRouter } from 'next/router';
+
 
 
 export default function ProfilePage() {
@@ -15,7 +17,7 @@ export default function ProfilePage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [activeTab, setActiveTab] = useState('purchases');
 
-
+  const router = useRouter();
 
   if (!session) {
     return (
@@ -50,9 +52,10 @@ export default function ProfilePage() {
             width={100}
             height={100}
           />
-          <h1 className={Styles.userName}>{session.user.name}</h1>
-          <p className={Styles.userEmail}>{session.user.email}</p>
-          {/* <p className={Styles.joinDate}>Member since {joinDate}</p> */}
+          <div className={Styles.userInfo}>
+            <h1 className={Styles.userName}>{session.user.name}</h1>
+            <p className={Styles.userEmail}>{session.user.email}</p>
+          </div>
         </div>
 
         {/* Profile Content */}
