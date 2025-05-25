@@ -56,26 +56,11 @@ export default function ProfilePage() {
             <h1 className={Styles.userName}>{session.user.name}</h1>
             <p className={Styles.userEmail}>{session.user.email}</p>
           </div>
-        </div>
-
-        {/* Profile Content */}
-        <div className={Styles.profileContent}>
-         <Tabs />
 
           {/* Account Settings */}
           <h2 className={Styles.sectionTitle}>Account Settings</h2>
           <ul className={Styles.settingsList}>
-            <li className={Styles.settingItem}>
-              <span className={Styles.settingLabel}>Dark Mode</span>
-              <label className={Styles.toggleSwitch}>
-                <input 
-                  type="checkbox" 
-                  checked={darkMode} 
-                  onChange={() => setDarkMode(!darkMode)} 
-                />
-                <span className={Styles.slider}></span>
-              </label>
-            </li>
+            
             <li className={Styles.settingItem}>
               <span className={Styles.settingLabel}>Email Notifications</span>
               <label className={Styles.toggleSwitch}>
@@ -104,6 +89,11 @@ export default function ProfilePage() {
               Logout
             </button>
           </div>
+        </div>
+
+        {/* Profile Content */}
+        <div className={Styles.profileContent}>
+         <Tabs />
         </div>
       </div>
 
