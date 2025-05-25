@@ -45,7 +45,6 @@
   .userInfo {
     position: absolute;
     top: 150;
-    left: 100;
     z-index: 100;
   }
 }
@@ -214,6 +213,7 @@
   .settingItem {
     padding: .5rem;
     list-style: none;
+    text-align: left;
   }
 }
 
