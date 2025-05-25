@@ -38,25 +38,6 @@ export default function ProfilePage() {
     );
   }
 
-  const joinDate = new Date(session.user.createdAt || Date.now()).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
-  // Sample product data
-  const purchasedProducts = [
-    { id: 1, name: 'ASUS Laptop', date: '2023-08-05', status: 'Delivered' },
-    { id: 2, name: 'Wireless Headphones', date: '2023-09-12', status: 'Shipping' },
-    { id: 3, name: 'Gaming Mouse', date: '2023-10-01', status: 'Cancelled' }
-  ];
-
-  const favoriteProducts = [
-    { id: 4, name: 'Mechanical Keyboard', price: '$120' },
-    { id: 5, name: '27-inch Monitor', price: '$450' },
-    { id: 6, name: 'Bluetooth Speaker', price: '$85' }
-  ];
-
   return (
     <div className={Styles.profileContainer}>
       <div className={Styles.profileCard}>
@@ -76,29 +57,6 @@ export default function ProfilePage() {
 
         {/* Profile Content */}
         <div className={Styles.profileContent}>
-          {/* User Activity Tabs */}
-          {/* <div className={Styles.tabs}>
-            <button 
-              className={`${Styles.tab} ${activeTab === 'purchases' ? Styles.activeTab : ''}`}
-              onClick={() => setActiveTab('purchases')}
-            >
-              My Purchases
-            </button>
-            <button 
-              className={`${Styles.tab} ${activeTab === 'favorites' ? Styles.activeTab : ''}`}
-              onClick={() => setActiveTab('favorites')}
-            >
-              Favorites
-            </button>
-            <button 
-              className={`${Styles.tab} ${activeTab === 'tracking' ? Styles.activeTab : ''}`}
-              onClick={() => setActiveTab('tracking')}
-            >
-              Order Trackinggit
-            </button>
-          </div> */}
-
-          {/* Tab Content */}
          <Tabs />
 
           {/* Account Settings */}

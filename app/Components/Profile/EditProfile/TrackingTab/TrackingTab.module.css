@@ -1,0 +1,21 @@
+.trackingInput {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.btn:hover {
+    background-color: #4aca0f;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
