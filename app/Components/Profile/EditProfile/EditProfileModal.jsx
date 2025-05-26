@@ -1,16 +1,49 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Styles from './modal.module.css';
 
-export default function EditProfileModal({ user, onClose }) {
+export default function EditProfileModal({ onClose }) {
   const [formData, setFormData] = useState({
-    name: user.name || '',
-    email: user.email || '',
-    phone: user.phone || '',
-    address: user.address || '',
+    firstname: '',
+    lastname: '',
+    username: '',
+    email: '',
+    phone: '',
+    address: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/getUser');
+        const data = await res.json();
+
+        if (res.ok) {
+          setFormData(prev => ({
+            ...prev,
+            firstname: data.firstname || '',
+            lastname: data.lastname || '',
+            username: data.username || '',
+            email: data.email || '',
+            phone: data.phone || '',
+            address: data.address || ''
+          }));
+        } else {
+          alert(data.message || 'Failed to fetch user');
+        }
+      } catch (err) {
+        console.error('Fetch user error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,12 +53,28 @@ export default function EditProfileModal({ user, onClose }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Form submission logic
-    console.log('Form submitted:', formData);
-    onClose();
+
+    const res = await fetch('/api/updateUser', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert('Profile updated successfully');
+      onClose();
+    } else {
+      alert(data.message || 'Update failed');
+    }
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className={Styles.modalOverlay}>
@@ -39,12 +88,36 @@ export default function EditProfileModal({ user, onClose }) {
         
         <form onSubmit={handleSubmit} className={Styles.modalForm}>
           <div className={Styles.formGroup}>
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="firstname">First Name</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="firstname"
+              name="firstname"
+              value={formData.firstname}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={Styles.formGroup}>
+            <label htmlFor="lastname">Last Name</label>
+            <input
+              type="text"
+              id="lastname"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={Styles.formGroup}>
+            <label htmlFor="username">Last Name</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
               required
             />
@@ -59,6 +132,7 @@ export default function EditProfileModal({ user, onClose }) {
               value={formData.email}
               onChange={handleChange}
               required
+              disabled
             />
           </div>
           
