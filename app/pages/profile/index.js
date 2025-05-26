@@ -12,10 +12,8 @@ import { useRouter } from 'next/router';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
-  const [darkMode, setDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('purchases');
 
   const router = useRouter();
 
