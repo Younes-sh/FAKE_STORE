@@ -34,6 +34,17 @@ const UserSchema = new Schema({
     select: false,
     minlength: [8, 'Password must be at least 8 characters']
   },
+  phone: {
+    type: String,
+    trim: true,
+    maxlength: [20, 'Phone number too long']
+  },
+  address: {
+    type: String,
+    trim: true,
+    maxlength: [300, 'Address is too long']
+  },
+
   role: {
     type: String,
     default: "user",
