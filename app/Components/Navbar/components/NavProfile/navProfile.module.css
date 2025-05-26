@@ -19,3 +19,13 @@
     padding: 10px;
     transition: background-color 0.3s ease;
 }
+
+.OpenMenuProfile {
+    color: aliceblue;
+    right: 20px;
+    position: absolute;
+    top: 26px;
+}
+.OpenMenuProfile:hover {
+    cursor: pointer;
+}
