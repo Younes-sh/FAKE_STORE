@@ -223,3 +223,10 @@
   gap: 1rem;
   margin-top: 2rem;
 }
+
+.modalActions button {
+  padding: 5px;
+}
+.modalActions button:hover {
+  cursor : pointer;
+}
