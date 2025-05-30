@@ -1,0 +1,23 @@
+.link {
+    text-decoration: none;
+    color: black;
+}
+
+.userCard {
+    width: 250px;
+    height: 200px;
+    margin-top: 5px;
+    border: solid 1px #ccc;
+    padding: 5px;
+    border-radius: 4px;
+    overflow: hidden;
+    p {
+        margin-top: 7px;
+        padding: 2px;
+    }
+    p:nth-child(odd) {
+        background-color: #ccc;
+    }
+}
+
+
