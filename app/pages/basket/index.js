@@ -3,6 +3,8 @@ import { useContext, useMemo  } from 'react';
 import { AppContext } from '../_app';
 import BasketCard from '../../Components/Cards/BasketCard/BasketCard';
 import Link from 'next/link';
+import emptyCard from '@/public/asset/Basket/emptyCard.jpg';
+import Image from 'next/image';
 
 export default function BasketPage () {
     const {addToCard, addProduct} = useContext(AppContext);
@@ -33,7 +35,17 @@ export default function BasketPage () {
                                 {
                                   addProduct.map(item => <BasketCard key={item._id} {...item} />)
                                 }
-                            </div>) : (<div><p>Your basket is empty</p></div>)
+                            </div>) : (
+                                <div >
+                                <Image
+                                  src={emptyCard}
+                                  width={400}
+                                  height={400}
+                                  sizes="(max-width: 768px) 100vw, 50vw"
+                                  alt="Empty Card"
+                                />
+                              </div>
+                            )
                         }
                     </div>
                 </div>
