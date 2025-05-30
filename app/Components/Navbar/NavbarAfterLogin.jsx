@@ -7,10 +7,13 @@ import NavProfile from "./components/NavProfile/NavProfile";
 import {useContext} from "react";
 import {AppContext} from "@/pages/_app";
 import Script from "next/script";
-import GEM from '@/public/asset/Logo/GEM.png'
+import GEM from '@/public/asset/Logo/GEM.png';
+import { usePathname } from "next/navigation";
 
 export default function NavbarAfterLogin () {
     const {addToCard} = useContext(AppContext);
+    const pathname = usePathname();
+
     return (
         <div className={Style.navbar}>
             <Script src="https://kit.fontawesome.com/24d3f7dfbb.js" crossorigin="anonymous"></Script>
@@ -23,11 +26,11 @@ export default function NavbarAfterLogin () {
 
             <nav className={`container ${Style.menuContainer}`}>
                 
-                <Link href="/">Home</Link>
-                <Link href="/products">Products</Link>
-                <Link href="/about">About</Link>
-                <Link href="/contact">Contact</Link>
-                <Link href="/basket">
+                <Link className={pathname === "/" ? Style.active : ""} href="/">Home</Link>
+                <Link className={pathname === "/products" ? Style.active : ""} href="/products">Products</Link>
+                <Link className={pathname === "/about" ? Style.active : ""} href="/about">About</Link>
+                <Link className={pathname === "/contact" ? Style.active : ""} href="/contact">Contact</Link>
+                <Link className={pathname === "/basket" ? Style.active : ""} href="/basket">
                     {/* <Image src={Basket} alt="Basket" width={20} height={20}/> */}
                     <i class="fa-solid fa-basket-shopping"></i>
                     {addToCard > 0 ? (<span className="badge">

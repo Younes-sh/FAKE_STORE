@@ -24,6 +24,10 @@
     text-decoration: none;
     margin-right: 20px;
 }
+.menuContainer a.active {
+    border-bottom: solid 2px;
+    transform: translateX(5px);
+}
 
 .menuContainer a:hover {
     color: yellow;
