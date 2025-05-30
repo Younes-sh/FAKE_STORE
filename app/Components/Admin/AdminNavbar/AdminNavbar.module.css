@@ -1,0 +1,108 @@
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  
+  .container {
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .leftSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .menuButton {
+    color: #6b7280;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .menuButton:hover {
+    color: #4b5563;
+    background-color: #f3f4f6;
+  }
+  
+  .menuIcon {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  
+  .rightSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .notificationButton {
+    position: relative;
+    color: #6b7280;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .notificationButton:hover {
+    color: #4b5563;
+    background-color: #f3f4f6;
+  }
+  
+  .notificationIcon {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+  
+  .badge {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .avatar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .avatarImage {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+    transition: border-color 0.2s ease;
+  }
+  
+  .avatarImage:hover {
+    border-color: #d1d5db;
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      padding: 0.75rem 2rem;
+    }
+  }

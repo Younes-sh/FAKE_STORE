@@ -70,14 +70,14 @@ const UserSchema = new Schema({
   timestamps: true
 });
 
-// حذف pre('save') چون در register خودش هش می‌شود ❗
+// Remove pre('save') because it gets hashed in its own register ❗
 
-// تابع مقایسه رمز عبور
+// Password comparison function
 UserSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// ایندکس‌ها
+// Indexes
 UserSchema.index({ email: 1 });
 UserSchema.index({ username: 1 });
 

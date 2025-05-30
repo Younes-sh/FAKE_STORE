@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Style from './singleItem.module.css';
 import Link from "next/link";
+import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
 
 export default function SingleItemDashboard({dataProduct}) {
 
@@ -15,7 +16,6 @@ export default function SingleItemDashboard({dataProduct}) {
 
   const IDProduct = useRouter();
   const ID = IDProduct.query.singleProduct;
-  console.log(ID);
   
   const router = useRouter();
   const btnSave = async () => {
@@ -33,7 +33,6 @@ export default function SingleItemDashboard({dataProduct}) {
         'Content-Type':'application/json'
       }
     });
-    console.log(res);
 
     if (res.ok) {
       console.log('Product updated successfully!');
@@ -46,7 +45,8 @@ export default function SingleItemDashboard({dataProduct}) {
   }
   
   return (
-    <div className="container main">
+    <AdminLayout>
+      <div className="container main">
       <div className={Style.singleItemPage}>
         <div className={Style.image}>
           <Image src={dataProduct.image} alt={dataProduct.section} width={16} height={9} layout="responsive" objectFit="cover" />
@@ -97,7 +97,8 @@ export default function SingleItemDashboard({dataProduct}) {
         <button className={Style.btnDelete}>Delete</button>
       </div>
       
-    </div>
+      </div>
+    </AdminLayout>
   )
 }
 

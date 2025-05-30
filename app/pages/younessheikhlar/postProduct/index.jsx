@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminLayout from '@/Components/AdminLayout/AdminLayout';
+import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
 import Style from "./style.module.css";
 import { useState } from 'react';
 
@@ -31,7 +31,7 @@ export default function index() {
     console.log(data);
   }
   return (
-    <AdminLayout>
+    <AdminLayout className='main'>
       <h1>Post product</h1>
       <div className={Style.post}>
         <form>
