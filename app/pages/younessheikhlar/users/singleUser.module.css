@@ -1,0 +1,10 @@
+.infoContainer {
+
+
+    p {
+        padding: 7px;
+    }
+    p:nth-child(odd) {
+        background-color: #cccccc45;
+    }
+}
