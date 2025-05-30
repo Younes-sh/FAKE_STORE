@@ -4,7 +4,7 @@
     padding:10px 5px;
     right: 0;
     position: absolute;
-    background-color: rgb(245, 244, 244);
+    background-color: rgb(11,60,116);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 0 0 0 7px;
 }
@@ -13,7 +13,7 @@
 
 }
 .menuProfile p a {
-    color: black;
+    color: aliceblue;
     text-decoration: none;
     display: block;
     padding: 10px;
@@ -28,4 +28,15 @@
 }
 .OpenMenuProfile:hover {
     cursor: pointer;
+}
+
+.menuProfile button {
+    padding: 5px 12px;
+    border: none;
+    border-radius: 4px;
+}
+.menuProfile button:hover {
+    background-color: brown;
+    cursor: pointer;
+    color: aliceblue;
 }
