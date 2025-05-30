@@ -3,6 +3,7 @@ import { useState } from "react";
 import User from "@/public/user.png";
 import Image from "next/image";
 import Style from './navProfile.module.css';
+import { signOut } from 'next-auth/react';
 
 export default function NavProfile() {
   const [isOpen , setIsOpen] = useState(false);
@@ -14,9 +15,7 @@ export default function NavProfile() {
     setIsOpen(false);
   }
 
-  const LogOut = () => {
-    localStorage.removeItem('token');
-  }
+  
   return (
     <div>
       <div className={Style.OpenMenuProfile} onClick={OpenMenuProfile}>
@@ -33,7 +32,7 @@ export default function NavProfile() {
           </p>
 
           <p>
-            <Link href="/orders">Orders</Link>
+            <Link href="/profile">Orders</Link>
           </p>
 
           <p>
@@ -48,9 +47,7 @@ export default function NavProfile() {
           <br />
           <br />
 
-          <p style={{color:'red'}}>
-            <button type="button" onClick={LogOut}>Logout</button>
-          </p>
+            <button type="button" onClick={() => signOut()}>Logout</button>
       </div>
       )}
     </div>
