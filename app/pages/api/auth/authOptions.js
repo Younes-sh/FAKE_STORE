@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 
 export const authOptions = {
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // استفاده از JWT برای ذخیره session سمت کلاینت
   },
   providers: [
     CredentialsProvider({
@@ -17,19 +17,20 @@ export const authOptions = {
       },
       async authorize(credentials) {
         await dbConnect();
-        console.log("credentials:", credentials);
 
         const user = await User.findOne({ email: credentials.email }).select("+password");
-        if (!user) throw new Error("This email is not registered");
 
-        console.log("✅ User found:", user.email, "with password hash:", user.password);
-        console.log("✅ Input password:", credentials.password);
+        if (!user) {
+          throw new Error("این ایمیل ثبت نشده است.");
+        }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) throw new Error("Incorrect password");
+        if (!isValid) {
+          throw new Error("رمز عبور اشتباه است.");
+        }
 
         return {
-          id: user._id.toString(),
+          id: user.id.toString(),  // 👈 اطمینان حاصل کن که به رشته تبدیل شده
           email: user.email,
           username: user.username,
           firstname: user.firstname,
@@ -40,22 +41,31 @@ export const authOptions = {
     }),
   ],
   pages: {
-    signIn: "/login",
-    error: "/auth/error",
+    signIn: "/login",       // مسیر ورود
+    error: "/auth/error",   // صفحه نمایش خطا
   },
   callbacks: {
+    // اطلاعاتی که وارد JWT می‌شوند
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.username = user.username;
+        token.firstname = user.firstname;
+        token.lastname = user.lastname;
+        token.role = user.role;
       }
       return token;
     },
+
+    // اطلاعات JWT که وارد session می‌شوند
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.email = token.email;
       session.user.username = token.username;
+      session.user.firstname = token.firstname;
+      session.user.lastname = token.lastname;
+      session.user.role = token.role;
       return session;
     },
   },
