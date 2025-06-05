@@ -1,19 +1,20 @@
-import jwt from 'jsonwebtoken';
+import { getToken } from "next-auth/jwt";
 
-export const authMiddleware = (handler) => {
-  return async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
+export default async function authMiddleware(req, res, next) {
+  try {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET
+    });
 
     if (!token) {
-      return res.status(401).json({ message: 'Access token is missing' });
+      return res.status(401).json({ message: 'توکن احراز هویت وجود ندارد' });
     }
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.userId = decoded._id;  // اضافه کردن userId به درخواست
-      return handler(req, res);  // ادامه به handler اصلی
-    } catch (error) {
-      return res.status(401).json({ message: 'Invalid or expired token' });
-    }
-  };
-};
+    req.userId = token.id; // <-- اصلاح شده
+    next();
+  } catch (error) {
+    console.error('خطای احراز هویت:', error);
+    return res.status(401).json({ message: 'توکن نامعتبر است' });
+  }
+}

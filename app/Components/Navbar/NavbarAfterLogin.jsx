@@ -5,7 +5,7 @@ import Image from "next/image";
 import User from "@/public/user.png";
 import NavProfile from "./components/NavProfile/NavProfile";
 import {useContext} from "react";
-import {AppContext} from "@/pages/_app";
+import {AppContext} from "@/Components/AppContextProvider";
 import Script from "next/script";
 import GEM from '@/public/asset/Logo/GEM.png';
 import { usePathname } from "next/navigation";

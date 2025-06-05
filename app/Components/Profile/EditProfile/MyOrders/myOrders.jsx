@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { AppContext } from '@/pages/_app';
+import { AppContext } from "@/Components/AppContextProvider";
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import styles from './MyOrders.module.css';
@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 
 export default function MyOrders() {
-  const { orders, addProduct } = useContext(AppContext);
+  const { orders = [], addProduct = [] } = useContext(AppContext);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -16,7 +16,7 @@ export default function MyOrders() {
     // شبیه‌سازی بارگذاری داده‌ها
     const timer = setTimeout(() => {
       setIsLoading(false);
-      setFilteredOrders(orders);
+      setFilteredOrders(Array.isArray(orders) ? orders : []);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -27,7 +27,7 @@ export default function MyOrders() {
   };
 
   const handleContinueShopping = () => {
-    router.push('/products'); // یا مسیر مناسب دیگر
+    router.push('/products');
   };
 
   if (isLoading) {
@@ -61,7 +61,7 @@ export default function MyOrders() {
             <img src="/images/empty-orders.svg" alt="No orders" className={styles.emptyImage} />
             <h2>You haven't placed any orders yet</h2>
             <p>Start shopping to see your orders here</p>
-            <button 
+            <button
               onClick={handleContinueShopping}
               className={styles.continueButton}
             >
@@ -71,9 +71,9 @@ export default function MyOrders() {
         ) : (
           <div className={styles.ordersContainer}>
             <div className={styles.sortOptions}>
-              <select 
+                <select
                 onChange={(e) => {
-                  const sorted = [...orders];
+                    const sorted = [...filteredOrders];
                   if (e.target.value === 'newest') {
                     sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                   } else {
@@ -93,13 +93,13 @@ export default function MyOrders() {
                 <div key={order.id} className={styles.orderCard}>
                   <div className={styles.orderHeader}>
                     <div>
-                      <h3>Order #{order.id.slice(0, 8)}</h3>
+                      <h3>Order #{order.id?.slice(0, 8)}</h3>
                       <span className={styles.orderDate}>
-                        {new Date(order.createdAt).toLocaleDateString('en-US', {
+                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
-                        })}
+                        }) : ''}
                       </span>
                     </div>
                     <span className={`${styles.status} ${styles[order.status || 'completed']}`}>
@@ -109,7 +109,7 @@ export default function MyOrders() {
                   
                   <div className={styles.orderBody}>
                     <div className={styles.itemsPreview}>
-                      {order.items.slice(0, 3).map(item => (
+                      {(Array.isArray(order.items) ? order.items : []).slice(0, 3).map(item => (
                         <div key={item._id} className={styles.itemPreview}>
                           <img 
                             src={item.image || '/images/product-placeholder.jpg'} 
@@ -123,11 +123,10 @@ export default function MyOrders() {
                             <span className={styles.itemQuantity}>
                               {item.count} × ${typeof item.price === 'number' ? item.price.toFixed(2) : parseFloat(item.price).toFixed(2)}
                             </span>
-
                           </div>
                         </div>
                       ))}
-                      {order.items.length > 3 && (
+                      {(Array.isArray(order.items) && order.items.length > 3) && (
                         <div className={styles.moreItems}>
                           +{order.items.length - 3} more item{order.items.length - 3 !== 1 ? 's' : ''}
                         </div>
@@ -137,7 +136,7 @@ export default function MyOrders() {
                     <div className={styles.orderFooter}>
                       <div className={styles.totalAmount}>
                         <span>Total:</span>
-                        <span>${order.totalAmount.toFixed(2)}</span>
+                        <span>${order.totalAmount?.toFixed(2) ?? '0.00'}</span>
                       </div>
                       <button
                         onClick={() => handleViewDetails(order.id)}

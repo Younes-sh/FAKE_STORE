@@ -14,33 +14,60 @@ export default function ProductCard({
     setAddProduct
   } = useContext(AppContext);
 
-  const addProductBtn = () => {
-    
-    if(isExisteProduct()){
-      const UpdateProduct = [...addProduct]
-      UpdateProduct.map(product => {
-        if(product._id === _id) {
-          product.count += 1;
-          product.totalPrice = product.price * product.count
-        }
-        setAddProduct(UpdateProduct);
-        return 
-      })
-    }else {
-        setAddToCard(addToCard + 1);
-        const newProduct = {
-          _id,
-          productName,
-          price,
-          count: 1, // مقدار اولیه تعداد
-          totalPrice: price * 1, // مقدار اولیه قیمت کل
-          image
-          // ... سایر پراپرتی های مورد نیاز
-        };
-        setAddProduct( prevent => [...prevent, newProduct]);
+  const addProductBtn = async () => {
+  let updatedProducts;
+
+  if (isExisteProduct()) {
+    updatedProducts = addProduct.map(product => {
+      if (product._id === _id) {
+        const newCount = product.count + 1;
+        return {
+          ...product,
+          count: newCount,
+          totalPrice: product.price * newCount
+        };
       }
-    
-  };
+      return product;
+    });
+
+    setAddProduct(updatedProducts);
+  } else {
+    setAddToCard(addToCard + 1);
+    const newProduct = {
+      _id,
+      productName,
+      price,
+      count: 1,
+      totalPrice: price,
+      image
+    };
+    updatedProducts = [...addProduct, newProduct];
+    setAddProduct(updatedProducts);
+  }
+
+  // ارسال اطلاعات به API با fetch
+  try {
+    const res = await fetch('/api/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        // اگر احراز هویت با توکن دارید، می‌تونید اینجا Authorization هم اضافه کنید
+      },
+      body: JSON.stringify({
+        productId: _id,
+        quantity: 1
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error('خطا در ذخیره‌سازی سمت سرور:', errorData);
+    }
+  } catch (error) {
+    console.error('خطای ارتباط با سرور:', error.message);
+  }
+};
+
 
   function isExisteProduct () {
     return addProduct.some(product => product._id === _id);
