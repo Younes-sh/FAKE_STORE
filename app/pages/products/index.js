@@ -23,9 +23,23 @@ export default function index({ productData }) {
 
 
 export async function getServerSideProps() {
-  const res = await fetch('http://localhost:3000/api/products');
-  const data = await res.json();
-  return {
-    props: { productData: data.products}
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/products`);
+    const data = await res.json();
+
+    // بررسی اینکه آرایه معتبره و حذف مقادیر undefined/null
+    const cleanedProducts = Array.isArray(data.products)
+      ? data.products.filter(p => p && typeof p === 'object')
+      : [];
+
+    return {
+      props: { productData: cleanedProducts }
+    };
+  } catch (error) {
+    console.error("خطا در دریافت محصولات:", error);
+
+    return {
+      props: { productData: [] } // ارسال آرایه خالی در صورت خطا
+    };
   }
 }
