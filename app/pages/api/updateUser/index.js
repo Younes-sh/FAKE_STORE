@@ -31,7 +31,11 @@ export default async function handler(req, res) {
       username,
       email,
       phone,
-      address,
+      street,
+      city,
+      state,
+      postalCode,
+      country,
       currentPassword,
       newPassword,
     } = req.body;
@@ -41,7 +45,15 @@ export default async function handler(req, res) {
     if (username) user.username = username;
     if (email) user.email = email;
     if (phone) user.phone = phone;
-    if (address) user.address = address;
+
+    // مقداردهی صحیح address به صورت آبجکت
+    user.address = {
+      street: street || '',
+      city: city || '',
+      state: state || '',
+      postalCode: postalCode || '',
+      country: country || ''
+    };
 
     // اگر کاربر می‌خواهد رمز عبور را تغییر دهد
     if (currentPassword && newPassword) {
