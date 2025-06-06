@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './paymentPage.module.css';
 import { useContext } from 'react';
-import { AppContext } from '@/pages/_app';
+import { AppContext } from '@/Components/AppContextProvider';
 import { useRouter } from 'next/router';
 
 const PaymentPage = () => {
@@ -13,14 +13,81 @@ const PaymentPage = () => {
   const [cvv, setCvv] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState('');
+
+  // الگوریتم Luhn برای اعتبارسنجی شماره کارت
+  const luhnCheck = (num) => {
+    let arr = (num + '')
+      .split('')
+      .reverse()
+      .map(x => parseInt(x));
+    let sum = arr.reduce((acc, val, idx) => {
+      if (idx % 2) {
+        val *= 2;
+        if (val > 9) val -= 9;
+      }
+      return acc + val;
+    }, 0);
+    return sum % 10 === 0;
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    setGeneralError('');
+
+    // شماره کارت: فقط اعداد، 16 رقم و الگوریتم Luhn
+    const cardNumberDigits = cardNumber.replace(/\s+/g, '');
+    if (!/^\d{16}$/.test(cardNumberDigits)) {
+      newErrors.cardNumber = 'Card number must be exactly 16 digits.';
+    } else if (!luhnCheck(cardNumberDigits)) {
+      newErrors.cardNumber = 'Card number is invalid.';
+    }
+
+    // نام دارنده کارت: فقط حروف و فاصله، حداقل 3 کاراکتر
+    if (!cardName.trim() || cardName.trim().length < 3) {
+      newErrors.cardName = 'Cardholder name is too short.';
+    } else if (!/^[a-zA-Z\s\u0600-\u06FF]+$/.test(cardName.trim())) {
+      newErrors.cardName = 'Cardholder name must only contain letters.';
+    }
+
+    // تاریخ انقضا: فرمت MM/YY و معتبر بودن ماه و سال
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+      newErrors.expiry = 'Expiry must be in MM/YY format.';
+    } else {
+      const [mm, yy] = expiry.split('/');
+      const expMonth = parseInt(mm, 10);
+      const expYear = 2000 + parseInt(yy, 10);
+      const now = new Date();
+      const expiryDate = new Date(expYear, expMonth - 1, 1);
+      if (expiryDate < new Date(now.getFullYear(), now.getMonth(), 1)) {
+        newErrors.expiry = 'Card has expired.';
+      }
+    }
+
+    // CVV: فقط 3 یا 4 رقم
+    if (!/^\d{3,4}$/.test(cvv)) {
+      newErrors.cvv = 'CVV must be 3 or 4 digits.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
+
     setIsProcessing(true);
-    
-    // Simulate payment processing
+    setGeneralError('');
     setTimeout(() => {
       try {
+        // اگر سبد خرید خالی بود
+        if (!addProduct || addProduct.length === 0) {
+          setIsProcessing(false);
+          setGeneralError('Your cart is empty.');
+          return;
+        }
         // 1. ایجاد سفارش جدید
         const newOrder = {
           id: Date.now().toString(),
@@ -28,14 +95,14 @@ const PaymentPage = () => {
           items: [...addProduct],
           totalAmount: addProduct.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
           shippingAddress: {
-            fullName: cardName || "Unknown", // استفاده از نام وارد شده در فرم
-            address: "Not specified", // می‌توانید فیلد آدرس هم به فرم اضافه کنید
+            fullName: cardName || "Unknown",
+            address: "Not specified",
             city: "Not specified",
             postalCode: "00000",
             phone: "Not specified"
           },
           paymentMethod: "online",
-          status: "completed" // اضافه کردن وضعیت سفارش
+          status: "completed"
         };
 
         // 2. فقط در صورت موفقیت‌آمیز بودن پرداخت:
@@ -44,11 +111,6 @@ const PaymentPage = () => {
         // - خالی کردن سبد خرید
         setAddProduct([]);
         setAddToCard(0);
-        
-        // 3. ذخیره در localStorage
-        localStorage.setItem('userOrders', JSON.stringify([...orders, newOrder]));
-        localStorage.removeItem('cartProducts');
-        localStorage.removeItem('cartCount');
 
         setIsProcessing(false);
         setPaymentSuccess(true);
@@ -60,7 +122,7 @@ const PaymentPage = () => {
         });
       } catch (error) {
         setIsProcessing(false);
-        alert('Payment failed. Please try again.');
+        setGeneralError('Unexpected error occurred. Please try again.');
       }
     }, 2000);
   };
@@ -116,6 +178,9 @@ const PaymentPage = () => {
 
       <h1 className={styles.title}>Payment Details</h1>
       <form onSubmit={handleSubmit} className={styles.paymentForm}>
+        {generalError && (
+          <div className={styles.error} style={{ marginBottom: 10 }}>{generalError}</div>
+        )}
         <div className={styles.formGroup}>
           <label htmlFor="cardNumber">Card Number</label>
           <input
@@ -127,6 +192,7 @@ const PaymentPage = () => {
             maxLength="19"
             required
           />
+          {errors.cardNumber && <span className={styles.error}>{errors.cardNumber}</span>}
         </div>
         
         <div className={styles.formGroup}>
@@ -139,6 +205,7 @@ const PaymentPage = () => {
             placeholder="John Doe"
             required
           />
+          {errors.cardName && <span className={styles.error}>{errors.cardName}</span>}
         </div>
         
         <div className={styles.row}>
@@ -153,6 +220,7 @@ const PaymentPage = () => {
               maxLength="5"
               required
             />
+            {errors.expiry && <span className={styles.error}>{errors.expiry}</span>}
           </div>
           
           <div className={`${styles.formGroup} ${styles.cvvGroup}`}>
@@ -166,6 +234,7 @@ const PaymentPage = () => {
               maxLength="3"
               required
             />
+            {errors.cvv && <span className={styles.error}>{errors.cvv}</span>}
           </div>
         </div>
         
