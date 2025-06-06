@@ -19,7 +19,7 @@
 
 /* Profile Header */
 .profileHeader {
-  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  background: linear-gradient(to right,#402868, #54527c);
   padding: 2rem;
   color: white;
   display: flex;
@@ -238,6 +238,40 @@
 }
 
 /* Responsive Adjustments */
+
+@media (max-width: 957px) {
+  .profileContainer {
+    padding: 5rem 1rem; /* Reduced padding for smaller screens */
+  }
+  
+  .profileCard {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    width: 100%; /* Full width on smaller screens */
+    min-height: auto; /* Remove minimum height for better fit */
+  }
+  
+  .profileHeader {
+    padding: 1.5rem;
+    text-align: center; /* Center text on smaller screens */
+    img {
+      visibility: hidden; /* Hide image on smaller screens */
+    }
+  }
+  
+  .tabs {
+    flex-direction: column; /* Stack tabs vertically */
+    align-items: center; /* Center tabs */
+  }
+  
+  .tab {
+    width: 100%; /* Full width for tabs */
+    text-align: center; /* Center text in tabs */
+  }
+  
+  .favoritesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust grid for smaller screens */
+  }
+}
 @media (max-width: 768px) {
   .profileCard {
     grid-template-columns: 1fr;

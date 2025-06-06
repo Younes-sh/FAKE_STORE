@@ -6,7 +6,7 @@ const OrderItemSchema = new Schema({
     ref: 'Product',
     required: true 
   },
-  name: { // اضافه کردن نام محصول برای نمایش راحت‌تر
+  name: { // نام محصول برای نمایش راحت‌تر
     type: String,
     required: true
   },
@@ -19,11 +19,11 @@ const OrderItemSchema = new Schema({
     type: Number, 
     required: true 
   },
-  image: { // اضافه کردن تصویر محصول
+  image: { // تصویر محصول
     type: String,
     required: true
   }
-}, { _id: false }); // غیرفعال کردن _id برای آیتم‌ها
+}, { _id: true }); // هر آیتم سفارش یک _id منحصر به فرد دارد
 
 const OrderSchema = new Schema({
   user: { 
@@ -37,9 +37,9 @@ const OrderSchema = new Schema({
     required: true
   },
   items: [OrderItemSchema],
-  subtotal: Number,
-  shippingFee: Number,
-  taxAmount: Number,
+  subtotal: { type: Number, default: 0 },
+  shippingFee: { type: Number, default: 0 },
+  taxAmount: { type: Number, default: 0 },
   totalAmount: { 
     type: Number, 
     required: true 
@@ -70,6 +70,9 @@ const OrderSchema = new Schema({
     enum: ['processing', 'shipped', 'delivered', 'cancelled'],
     default: 'processing'
   },
+  note: { type: String }, // توضیحات سفارش (اختیاری)
+  deliveredAt: Date,      // تاریخ تحویل (اختیاری)
+  shippedAt: Date,        // تاریخ ارسال (اختیاری)
   createdAt: { 
     type: Date, 
     default: Date.now 

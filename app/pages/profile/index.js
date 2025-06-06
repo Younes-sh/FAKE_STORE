@@ -13,7 +13,11 @@ import { useRouter } from 'next/router';
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const openModalBtn = () => {
+    setShowEditModal(true);
+  };
 
   const router = useRouter();
 
@@ -75,7 +79,7 @@ export default function ProfilePage() {
           {/* Action Buttons */}
           <div className={Styles.actions}>
             <button 
-              onClick={() => setShowEditModal(true)}
+              onClick={() => setShowModal(true)}
               className={`${Styles.btn} ${Styles.secondaryBtn}`}
             >
               Edit Profile
@@ -96,10 +100,11 @@ export default function ProfilePage() {
       </div>
 
       {/* Edit Profile Modal */}
-      {showEditModal && (
+      {showModal && (
         <EditProfileModal 
+        className={Styles.test}
           user={session.user} 
-          onClose={() => setShowEditModal(false)} 
+          open={showModal} onClose={() => setShowModal(false)}
         />
       )}
     </div>

@@ -1,6 +1,13 @@
 import { model, models, Schema } from "mongoose";
 import bcrypt from 'bcryptjs';
 
+const AddressSchema = new Schema({
+  street: { type: String, trim: true, maxlength: 100 },
+  city: { type: String, trim: true, maxlength: 50 },
+  state: { type: String, trim: true, maxlength: 50 },
+  postalCode: { type: String, trim: true, maxlength: 20 },
+  country: { type: String, trim: true, maxlength: 50 }
+}, { _id: false });
 
 const UserSchema = new Schema({
   firstname: { 
@@ -40,11 +47,9 @@ const UserSchema = new Schema({
     maxlength: [20, 'Phone number too long']
   },
   address: {
-    type: String,
-    trim: true,
-    maxlength: [300, 'Address is too long']
+    type: AddressSchema,
+    default: {}
   },
-
   role: {
     type: String,
     default: "user",
@@ -69,8 +74,6 @@ const UserSchema = new Schema({
 }, {
   timestamps: true
 });
-
-// Remove pre('save') because it gets hashed in its own register ❗
 
 // Password comparison function
 UserSchema.methods.comparePassword = async function(candidatePassword) {
