@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import { SessionProvider } from 'next-auth/react';
-import Layout from "@/components/Layout";
+import Layout from "@/Components/Layout";
 import {AppContextProvider} from "@/Components/AppContextProvider"; // همین رو بساز
 
 export default function App({ Component, pageProps: { session, ...pageProps } }) {

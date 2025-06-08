@@ -1,16 +1,149 @@
 .footer {
-    width: 100%;
-    height: 400px;
-    padding: 20px;
-    /* position: absolute; */
-    color: aliceblue;
-    background-color: rgb(11, 60, 116);
+  background-color: #0B3C74;
+  color: white;
+  padding: 3rem 2rem;
+  font-family: 'Playfair Display', serif;
+  border-top: 1px solid #3d3d3d;
 }
 
-.containerFooter {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
 }
 
- 
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #d4af37;
+  text-decoration: none;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialIcon {
+  color: #e0c9a6;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.socialIcon:hover {
+  color: #d4af37;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #d4af37;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 1px;
+  background-color: #d4af37;
+}
+
+.linksList {
+  list-style: none;
+  padding: 0;
+}
+
+.linkItem {
+  margin-bottom: 0.8rem;
+}
+
+.link {
+  color: #e0c9a6;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.link:hover {
+  color: #d4af37;
+  padding-left: 5px;
+}
+
+.contactInfo {
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.newsletterForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.newsletterInput {
+  background-color: #f9f6f6;
+  border: 1px solid #f9f6f6;
+  color: #170214;
+  margin-top: .5rem;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  border-radius: 4px;
+}
+
+.newsletterInput::placeholder {
+  color: #7a7a7a;
+}
+
+.newsletterButton {
+  background-color: #d4af37;
+  color: #1a1a1a;
+  border: none;
+  padding: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.newsletterButton:hover {
+  background-color: #e0c9a6;
+}
+
+.copyright {
+  text-align: center;
+  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid #3d3d3d;
+  font-size: 0.8rem;
+  color: #7a7a7a;
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  
+  .section {
+    margin-bottom: 2rem;
+  }
+}
