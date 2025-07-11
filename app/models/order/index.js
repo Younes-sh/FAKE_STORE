@@ -1,51 +1,68 @@
+// models/order.js
 import { Schema, model, models } from 'mongoose';
 
+// 👇 تعریف درست OrderItemSchema قبل از استفاده در OrderSchema
 const OrderItemSchema = new Schema({
-  product: { 
-    type: Schema.Types.ObjectId, 
+  product: {
+    type: Schema.Types.ObjectId,
     ref: 'Product',
-    required: true 
+    required: true
   },
-  name: { // اضافه کردن نام محصول برای نمایش راحت‌تر
+  name: {
     type: String,
     required: true
   },
-  quantity: { 
-    type: Number, 
+  quantity: {
+    type: Number,
     required: true,
     min: 1
   },
-  priceAtPurchase: { 
-    type: Number, 
-    required: true 
+  priceAtPurchase: {
+    type: Number,
+    required: true
   },
-  image: { // اضافه کردن تصویر محصول
+  image: {
     type: String,
     required: true
   }
-}, { _id: false }); // غیرفعال کردن _id برای آیتم‌ها
+}, { _id: false });
 
 const OrderSchema = new Schema({
-  user: { 
-    type: Schema.Types.ObjectId, 
+  user: {
+    type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true 
-  },
-  orderNumber: { // شماره سفارش منحصر به فرد
-    type: String,
-    unique: true,
     required: true
   },
-  items: [OrderItemSchema],
-  subtotal: Number,
-  shippingFee: Number,
-  taxAmount: Number,
-  totalAmount: { 
-    type: Number, 
-    required: true 
+  orderNumber: {
+    type: String,
+    unique: true,
+    default: function () {
+      return `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    }
   },
-  paymentStatus: { 
-    type: String, 
+  items: {
+    type: [OrderItemSchema],
+    required: true,
+    validate: [arr => arr.length > 0, 'Order must have at least one item']
+  },
+  subtotal: {
+    type: Number,
+    required: true
+  },
+  shippingFee: {
+    type: Number,
+    default: 0
+  },
+  taxAmount: {
+    type: Number,
+    default: 0
+  },
+  totalAmount: {
+    type: Number,
+    required: true
+  },
+  paymentStatus: {
+    type: String,
     enum: ['pending', 'completed', 'failed', 'refunded'],
     default: 'pending'
   },
@@ -55,36 +72,21 @@ const OrderSchema = new Schema({
     required: true
   },
   shippingAddress: {
-    type: {
-      street: String,
-      city: String,
-      state: String,
-      postalCode: String,
-      country: String
-    },
-    required: true
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String },
+    postalCode: { type: String },
+    country: { type: String, required: true }
   },
-  trackingNumber: String,
+  trackingNumber: {
+    type: String
+  },
   status: {
     type: String,
     enum: ['processing', 'shipped', 'delivered', 'cancelled'],
     default: 'processing'
-  },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
-  },
-  updatedAt: Date
-}, { timestamps: true });
-
-// تولید خودکار شماره سفارش قبل از ذخیره
-OrderSchema.pre('save', function(next) {
-  if (!this.orderNumber) {
-    this.orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
   }
-  this.updatedAt = Date.now();
-  next();
-});
+}, { timestamps: true });
 
 const Order = models.Order || model('Order', OrderSchema);
 export default Order;

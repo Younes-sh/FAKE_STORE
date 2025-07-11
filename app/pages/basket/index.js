@@ -1,57 +1,73 @@
 import Style from './basket.module.css';
-import { useContext, useMemo  } from 'react';
-import { AppContext } from '../_app';
-import BasketCard from '../../Components/Cards/BasketCard/BasketCard';
+import { useEffect, useState } from 'react';
+import BasketCard from '@/Components/Cards/BasketCard/BasketCard';
 import Link from 'next/link';
 import emptyCard from '@/public/asset/Basket/emptyCard.jpg';
 import Image from 'next/image';
 
-export default function BasketPage () {
-    const {addToCard, addProduct} = useContext(AppContext);
+export default function BasketPage() {
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
 
-    // استفاده از useMemo برای محاسبه مجموع قیمت به صورت کارآمد
-    const totalPaye = useMemo(() => {
-        return addProduct.reduce((sum, item) => {
-            // اطمینان حاصل کنید که item.totalPrice وجود دارد و یک عدد است
-            const price = typeof item.totalPrice === 'number' ? item.totalPrice : 0;
-            return sum + price;
-        }, 0);
-    }, [addProduct]); // وابستگی به addProduct تا در صورت تغییر آن، دوباره محاسبه شود
+  const refreshCart = async () => {
+    try {
+      const res = await fetch("/api/cart");
+      if (!res.ok) throw new Error("مشکلی در دریافت سبد خرید پیش آمد");
 
-    return (
-        <div >
-                <div className="container main">
-                    <div className={Style.Subtotal}>
-                        <h3>Subtotal</h3>
-                        <p>Total pay: $ {totalPaye}</p>
-                        <div className={Style.checkoutBtn}>
-                            <Link href={'/PaymentPage'}>purchase to checkout</Link>
-                        </div>
-                    </div>
-                    <div className={Style.basket}>
+      const data = await res.json();
+      setCartItems(data.cart?.products || []);
+    } catch (error) {
+      console.error("❌ Error fetching cart:", error);
+      setErrorMsg("خطا در دریافت اطلاعات سبد خرید");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                        {addToCard > 0 ? (
-                            <div>
-                                {
-                                  addProduct.map(item => <BasketCard key={item._id} {...item} />)
-                                }
-                            </div>) : (
-                                <div >
-                                <Image
-                                  src={emptyCard}
-                                  width={400}
-                                  height={400}
-                                  sizes="(max-width: 768px) 100vw, 50vw"
-                                  alt="Empty Card"
-                                />
-                              </div>
-                            )
-                        }
-                    </div>
-                </div>
-            
+  useEffect(() => {
+    refreshCart();
+  }, []);
 
+  const totalPay = cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+
+  return (
+    <div>
+      <div className="container main">
+        <div className={Style.Subtotal}>
+          <h3>Subtotal</h3>
+          <p>Total pay: ${totalPay}</p>
+          <div className={Style.checkoutBtn}>
+            <Link href={'/PaymentPage'}>purchase to checkout</Link>
+          </div>
         </div>
-    )
-}
 
+        {errorMsg && <p className={Style.error}>{errorMsg}</p>}
+
+        <div className={Style.basket}>
+          {loading ? (
+            <p>Loading...</p>
+          ) : cartItems.length > 0 ? (
+            cartItems.map(item => (
+              <BasketCard
+                key={item._id}
+                {...item}
+                refreshCart={refreshCart}
+              />
+            ))
+          ) : (
+            <div>
+              <Image
+                src={emptyCard}
+                width={400}
+                height={400}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                alt="Empty Cart"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -35,13 +35,13 @@ export default async function handler(req, res) {
     }
 
     // هش کردن پسورد
-    const hashedPassword = await hash(password, 12);
+    // const hashedPassword = await hash(password, 12);
 
     // ایجاد کاربر جدید
     const newUser = new User({
       username,
       email,
-      password: hashedPassword,
+      password,
       createdAt: new Date(),
     });
 

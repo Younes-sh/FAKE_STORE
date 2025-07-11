@@ -1,68 +1,61 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import User from '@/models/User';
-import dbConnect from '@/lib/dbConnect';
-import bcrypt from 'bcryptjs';
-
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import dbConnect from "@/lib/dbConnect";
+import User from "@/models/User";
+import bcrypt from "bcryptjs";
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         await dbConnect();
 
-        const user = await User.findOne({ email: credentials.email }).select('+password');
+        const user = await User.findOne({ email: credentials.email }).select("+password");
         if (!user) {
-          throw new Error('No user found with this email');
+          throw new Error("No user found with this email");
         }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) {
-          throw new Error('Invalid password');
+          throw new Error("Invalid password");
         }
 
-        // رمز درست بود → اطلاعات کاربر را برگردان
         return {
-          id: user._id.toString(),
-          name: user.username,
+          id: user._id,
           email: user.email,
-          role: user.role
+          username: user.username,
         };
-      }
-    })
+      },
+    }),
   ],
   session: {
-    strategy: 'jwt'
+    strategy: "jwt", // بسیار مهم برای اینکه سشن‌ها در API قابل استفاده باشند
   },
+  secret: process.env.NEXTAUTH_SECRET, // حتماً در فایل .env.local تنظیم شود
   pages: {
-    signIn: '/login',
-    error: '/login'
+    signIn: "/login", // اگر صفحه لاگین اختصاصی داری
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.name = user.name;
-        token.role = user.role;
+        token.username = user.username;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.role = token.role;
-      }
+      session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.username = token.username;
       return session;
-    }
+    },
   },
-  secret: process.env.NEXTAUTH_SECRET
 };
 
 export default NextAuth(authOptions);

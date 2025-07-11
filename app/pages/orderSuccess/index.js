@@ -14,52 +14,44 @@ export default function OrderSuccess() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const { orderId } = router.query;
-    
-    if (orderId) {
-      // پیدا کردن سفارش در لیست سفارشات
-      const foundOrder = orders.find(o => o.id === orderId);
-      if (foundOrder) {
-        setOrder(foundOrder);
-      } else {
-        // اگر سفارش پیدا نشد، از localStorage بررسی کنید
-        const localOrder = localStorage.getItem('lastOrder');
-        if (localOrder) {
-          setOrder(JSON.parse(localOrder));
-        }
-      }
-    } else {
-      // اگر orderId وجود نداشت، آخرین سفارش را نمایش دهید
-      if (orders.length > 0) {
-        setOrder(orders[orders.length - 1]);
-      } else {
-        // اگر سفارشی وجود نداشت، از localStorage بررسی کنید
-        const localOrder = localStorage.getItem('lastOrder');
-        if (localOrder) {
-          setOrder(JSON.parse(localOrder));
-        }
-      }
+  const { orderId } = router.query;
+  if (!orderId) return;
+
+  const fetchOrder = async () => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`);
+      if (!res.ok) throw new Error('Order not found');
+      const data = await res.json();
+      setOrder(data.order);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  }, [router.query, orders]);
+  };
 
-  // if (loading) {
-  //   return (
-  //     <div className={styles.loadingContainer}>
-  //       <div className={styles.spinner}></div>
-  //       <p>Loading your order details...</p>
-  //     </div>
-  //   );
-  // }
+  fetchOrder();
+}, [router.query]);
 
-  // if (error) {
-  //   return (
-  //     <div className={styles.errorContainer}>
-  //       <h2>Error</h2>
-  //       <p>{error}</p>
-  //       <button onClick={() => router.push('/')}>Return to Home</button>
-  //     </div>
-  //   );
-  // }
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>Loading your order details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <h2>Error</h2>
+        <p>{error}</p>
+        <button onClick={() => router.push('/')}>Return to Home</button>
+      </div>
+    );
+  }
 
   if (!order) {
     return (

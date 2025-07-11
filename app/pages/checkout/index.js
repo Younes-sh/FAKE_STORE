@@ -37,17 +37,57 @@ export default function CheckoutPage() {
     }));
   };
 
-  const handlePayment = () => {
-    if (!shippingAddress.fullName || !shippingAddress.address || !shippingAddress.phone) {
-      alert('Please complete all required shipping information');
+  const handlePayment = async () => {
+  if (!shippingAddress.fullName || !shippingAddress.address || !shippingAddress.phone) {
+    alert('Please complete all required shipping information');
+    return;
+  }
+
+  try {
+    const subtotal = order.items.reduce((sum, item) => sum + item.totalPrice, 0);
+    const shippingFee = 5;
+    const taxAmount = subtotal * 0.1;
+    const totalAmount = subtotal + shippingFee + taxAmount;
+
+    const response = await fetch('/api/orders/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        items: order.items,
+        subtotal,
+        shippingFee,
+        taxAmount,
+        totalAmount,
+        paymentMethod: paymentMethod === 'cash' ? 'cash_on_delivery' : 'credit_card',
+        shippingAddress: {
+          street: shippingAddress.address,
+          city: shippingAddress.city,
+          state: '',
+          postalCode: shippingAddress.postalCode,
+          country: 'IR'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      alert(`Order failed: ${errorData.message}`);
       return;
     }
 
-    // Here you can implement real payment logic
-    alert(`Payment of ${order.totalAmount} via ${paymentMethod === 'online' ? 'online' : 'cash on delivery'} was successful`);
+    const data = await response.json();
+    console.log("Redirecting with orderId:", data.order._id);
     localStorage.removeItem('tempOrder');
-    router.push('/orderSuccess');
-  };
+    router.push(`/orderSuccess?orderId=${data.order._id}`);
+  } catch (error) {
+    console.error('Order error:', error);
+    alert('Something went wrong while placing order');
+  }
+};
+
+
 
   if (loading) return (
     <div className={Style.loading}>

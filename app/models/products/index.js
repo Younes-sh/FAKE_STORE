@@ -1,49 +1,34 @@
-import { models, model, Schema } from 'mongoose';
-
-const CartItemSchema = new Schema({
-  product: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Product',
-    required: true 
-  },
-  quantity: { 
-    type: Number, 
-    default: 1,
-    min: 1
-  },
-  selected: { 
-    type: Boolean, 
-    default: true 
-  },
-  addedAt: { 
-    type: Date, 
-    default: Date.now 
-  }
-});
+import mongoose, { Schema, model, models } from 'mongoose';
 
 const CartSchema = new Schema({
-  user: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User',
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
-    unique: true
+    index: true
   },
-  items: [CartItemSchema],
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
-  },
-  updatedAt: { 
-    type: Date, 
-    default: Date.now 
+  products: [
+    {
+      _id: { type: Schema.Types.ObjectId, ref: "Product" },
+      productName: { type: String, required: true },
+      price: { type: Number, required: true },
+      count: { type: Number, required: true, min: 1 },
+      totalPrice: { type: Number, required: true },
+      image: { type: String, required: true }
+    }
+  ],
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
-// Middleware برای به روزرسانی تاریخ ویرایش
-CartSchema.pre('save', function(next) {
+CartSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-const Cart = models.Cart || model('Cart', CartSchema);
+const Cart = models.Cart || model("Cart", CartSchema);
 export default Cart;

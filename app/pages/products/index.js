@@ -1,6 +1,6 @@
 import React from 'react';
 // import ProductCard from '@/Components/Cards/ProductCard/ProductCard';
-import ProductCard from '@/Components/Cards/CardProductTest/CardProductTest';
+import ProductCard from '@/Components/Cards/CardProduct/CardProduct';
 
 import Style from "./style.module.css";
 

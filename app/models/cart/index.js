@@ -1,57 +1,40 @@
-import { Schema, model, models } from "mongoose";
-
-const CartItemSchema = new Schema({
-  product: {
-    type: Schema.Types.ObjectId,
-    ref: "Product",
-    required: true
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    default: 1,
-    min: 1
-  },
-  selected: {
-    type: Boolean,
-    default: true
-  },
-  addedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+//models/cart/index.js
+import  { Schema, model, models } from 'mongoose';
 
 const CartSchema = new Schema({
-  user: {
+  userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true
+    unique: false
   },
-  items: [CartItemSchema],
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
+
+  products: [
+    {
+      _id: { type: Schema.Types.ObjectId, ref: "Product" },
+      productName: { type: String, required: true },
+      price: { type: Number, required: true },
+      count: { type: Number, required: true, min: 1 },
+      totalPrice: { type: Number, required: true },
+      image: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+      updatedAt: { type: Date, default: Date.now },
+      description: { type: String, required: true },
+      section: { type: String, required: true },
+      model: { type: String, required: true }
+    }
+  ],
   updatedAt: {
     type: Date,
     default: Date.now
   }
-});
+}, { timestamps: true });
 
-// Middleware برای به‌روزرسانی تاریخ updatedAt قبل از ذخیره
-CartSchema.pre("save", function(next) {
+
+CartSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Middleware برای به‌روزرسانی تاریخ updatedAt قبل از به‌روزرسانی
-CartSchema.pre("findOneAndUpdate", function(next) {
-  this.set({ updatedAt: Date.now() });
-  next();
-});
-
 const Cart = models.Cart || model("Cart", CartSchema);
-
 export default Cart;
