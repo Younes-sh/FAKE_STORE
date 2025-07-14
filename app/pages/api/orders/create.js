@@ -1,74 +1,109 @@
-// pages/api/orders/create.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import User from "@/models/user";
 import Cart from "@/models/cart";
 import Order from "@/models/order";
+import Product from "@/models/product";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ success: false, message: "Method not allowed" });
   }
-
-  await dbConnect();
 
   const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.email) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 
-  const user = await User.findOne({ email: session.user.email });
-  if (!user) return res.status(404).json({ message: "User not found" });
+  try {
+    await dbConnect();
 
-  const cart = await Cart.findOne({ userId: user._id });
-  if (!cart || cart.products.length === 0) {
-    return res.status(400).json({ message: "Cart is empty" });
-  }
-
-  // گرفتن اطلاعات ارسال‌شده از کلاینت
-  const {
-    paymentMethod,
-    shippingAddress,
-    subtotal,
-    shippingFee,
-    taxAmount,
-    totalAmount,
-    items
-  } = req.body;
-
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ message: "No order items provided" });
-  }
-
-  // ساخت سفارش
-  const order = new Order({
-    user: user._id,
-    items: items.map(item => ({
-      product: item._id,
-      name: item.productName,
-      quantity: item.count,
-      priceAtPurchase: item.price,
-      image: item.image
-    })),
-    subtotal,
-    shippingFee,
-    taxAmount,
-    totalAmount,
-    paymentMethod,
-    shippingAddress: {
-      street: shippingAddress.address || "No address",
-      city: shippingAddress.city || "",
-      state: shippingAddress.state || "",
-      postalCode: shippingAddress.postalCode || "",
-      country: shippingAddress.country || "IR"
+    // اعتبارسنجی اولیه
+    const { items = [], ...orderData } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      throw new Error("سبد خرید شما خالی است");
     }
-  });
 
-  await order.save();
+    // پردازش و اعتبارسنجی آیتم‌ها
+    const validatedItems = await Promise.all(items.map(async (item) => {
+      if (!item._id || !item.count) {
+        throw new Error("مشخصات محصول ناقص است");
+      }
 
-  // پاکسازی سبد خرید پس از ثبت سفارش
-  await Cart.findOneAndDelete({ userId: user._id });
+      const product = await Product.findById(item._id);
+      if (!product) {
+        throw new Error(`محصول با شناسه ${item._id} یافت نشد`);
+      }
 
-  return res.status(201).json({ message: "Order created", order });
+      return {
+        product: item._id,
+        name: product.productName,
+        quantity: Number(item.count),
+        priceAtPurchase: product.price,
+        image: product.image,
+        section: product.section,
+        model: product.model
+      };
+    }));
+
+    // محاسبه مبالغ
+    const subtotal = validatedItems.reduce((sum, item) => sum + (item.priceAtPurchase * item.quantity), 0);
+    const shippingFee = Number(orderData.shippingFee) || 0;
+    const taxAmount = Number(orderData.taxAmount) || 0;
+    const totalAmount = subtotal + shippingFee + taxAmount;
+
+    // اعتبارسنجی آدرس
+    const shippingAddress = {
+      street: orderData.shippingAddress?.address || '',
+      city: orderData.shippingAddress?.city || '',
+      state: orderData.shippingAddress?.state || '',
+      postalCode: orderData.shippingAddress?.postalCode || '',
+      country: orderData.shippingAddress?.country || 'IR'
+    };
+
+    if (!shippingAddress.street || !shippingAddress.city) {
+      throw new Error("آدرس ارسال ناقص است");
+    }
+
+    // ایجاد سفارش
+    const user = await User.findOne({ email: session.user.email });
+    if (!user) throw new Error("کاربر یافت نشد");
+
+    const order = new Order({
+      user: user._id,
+      items: validatedItems,
+      subtotal,
+      shippingFee,
+      taxAmount,
+      totalAmount,
+      paymentMethod: orderData.paymentMethod || 'credit_card',
+      shippingAddress,
+      status: 'processing'
+    });
+
+    await order.save();
+    await Cart.findOneAndUpdate(
+      { userId: user._id },
+      { $set: { products: [] } },
+      { new: true }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "سفارش با موفقیت ثبت شد",
+      order: {
+        _id: order._id,
+        orderNumber: order.orderNumber,
+        totalAmount: order.totalAmount
+      }
+    });
+
+  } catch (error) {
+    console.error("Order creation error:", error);
+    return res.status(400).json({
+      success: false,
+      message: error.message || "خطا در ثبت سفارش"
+    });
+  }
 }
