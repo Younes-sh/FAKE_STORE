@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import dbConnect from "@/lib/dbConnect";
 import Cart from "@/models/cart";
-import User from "@/models/User";
+import User from "@/models/user";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -50,11 +50,15 @@ export default async function handler(req, res) {
         const existingIndex = cart.products.findIndex(p => p._id.toString() === newProduct._id);
 
         if (existingIndex >= 0) {
+          // اگر محصول وجود دارد، فقط تعداد را افزایش بده
           cart.products[existingIndex].count = newProduct.count;
-          cart.products[existingIndex].totalPrice = newProduct.count * newProduct.price;
+          cart.products[existingIndex].totalPrice =
+            cart.products[existingIndex].count * cart.products[existingIndex].price;
         } else {
+          // در غیر اینصورت، اضافه کن
           cart.products.push(newProduct);
         }
+
 
         await cart.save();
       }
