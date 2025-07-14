@@ -13,45 +13,44 @@ export default function ProductCard({
   const { setAddProduct, setAddToCard } = useContext(AppContext);
 
   const addProductBtn = async () => {
-    try {
-      const response = await fetch('/api/cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          products: [{
-            _id,
-            productName,
-            price: Number(price),
-            count: 1,
-            totalPrice: Number(price),
-            image,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            description,
-            section,
-            model
-          }]
-        })
-      });
+  try {
+    const res = await fetch('/api/cart');
+    const cartData = await res.json();
+    const existing = cartData.cart?.products?.find(p => p._id === _id);
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Add to cart failed');
+    const response = await fetch('/api/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        products: [{
+          _id,
+          productName,
+          price,
+          count: existing ? existing.count + 1 : 1,
+          totalPrice: price * (existing ? existing.count + 1 : 1),
+          image,
+          description,
+          model,
+          section
+        }]
+      })
+    });
 
-      // بعد از افزودن به سبد خرید، مقدار سبد را بروز کن
-      const res = await fetch('/api/cart');
-      const updated = await res.json();
-      const items = updated.cart?.products || [];
-
-      setAddProduct(items);
-      setAddToCard(items.reduce((sum, item) => sum + item.count, 0));
-
-    } catch (error) {
-      console.error("❌ خطا در افزودن به سبد خرید:", error);
-      alert("خطا در افزودن به سبد خرید");
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'خطا در افزودن به سبد خرید');
     }
-  };
+
+    // ✅ فقط اگر محصول جدید بود، عدد سبد خرید را زیاد کن
+    if (!existing) {
+      setAddToCard(prev => prev + 1);
+    }
+
+  } catch (error) {
+    console.error("❌ خطا در افزودن به سبد خرید:", error);
+  }
+};
+
 
   const buyNowHandler = () => {
     router.push(`/checkout?productId=${_id}`);
