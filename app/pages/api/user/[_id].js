@@ -1,4 +1,4 @@
-import User from "@/models/User/index";
+import User from "@/models/user/index";
 import connectDB from "@/lib/dbConnect";
 import { isValidObjectId } from "mongoose";
 

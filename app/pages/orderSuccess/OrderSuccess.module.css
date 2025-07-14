@@ -2,198 +2,289 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  direction: rtl;
 }
 
-.header {
+/* استایل‌های هدر تأیید سفارش */
+.confirmationHeader {
   text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
 }
 
-.header h1 {
-  color: #4CAF50;
+.successIcon {
+  font-size: 4rem;
+  color: #38a169;
+  margin-bottom: 1rem;
+}
+
+.confirmationHeader h1 {
+  font-size: 1.8rem;
+  color: #2d3748;
   margin-bottom: 0.5rem;
 }
 
-.orderNumber {
+.confirmationText {
+  color: #4a5568;
   font-size: 1.1rem;
-  color: #666;
 }
 
-.orderDate {
-  color: #888;
-  font-size: 0.9rem;
-}
-
-.orderSummary {
-  background: #f9f9f9;
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-}
-
-.orderSummary h2 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-.itemsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.orderItem {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1rem;
+/* کارت سفارش */
+.orderCard {
   background: white;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.itemImage {
-  flex: 0 0 100px;
+.orderHeader h2 {
+  font-size: 1.4rem;
+  color: #2d3748;
 }
 
-.itemDetails {
+.orderMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.orderMeta span {
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* لیست محصولات */
+.productsList {
+  margin-bottom: 2rem;
+}
+
+.productsList h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #2d3748;
+}
+
+.productItem {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  margin-left: 1rem;
+  position: relative;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.productDetails {
   flex: 1;
 }
 
-.itemDetails h4 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
+.productDetails h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #2d3748;
 }
 
-.itemMeta {
+.productMeta {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
+  margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #666;
+  color: #718096;
 }
 
-.orderTotal {
-  background: white;
-  padding: 1rem;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.productTotal {
+  font-weight: bold;
+  color: #2d3748;
+}
+
+/* جمع کل سفارش */
+.orderTotals {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
 }
 
 .totalRow {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.totalRow:last-child {
-  border-bottom: none;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
 }
 
 .grandTotal {
   font-weight: bold;
   font-size: 1.1rem;
-  color: #333;
+  color: #2b6cb0;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
 }
 
-.shippingInfo {
+/* کارت‌های اطلاعات */
+.infoCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.shippingInfo h2 {
-  margin-bottom: 1rem;
-}
-
-.infoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  line-height: 2;
-}
-
-.infoGrid > div {
-  background: #f9f9f9;
+.infoCard {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  border-radius: 8px;
 }
 
-.infoGrid h3 {
-  margin-top: 0;
-  color: #333;
+.infoCard h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
 }
 
-.actions {
+.infoContent p {
+  margin: 0.8rem 0;
+  color: #4a5568;
+}
+
+/* دکمه‌های اقدام */
+.actionButtons {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin: 2rem 0;
 }
 
-.printButton, .continueButton {
+.printButton,
+.continueButton,
+.homeButton {
   padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
 }
 
 .printButton {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #e2e8f0;
+  color: #2d3748;
 }
 
 .printButton:hover {
-  background-color: #e0e0e0;
+  background-color: #cbd5e0;
 }
 
 .continueButton {
-  background-color: #4CAF50;
+  background-color: #4299e1;
   color: white;
 }
 
 .continueButton:hover {
-  background-color: #45a049;
+  background-color: #3182ce;
 }
 
-.loadingContainer, .errorContainer {
+.homeButton {
+  background-color: #38a169;
+  color: white;
+}
+
+/* پیام پایانی */
+.footerNote {
+  text-align: center;
+  color: #718096;
+  font-size: 0.9rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* وضعیت‌های مختلف */
+.loadingContainer,
+.errorContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 50vh;
+  text-align: center;
 }
 
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4299e1;
   border-radius: 50%;
-  border-top: 4px solid #4CAF50;
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.errorIcon {
+  background-color: #fed7d7;
+  color: #e53e3e;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* رسپانسیو */
 @media (max-width: 768px) {
-  .infoGrid {
+  .infoCards {
     grid-template-columns: 1fr;
   }
   
-  .itemMeta {
+  .productItem {
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: flex-start;
   }
   
-  .actions {
+  .productImage {
+    margin-left: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .actionButtons {
     flex-direction: column;
+  }
+  
+  .orderHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
 }

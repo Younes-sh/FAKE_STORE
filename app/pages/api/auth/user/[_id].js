@@ -1,4 +1,4 @@
-import User from "@/models/User";
+import User from "@/models/user";
 import connectDB from "@/lib/dbConnect";
 import { getSession } from "next-auth/react";
 
