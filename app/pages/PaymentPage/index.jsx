@@ -1,106 +1,135 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './paymentPage.module.css';
-import { useContext } from 'react';
-import { AppContext } from '@/pages/_app';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 const PaymentPage = () => {
-  const { addProduct, setAddProduct,addToCard, setAddToCard, orders, setOrders } = useContext(AppContext);
-  const router = useRouter();
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [cardNumber, setCardNumber] = useState('');
   const [cardName, setCardName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const router = useRouter();
 
+  // دریافت سبد خرید از API
+  const fetchCart = async () => {
+    try {
+      const res = await fetch("/api/cart");
+      if (!res.ok) throw new Error("خطا در دریافت سبد خرید");
+      const data = await res.json();
+      setCartItems(data.cart?.products || []);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      setError("خطا در دریافت سبد خرید");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+// محاسبه جمع کل سبد خرید
+const calculateTotal = () => {
+  return cartItems.reduce((total, item) => {
+    return total + (item.price * item.quantity);
+  }, 0);
+};
+
+const totalAmount = calculateTotal(); // این خط باید قبل از استفاده از totalAmount باشد
+  
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    
-    // Simulate payment processing
-    setTimeout(() => {
-      try {
-        // 1. ایجاد سفارش جدید
-        const newOrder = {
-          id: Date.now().toString(),
-          createdAt: new Date().toISOString(),
-          items: [...addProduct],
-          totalAmount: addProduct.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
-          shippingAddress: {
-            fullName: cardName || "Unknown", // استفاده از نام وارد شده در فرم
-            address: "Not specified", // می‌توانید فیلد آدرس هم به فرم اضافه کنید
-            city: "Not specified",
-            postalCode: "00000",
-            phone: "Not specified"
-          },
-          paymentMethod: "online",
-          status: "completed" // اضافه کردن وضعیت سفارش
-        };
+  e.preventDefault();
+  setIsProcessing(true);
 
-        // 2. فقط در صورت موفقیت‌آمیز بودن پرداخت:
-        // - اضافه کردن به لیست سفارشات
-        setOrders([...orders, newOrder]);
-        // - خالی کردن سبد خرید
-        setAddProduct([]);
-        setAddToCard(0);
-        
-        // 3. ذخیره در localStorage
-        localStorage.setItem('userOrders', JSON.stringify([...orders, newOrder]));
-        localStorage.removeItem('cartProducts');
-        localStorage.removeItem('cartCount');
+  try {
+    // 1. ایجاد سفارش
+    const orderResponse = await fetch('/api/orders/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        paymentMethod: "online",
+        shippingAddress: {
+          address: "آدرس نمونه",
+          city: "تهران",
+          postalCode: "1234567890",
+        },
+        subtotal: totalAmount,
+        shippingFee: 0,
+        taxAmount: 0,
+        totalAmount: totalAmount,
+        items: cartItems.map(item => ({
+          _id: item._id,
+          productName: item.name,
+          count: item.quantity,
+          price: item.price,
+          image: item.image
+        }))
+      })
+    });
 
-        setIsProcessing(false);
-        setPaymentSuccess(true);
-        
-        // 4. هدایت به صفحه تأیید سفارش
-        router.push({
-          pathname: '/orderSuccess',
-          query: { orderId: newOrder.id }
-        });
-      } catch (error) {
-        setIsProcessing(false);
-        alert('Payment failed. Please try again.');
-      }
-    }, 2000);
-  };
-   // Add a return to cart button
-   const handleBackToCart = () => {
-    router.push('/basket');
-  };
+    if (!orderResponse.ok) {
+      throw new Error('خطا در ثبت سفارش');
+    }
+
+    const orderData = await orderResponse.json();
+
+    // 2. هدایت به صفحه تأیید سفارش
+    router.push(`/orderSuccess?orderId=${orderData.order._id}`);
+  } catch (error) {
+    console.error('خطا در پرداخت:', error);
+    setError('خطا در پرداخت: ' + error.message);
+  } finally {
+    setIsProcessing(false);
+  }
+};
 
   const formatCardNumber = (value) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    const matches = v.match(/\d{4,16}/g);
-    const match = matches && matches[0] || '';
-    const parts = [];
-    
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-    
-    if (parts.length) {
-      return parts.join(' ');
-    }
-    return value;
+    return value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
   };
 
   const handleCardNumberChange = (e) => {
-    setCardNumber(formatCardNumber(e.target.value));
+    const formatted = formatCardNumber(e.target.value);
+    setCardNumber(formatted);
   };
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>در حال بارگذاری سبد خرید...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorIcon}>!</div>
+        <h3>{error}</h3>
+        <button 
+          className={styles.retryButton}
+          onClick={fetchCart}
+        >
+          تلاش مجدد
+        </button>
+      </div>
+    );
+  }
 
   if (paymentSuccess) {
     return (
       <div className={styles.successContainer}>
         <div className={styles.successIcon}>✓</div>
-        <h2>Payment Successful</h2>
-        <p>Thank you for your purchase!</p>
-        <button 
-          className={styles.continueButton}
-          onClick={() => setPaymentSuccess(false)}
-        >
-          Make Another Payment
-        </button>
+        <h2>پرداخت موفقیت‌آمیز بود</h2>
+        <p>در حال انتقال به صفحه تأیید پرداخت...</p>
       </div>
     );
   }
@@ -108,80 +137,122 @@ const PaymentPage = () => {
   return (
     <div className={styles.container}>
       <button 
-        onClick={handleBackToCart}
         className={styles.backButton}
+        onClick={() => router.back()}
       >
-        ← Back to Cart
+        ← بازگشت به سبد خرید
       </button>
 
-      <h1 className={styles.title}>Payment Details</h1>
-      <form onSubmit={handleSubmit} className={styles.paymentForm}>
-        <div className={styles.formGroup}>
-          <label htmlFor="cardNumber">Card Number</label>
-          <input
-            type="text"
-            id="cardNumber"
-            value={cardNumber}
-            onChange={handleCardNumberChange}
-            placeholder="1234 5678 9012 3456"
-            maxLength="19"
-            required
-          />
-        </div>
-        
-        <div className={styles.formGroup}>
-          <label htmlFor="cardName">Cardholder Name</label>
-          <input
-            type="text"
-            id="cardName"
-            value={cardName}
-            onChange={(e) => setCardName(e.target.value)}
-            placeholder="John Doe"
-            required
-          />
-        </div>
-        
-        <div className={styles.row}>
-          <div className={`${styles.formGroup} ${styles.expiryGroup}`}>
-            <label htmlFor="expiry">Expiry Date</label>
-            <input
-              type="text"
-              id="expiry"
-              value={expiry}
-              onChange={(e) => setExpiry(e.target.value)}
-              placeholder="MM/YY"
-              maxLength="5"
-              required
-            />
-          </div>
-          
-          <div className={`${styles.formGroup} ${styles.cvvGroup}`}>
-            <label htmlFor="cvv">CVV</label>
-            <input
-              type="text"
-              id="cvv"
-              value={cvv}
-              onChange={(e) => setCvv(e.target.value)}
-              placeholder="123"
-              maxLength="3"
-              required
-            />
-          </div>
-        </div>
-        
-        <button 
-          type="submit" 
-          className={styles.payButton}
-          disabled={isProcessing}
-        >
-          {isProcessing ? 'Processing...' : 'Pay Now'}
-        </button>
-      </form>
+      <h1 className={styles.pageTitle}>تکمیل فرآیند پرداخت</h1>
       
-      <div className={styles.cardIcons}>
-        <span className={styles.visaIcon}></span>
-        <span className={styles.mastercardIcon}></span>
-        <span className={styles.amexIcon}></span>
+      <div className={styles.contentWrapper}>
+        {/* بخش سبد خرید */}
+        <div className={styles.cartSummary}>
+          <h2 className={styles.sectionTitle}>خلاصه سفارش</h2>
+          
+          {cartItems.length === 0 ? (
+            <p className={styles.emptyCart}>سبد خرید شما خالی است</p>
+          ) : (
+            <>
+              <div className={styles.itemsList}>
+                {cartItems.map(item => (
+                  <div key={item._id} className={styles.cartItem}>
+                    <div className={styles.itemImage}>
+                      <Image 
+                        src={item.image || '/default-product.png'}
+                        width={80}
+                        height={80}
+                        alt={item.name}
+                      />
+                    </div>
+                    <div className={styles.itemDetails}>
+                      <h4>{item.name}</h4>
+                      <p>تعداد: {item.quantity}</p>
+                    </div>
+                    <div className={styles.itemPrice}>
+                      ${(item.totalPrice || 0).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className={styles.summaryTotal}>
+                <span>جمع کل:</span>
+                <span className={styles.totalAmount}>
+                  ${cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2)}
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* بخش فرم پرداخت */}
+        <div className={styles.paymentForm}>
+          <h2 className={styles.sectionTitle}>اطلاعات پرداخت</h2>
+          
+          <form onSubmit={handleSubmit}>
+            <div className={styles.formGroup}>
+              <label htmlFor="cardNumber">شماره کارت</label>
+              <input
+                type="text"
+                id="cardNumber"
+                value={cardNumber}
+                onChange={handleCardNumberChange}
+                placeholder="1234 5678 9012 3456"
+                maxLength="19"
+                required
+              />
+            </div>
+            
+            <div className={styles.formGroup}>
+              <label htmlFor="cardName">نام صاحب کارت</label>
+              <input
+                type="text"
+                id="cardName"
+                value={cardName}
+                onChange={(e) => setCardName(e.target.value)}
+                placeholder="John Doe"
+                required
+              />
+            </div>
+            
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label htmlFor="expiry">تاریخ انقضا</label>
+                <input
+                  type="text"
+                  id="expiry"
+                  value={expiry}
+                  onChange={(e) => setExpiry(e.target.value)}
+                  placeholder="MM/YY"
+                  maxLength="5"
+                  required
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label htmlFor="cvv">CVV</label>
+                <input
+                  type="text"
+                  id="cvv"
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value)}
+                  placeholder="123"
+                  maxLength="3"
+                  required
+                />
+              </div>
+            </div>
+            
+            <button 
+              type="submit" 
+              className={styles.submitButton}
+              disabled={isProcessing || cartItems.length === 0}
+            >
+              {isProcessing ? 'در حال پرداخت...' : 'تأیید و پرداخت'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
