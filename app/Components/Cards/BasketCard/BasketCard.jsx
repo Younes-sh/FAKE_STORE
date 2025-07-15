@@ -94,20 +94,17 @@ export default function BasketCard({ _id, productName, price, image, count, tota
   };
 
   const checkoutHandler = () => {
-    const order = {
-      items: [{
-        _id,
-        productName,
-        price,
-        count,
-        totalPrice,
-        image
-      }],
-      totalAmount: totalPrice
-    };
-    localStorage.setItem('tempOrder', JSON.stringify(order));
-    router.push('/checkout');
+  const order = {
+    items: [{
+      product: _id,
+      name: productName,
+      quantity: count,
+      priceAtPurchase: price,
+      image
+    }]
   };
+  router.push('/checkout');
+};
 
   return (
     <div className={Style.basketCard}>
