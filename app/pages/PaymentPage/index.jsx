@@ -1,3 +1,4 @@
+// pages/PaymentPage/index.jsx
 import { useState, useEffect } from 'react';
 import styles from './paymentPage.module.css';
 import { useRouter } from 'next/router';
@@ -34,62 +35,79 @@ const PaymentPage = () => {
     fetchCart();
   }, []);
 
-// محاسبه جمع کل سبد خرید
-const calculateTotal = () => {
-  return cartItems.reduce((total, item) => {
-    return total + (item.price * item.quantity);
-  }, 0);
-};
+  useEffect(() => {
+  if (paymentSuccess) {
+    const timeout = setTimeout(() => {
+      router.push("/profile");
+    }, 3000); // بعد از ۳ ثانیه هدایت شود
 
-const totalAmount = calculateTotal(); // این خط باید قبل از استفاده از totalAmount باشد
-  
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsProcessing(true);
-
-  try {
-    // 1. ایجاد سفارش
-    const orderResponse = await fetch('/api/orders/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        paymentMethod: "online",
-        shippingAddress: {
-          address: "آدرس نمونه",
-          city: "تهران",
-          postalCode: "1234567890",
-        },
-        subtotal: totalAmount,
-        shippingFee: 0,
-        taxAmount: 0,
-        totalAmount: totalAmount,
-        items: cartItems.map(item => ({
-          _id: item._id,
-          productName: item.name,
-          count: item.quantity,
-          price: item.price,
-          image: item.image
-        }))
-      })
-    });
-
-    if (!orderResponse.ok) {
-      throw new Error('خطا در ثبت سفارش');
-    }
-
-    const orderData = await orderResponse.json();
-
-    // 2. هدایت به صفحه تأیید سفارش
-    router.push(`/orderSuccess?orderId=${orderData.order._id}`);
-  } catch (error) {
-    console.error('خطا در پرداخت:', error);
-    setError('خطا در پرداخت: ' + error.message);
-  } finally {
-    setIsProcessing(false);
+    return () => clearTimeout(timeout);
   }
-};
+}, [paymentSuccess]);
+
+
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => {
+      return total + (item.price * item.count);
+    }, 0);
+  };
+
+  const totalAmount = calculateTotal();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    try {
+      const orderResponse = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          paymentMethod: "credit_card", // ✅ مقدار معتبر
+          shippingAddress: {
+            address: "آدرس نمونه",
+            city: "تهران",
+            postalCode: "1234567890",
+          },
+          subtotal: totalAmount,
+          shippingFee: 0,
+          taxAmount: 0,
+          totalAmount: totalAmount,
+          items: cartItems.map(item => ({
+            _id: item._id,
+            count: item.count || item.quantity,
+            productName: item.productName,
+            price: item.price,
+            totalPrice: item.totalPrice,
+            image: item.image,
+            description: item.description,
+            section: item.section,
+            model: item.model
+          }))
+        
+        })
+
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('خطا در ثبت سفارش');
+      }
+
+      const orderData = await orderResponse.json();
+      setPaymentSuccess(true);
+      router.push(`/orderSuccess?orderId=${orderData.order._id}`);
+
+     
+
+    } catch (error) {
+      console.error('خطا در پرداخت:', error);
+      setError('خطا در پرداخت: ' + error.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const formatCardNumber = (value) => {
     return value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
@@ -146,7 +164,6 @@ const totalAmount = calculateTotal(); // این خط باید قبل از است
       <h1 className={styles.pageTitle}>تکمیل فرآیند پرداخت</h1>
       
       <div className={styles.contentWrapper}>
-        {/* بخش سبد خرید */}
         <div className={styles.cartSummary}>
           <h2 className={styles.sectionTitle}>خلاصه سفارش</h2>
           
@@ -162,12 +179,12 @@ const totalAmount = calculateTotal(); // این خط باید قبل از است
                         src={item.image || '/default-product.png'}
                         width={80}
                         height={80}
-                        alt={item.name}
+                        alt={item.productName}
                       />
                     </div>
                     <div className={styles.itemDetails}>
-                      <h4>{item.name}</h4>
-                      <p>تعداد: {item.quantity}</p>
+                      <h4>{item.productName}</h4>
+                      <p>تعداد: {item.count}</p>
                     </div>
                     <div className={styles.itemPrice}>
                       ${(item.totalPrice || 0).toFixed(2)}
@@ -186,7 +203,6 @@ const totalAmount = calculateTotal(); // این خط باید قبل از است
           )}
         </div>
 
-        {/* بخش فرم پرداخت */}
         <div className={styles.paymentForm}>
           <h2 className={styles.sectionTitle}>اطلاعات پرداخت</h2>
           
