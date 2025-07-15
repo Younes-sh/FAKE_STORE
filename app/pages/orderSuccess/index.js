@@ -17,7 +17,7 @@ export default function OrderSuccess() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`/api/orders/${id}`);
+        const res = await fetch(`/api/orders/${orderId}`);
         if (!res.ok) throw new Error('سفارش یافت نشد');
         const data = await res.json();
         setOrder(data.order);
@@ -80,7 +80,6 @@ export default function OrderSuccess() {
       </Head>
 
       <div className={styles.container}>
-        {/* هدر تأیید سفارش */}
         <div className={styles.confirmationHeader}>
           <div className={styles.successIcon}>
             <FiCheckCircle />
@@ -91,16 +90,15 @@ export default function OrderSuccess() {
           </p>
         </div>
 
-        {/* اطلاعات سفارش */}
         <div className={styles.orderCard}>
           <div className={styles.orderHeader}>
             <h2>خلاصه سفارش</h2>
             <div className={styles.orderMeta}>
               <span>
-                <strong>شماره سفارش:</strong> {order.id}
+                <strong>شماره سفارش:</strong> {order.orderNumber || order._id}
               </span>
               <span>
-                <strong>تاریخ:</strong> {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                <strong>تاریخ:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fa-IR') : '---'}
               </span>
               <span>
                 <strong>وضعیت:</strong> {order.status === 'completed' ? 'تکمیل شده' : 'در حال پردازش'}
@@ -108,7 +106,6 @@ export default function OrderSuccess() {
             </div>
           </div>
 
-          {/* لیست محصولات */}
           <div className={styles.productsList}>
             <h3>محصولات</h3>
             {order.items.map((item) => (
@@ -116,31 +113,30 @@ export default function OrderSuccess() {
                 <div className={styles.productImage}>
                   <Image
                     src={item.image || '/images/default-product.png'}
-                    alt={item.productName}
+                    alt={item.name || 'محصول'}
                     width={80}
                     height={80}
                     objectFit="contain"
                   />
                 </div>
                 <div className={styles.productDetails}>
-                  <h4>{item.productName}</h4>
+                  <h4>{item.name}</h4>
                   <div className={styles.productMeta}>
-                    <span>تعداد: {item.count}</span>
-                    <span>قیمت واحد: {item.price.toLocaleString()} تومان</span>
+                    <span>تعداد: {item.quantity || 0}</span>
+                    <span>قیمت واحد: {item.priceAtPurchase ? item.priceAtPurchase.toLocaleString() : '۰'} تومان</span>
                   </div>
                 </div>
                 <div className={styles.productTotal}>
-                  {item.totalPrice.toLocaleString()} تومان
+                  {(item.priceAtPurchase && item.quantity) ? (item.priceAtPurchase * item.quantity).toLocaleString() : '۰'} تومان
                 </div>
               </div>
             ))}
           </div>
 
-          {/* جمع کل */}
           <div className={styles.orderTotals}>
             <div className={styles.totalRow}>
               <span>جمع کل:</span>
-              <span>{order.totalAmount.toLocaleString()} تومان</span>
+              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '۰'} تومان</span>
             </div>
             <div className={styles.totalRow}>
               <span>هزینه ارسال:</span>
@@ -148,30 +144,26 @@ export default function OrderSuccess() {
             </div>
             <div className={`${styles.totalRow} ${styles.grandTotal}`}>
               <span>مبلغ قابل پرداخت:</span>
-              <span>{order.totalAmount.toLocaleString()} تومان</span>
+              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '۰'} تومان</span>
             </div>
           </div>
         </div>
 
-        {/* اطلاعات ارسال و پرداخت */}
         <div className={styles.infoCards}>
           <div className={styles.infoCard}>
             <h3>اطلاعات ارسال</h3>
             <div className={styles.infoContent}>
               <p>
-                <strong>نام تحویل‌گیرنده:</strong> {order.shippingAddress.fullName}
+                <strong>آدرس:</strong> {order.shippingAddress?.address || '---'}
               </p>
               <p>
-                <strong>آدرس:</strong> {order.shippingAddress.address}
+                <strong>شهر:</strong> {order.shippingAddress?.city || '---'}
               </p>
               <p>
-                <strong>شهر:</strong> {order.shippingAddress.city}
+                <strong>کد پستی:</strong> {order.shippingAddress?.postalCode || '---'}
               </p>
               <p>
-                <strong>کد پستی:</strong> {order.shippingAddress.postalCode}
-              </p>
-              <p>
-                <strong>تلفن:</strong> {order.shippingAddress.phone}
+                <strong>کشور:</strong> {order.shippingAddress?.country || '---'}
               </p>
             </div>
           </div>
@@ -181,25 +173,24 @@ export default function OrderSuccess() {
             <div className={styles.infoContent}>
               <p>
                 <strong>نوع پرداخت:</strong> 
-                {order.paymentMethod === 'online' ? 'پرداخت آنلاین' : 'پرداخت در محل'}
+                {order.paymentMethod === 'online' ? 'پرداخت آنلاین' : 'پرداخت با کارت'}
               </p>
               <p>
                 <strong>وضعیت پرداخت:</strong> پرداخت شده
               </p>
               <p>
-                <strong>تاریخ پرداخت:</strong> {new Date(order.createdAt).toLocaleDateString('fa-IR')}
+                <strong>تاریخ پرداخت:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fa-IR') : '---'}
               </p>
             </div>
           </div>
         </div>
 
-        {/* دکمه‌های اقدام */}
         <div className={styles.actionButtons}>
           <button 
             onClick={() => window.print()} 
             className={styles.printButton}
           >
-            <FiPrinter /> چرس فاکتور
+            <FiPrinter /> چاپ فاکتور
           </button>
           <button 
             onClick={() => router.push('/products')} 
@@ -209,7 +200,6 @@ export default function OrderSuccess() {
           </button>
         </div>
 
-        {/* پیام پایانی */}
         <div className={styles.footerNote}>
           <p>
             در صورت هرگونه سوال یا مشکل می‌توانید با پشتیبانی ما تماس بگیرید.
