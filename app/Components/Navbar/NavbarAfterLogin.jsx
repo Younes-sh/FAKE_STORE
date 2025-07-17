@@ -13,23 +13,23 @@ export default function NavbarAfterLogin() {
   const pathname = usePathname();
 
 //   // ✅ هربار Navbar لود شود، سبد خرید را بگیر و مقدار totalCount را آپدیت کن
-//   useEffect(() => {
-//     const fetchCartCount = async () => {
-//       try {
-//         const res = await fetch('/api/cart');
-//         const data = await res.json();
-//         const products = data.cart?.products || [];
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      try {
+        const res = await fetch('/api/cart');
+        const data = await res.json();
+        const products = data.cart?.products || [];
 
-//         // ✅ مجموع کل تعداد آیتم‌ها (حتی تکراری‌ها)
-//         const totalCount = products.reduce((sum, item) => sum + item.count, 0);
-//         setAddToCard(totalCount);
-//       } catch (error) {
-//         console.error("خطا در دریافت سبد خرید:", error);
-//       }
-//     };
+        // ✅ مجموع کل تعداد آیتم‌ها (حتی تکراری‌ها)
+        const totalCount = products.reduce((sum, item) => sum + item.count, 0);
+        setAddToCard(totalCount);
+      } catch (error) {
+        console.error("خطا در دریافت سبد خرید:", error);
+      }
+    };
 
-//     fetchCartCount();
-//   }, []);
+    fetchCartCount();
+  }, []);
 
   return (
     <div className={Style.navbar}>
