@@ -23,7 +23,7 @@ export default function index({ productData }) {
 
 
 export async function getServerSideProps() {
-  const res = await fetch('http://localhost:3000/api/products');
+  const res = await fetch(`${process.env.URL}/api/products`);
   const data = await res.json();
   return {
     props: { productData: data.products}
