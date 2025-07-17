@@ -18,11 +18,11 @@ export default function NavbarAfterLogin() {
       try {
         const res = await fetch('/api/cart');
         const data = await res.json();
-        const products = data.cart?.products || [];
+        // const products = data.cart?.products || [];
 
         // ✅ مجموع کل تعداد آیتم‌ها (حتی تکراری‌ها)
-        const totalCount = products.reduce((sum, item) => sum + item.count, 0);
-        setAddToCard(totalCount);
+        // const totalCount = products.reduce((sum, item) => sum + item.count, 0);
+        setAddToCard(data.cart?.products?.length || 0);
       } catch (error) {
         console.error("خطا در دریافت سبد خرید:", error);
       }
