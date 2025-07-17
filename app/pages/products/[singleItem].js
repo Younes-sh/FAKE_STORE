@@ -87,7 +87,7 @@ export default function SingleItem({ dataProduct }) {
 const baseURL = process.env.NEXTAUTH_URL;
 export async function getServerSideProps(context) {
   const { singleItem } = context.params;
-  const res = await fetch(`${baseURL}/api/products/${singleItem}`);
+  const res = await fetch(`${process.env.URL}/api/products/${singleItem}`);
   const data = await res.json();
   return {
     props: { dataProduct: data.data },
