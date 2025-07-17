@@ -12,6 +12,7 @@ export default function BasketCard({ _id, productName, price, image, count, tota
   const router = useRouter();
   const { setAddProduct, setAddToCard } = useContext(AppContext);
 
+
   const increaseItem = async () => {
     try {
       const response = await fetch('/api/cart', {
@@ -116,7 +117,7 @@ export default function BasketCard({ _id, productName, price, image, count, tota
       </Head>
       <Script src="https://kit.fontawesome.com/24d3f7dfbb.js" crossOrigin="anonymous" />
 
-      <Link href={`/products/${_id}`}>
+      <Link  href={`/products/${_id}`} className={Style.Link}>
         <div className={Style.imageContainer}>
           <Image src={image} alt={productName} width={100} height={100} className={Style.image} />
         </div>
