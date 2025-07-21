@@ -26,7 +26,6 @@ const PaymentPage = () => {
       if (!res.ok) throw new Error("خطا در دریافت سبد خرید");
       const data = await res.json();
       setCartItems(data.cart?.products || []);
-      setAddToCard([]);
     } catch (error) {
       console.error("Error fetching cart:", error);
       setError("خطا در دریافت سبد خرید");
@@ -100,6 +99,8 @@ const PaymentPage = () => {
       }
 
       const orderData = await orderResponse.json();
+
+      setAddToCard(0); // Reset cart count after successful order
       setPaymentSuccess(true);
       router.push(`/orderSuccess?orderId=${orderData.order._id}`);
 
