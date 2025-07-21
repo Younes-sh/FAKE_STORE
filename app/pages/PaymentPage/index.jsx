@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import styles from './paymentPage.module.css';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import {AppContext } from '@/pages/_app';
+import { useContext } from 'react';
 
 const PaymentPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -15,6 +17,7 @@ const PaymentPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const router = useRouter();
+  const { setAddToCard } = useContext(AppContext);
 
   // دریافت سبد خرید از API
   const fetchCart = async () => {
@@ -23,6 +26,7 @@ const PaymentPage = () => {
       if (!res.ok) throw new Error("خطا در دریافت سبد خرید");
       const data = await res.json();
       setCartItems(data.cart?.products || []);
+      setAddToCard([]);
     } catch (error) {
       console.error("Error fetching cart:", error);
       setError("خطا در دریافت سبد خرید");
