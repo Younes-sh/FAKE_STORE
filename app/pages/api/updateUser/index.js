@@ -1,7 +1,5 @@
-// pages/api/updateUser/index.js
-
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]'; // مسیر دقیق فایل auth
+import { authOptions } from '../auth/[...nextauth]';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/models/user';
 import bcrypt from 'bcryptjs';
@@ -31,9 +29,9 @@ export default async function handler(req, res) {
       username,
       email,
       phone,
-      address,
+      address = {},
       currentPassword,
-      newPassword,
+      newPassword
     } = req.body;
 
     if (firstname) user.firstname = firstname;
@@ -41,22 +39,33 @@ export default async function handler(req, res) {
     if (username) user.username = username;
     if (email) user.email = email;
     if (phone) user.phone = phone;
-    if (address) user.address = address;
 
-    // اگر کاربر می‌خواهد رمز عبور را تغییر دهد
+    // ✅ آدرس با ساختار آبجکت:
+    if (address) {
+      user.address = {
+        street: address.street || user.address?.street || '',
+        city: address.city || user.address?.city || '',
+        postalCode: address.postalCode || user.address?.postalCode || '',
+        number: address.number || user.address?.number || '',
+        floor: address.floor || user.address?.floor || '',
+        country: address.country || user.address?.country || ''
+      };
+    }
+
+    // ✅ تغییر رمز عبور در صورت درخواست
     if (currentPassword && newPassword) {
       const isMatch = await user.comparePassword(currentPassword);
       if (!isMatch) {
-        return res.status(400).json({ message: 'Current password is incorrect' });
+        return res.status(400).json({ message: 'رمز عبور فعلی اشتباه است' });
       }
       user.password = await bcrypt.hash(newPassword, 10);
     }
 
     await user.save();
 
-    return res.status(200).json({ message: 'Profile updated successfully' });
+    return res.status(200).json({ message: 'پروفایل با موفقیت به‌روزرسانی شد' });
   } catch (error) {
     console.error('Error updating profile:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: 'خطا در سرور' });
   }
 }

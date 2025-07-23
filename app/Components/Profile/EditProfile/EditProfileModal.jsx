@@ -8,11 +8,19 @@ export default function EditProfileModal({ onClose }) {
     username: '',
     email: '',
     phone: '',
-    address: '',
+    address: {
+      street: '',
+      city: '',
+      postalCode: '',
+      number: '',
+      floor: '',
+      country: ''
+    },
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+
 
   const [loading, setLoading] = useState(true);
 
@@ -24,14 +32,22 @@ export default function EditProfileModal({ onClose }) {
 
         if (res.ok) {
           setFormData(prev => ({
-            ...prev,
-            firstname: data.firstname || '',
-            lastname: data.lastname || '',
-            username: data.username || '',
-            email: data.email || '',
-            phone: data.phone || '',
-            address: data.address || ''
-          }));
+          ...prev,
+          firstname: data.firstname || '',
+          lastname: data.lastname || '',
+          username: data.username || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          address: {
+            street: data.address?.street || '',
+            city: data.address?.city || '',
+            postalCode: data.address?.postalCode || '',
+            number: data.address?.number || '',
+            floor: data.address?.floor || '',
+            country: data.address?.country || ''
+          }
+        }));
+
         } else {
           alert(data.message || 'Failed to fetch user');
         }
@@ -46,12 +62,25 @@ export default function EditProfileModal({ onClose }) {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
+
+  if (name.startsWith('address.')) {
+    const field = name.split('.')[1];
+    setFormData(prev => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [field]: value
+      }
+    }));
+  } else {
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,7 +141,7 @@ export default function EditProfileModal({ onClose }) {
           </div>
 
           <div className={Styles.formGroup}>
-            <label htmlFor="username">Last Name</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
@@ -147,16 +176,74 @@ export default function EditProfileModal({ onClose }) {
             />
           </div>
           
-          <div className={Styles.formGroup}>
-            <label htmlFor="address">Address</label>
-            <textarea
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              rows="3"
-            />
-          </div>
+          <h3>Address</h3>
+
+<div className={Styles.formGroup}>
+  <label htmlFor="address.street">Street</label>
+  <input
+    type="text"
+    id="address.street"
+    name="address.street"
+    value={formData.address.street}
+    onChange={handleChange}
+  />
+</div>
+
+<div className={Styles.formGroup}>
+  <label htmlFor="address.city">City</label>
+  <input
+    type="text"
+    id="address.city"
+    name="address.city"
+    value={formData.address.city}
+    onChange={handleChange}
+  />
+</div>
+
+<div className={Styles.formGroup}>
+  <label htmlFor="address.postalCode">Postal Code</label>
+  <input
+    type="text"
+    id="address.postalCode"
+    name="address.postalCode"
+    value={formData.address.postalCode}
+    onChange={handleChange}
+  />
+</div>
+
+<div className={Styles.formGroup}>
+  <label htmlFor="address.number">Building Number</label>
+  <input
+    type="text"
+    id="address.number"
+    name="address.number"
+    value={formData.address.number}
+    onChange={handleChange}
+  />
+</div>
+
+<div className={Styles.formGroup}>
+  <label htmlFor="address.floor">Floor</label>
+  <input
+    type="text"
+    id="address.floor"
+    name="address.floor"
+    value={formData.address.floor}
+    onChange={handleChange}
+  />
+</div>
+
+<div className={Styles.formGroup}>
+  <label htmlFor="address.country">Country</label>
+  <input
+    type="text"
+    id="address.country"
+    name="address.country"
+    value={formData.address.country}
+    onChange={handleChange}
+  />
+</div>
+
           
           <div className={Styles.passwordSection}>
             <h3>Change Password</h3>

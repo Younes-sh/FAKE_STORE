@@ -43,10 +43,14 @@ const UserSchema = new Schema(
       maxlength: [20, 'Phone number too long'],
     },
     address: {
-      type: String,
-      trim: true,
-      maxlength: [300, 'Address is too long'],
+      street: { type: String, default: '' },
+      city: { type: String, default: '' },
+      postalCode: { type: String, default: '' },
+      number: { type: String, default: '' },
+      floor: { type: String, default: '' },
+      country: { type: String, default: '' }
     },
+
     role: {
       type: String,
       default: 'user',

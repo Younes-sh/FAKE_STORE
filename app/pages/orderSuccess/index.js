@@ -18,7 +18,7 @@ export default function OrderSuccess() {
     const fetchOrder = async () => {
       try {
         const res = await fetch(`/api/orders/${orderId}`);
-        if (!res.ok) throw new Error('سفارش یافت نشد');
+        if (!res.ok) throw new Error('Order not found');
         const data = await res.json();
         setOrder(data.order);
       } catch (err) {
@@ -35,7 +35,7 @@ export default function OrderSuccess() {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.spinner}></div>
-        <p>در حال دریافت جزئیات سفارش...</p>
+        <p>Loading order details...</p>
       </div>
     );
   }
@@ -44,13 +44,13 @@ export default function OrderSuccess() {
     return (
       <div className={styles.errorContainer}>
         <div className={styles.errorIcon}>!</div>
-        <h2>خطا در دریافت سفارش</h2>
+        <h2>Error in receiving order</h2>
         <p>{error}</p>
         <button 
           className={styles.homeButton}
           onClick={() => router.push('/')}
         >
-          <FiHome /> بازگشت به صفحه اصلی
+          <FiHome /> Return to home page
         </button>
       </div>
     );
@@ -60,13 +60,13 @@ export default function OrderSuccess() {
     return (
       <div className={styles.errorContainer}>
         <div className={styles.errorIcon}>!</div>
-        <h2>سفارشی یافت نشد</h2>
-        <p>متاسفانه اطلاعات سفارش شما موجود نیست</p>
+        <h2>No order found</h2>
+        <p>Unfortunately, your order information is not available</p>
         <button 
           className={styles.homeButton}
           onClick={() => router.push('/')}
         >
-          <FiHome /> بازگشت به صفحه اصلی
+          <FiHome /> Return to home page
         </button>
       </div>
     );
@@ -75,8 +75,8 @@ export default function OrderSuccess() {
   return (
     <>
       <Head>
-        <title>تأیید سفارش | فروشگاه شما</title>
-        <meta name="description" content="جزئیات سفارش شما" />
+        <title>Order Confirmation | Your Store</title>
+        <meta name="description" content="Your order details" />
       </Head>
 
       <div className={styles.container}>
@@ -84,36 +84,36 @@ export default function OrderSuccess() {
           <div className={styles.successIcon}>
             <FiCheckCircle />
           </div>
-          <h1>سفارش شما با موفقیت ثبت شد!</h1>
+          <h1>Your order has been successfully registered!</h1>
           <p className={styles.confirmationText}>
-            از خرید شما متشکریم. جزئیات سفارش به ایمیل شما ارسال شد.
+            Thank you for your purchase. Order details have been sent to your email.
           </p>
         </div>
 
         <div className={styles.orderCard}>
           <div className={styles.orderHeader}>
-            <h2>خلاصه سفارش</h2>
+            <h2>Order Summary</h2>
             <div className={styles.orderMeta}>
               <span>
-                <strong>شماره سفارش:</strong> {order.orderNumber || order._id}
+                <strong>Order number:</strong> {order.orderNumber || order._id}
               </span>
               <span>
-                <strong>تاریخ:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fa-IR') : '---'}
+                <strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
               </span>
               <span>
-                <strong>وضعیت:</strong> {order.status === 'completed' ? 'تکمیل شده' : 'در حال پردازش'}
+                <strong>Status:</strong> {order.status === 'completed' ? 'Completed' : 'Processing'}
               </span>
             </div>
           </div>
 
           <div className={styles.productsList}>
-            <h3>محصولات</h3>
+            <h3>Products</h3>
             {order.items.map((item) => (
               <div key={item._id} className={styles.productItem}>
                 <div className={styles.productImage}>
                   <Image
                     src={item.image || '/images/default-product.png'}
-                    alt={item.name || 'محصول'}
+                    alt={item.name || 'Product'}
                     width={80}
                     height={80}
                     objectFit="contain"
@@ -122,12 +122,12 @@ export default function OrderSuccess() {
                 <div className={styles.productDetails}>
                   <h4>{item.name}</h4>
                   <div className={styles.productMeta}>
-                    <span>تعداد: {item.quantity || 0}</span>
-                    <span>قیمت واحد: {item.priceAtPurchase ? item.priceAtPurchase.toLocaleString() : '۰'} تومان</span>
+                    <span>Quantity: {item.quantity || 0}</span>
+                    <span>Unit price: {item.priceAtPurchase ? item.priceAtPurchase.toLocaleString() : '0'} $</span>
                   </div>
                 </div>
                 <div className={styles.productTotal}>
-                  {(item.priceAtPurchase && item.quantity) ? (item.priceAtPurchase * item.quantity).toLocaleString() : '۰'} تومان
+                  {(item.priceAtPurchase && item.quantity) ? (item.priceAtPurchase * item.quantity).toLocaleString() : '0'} $
                 </div>
               </div>
             ))}
@@ -135,51 +135,43 @@ export default function OrderSuccess() {
 
           <div className={styles.orderTotals}>
             <div className={styles.totalRow}>
-              <span>جمع کل:</span>
-              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '۰'} تومان</span>
+              <span>Subtotal:</span>
+              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '0'} $</span>
             </div>
             <div className={styles.totalRow}>
-              <span>هزینه ارسال:</span>
-              <span>رایگان</span>
+              <span>Shipping cost:</span>
+              <span>Free</span>
             </div>
             <div className={`${styles.totalRow} ${styles.grandTotal}`}>
-              <span>مبلغ قابل پرداخت:</span>
-              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '۰'} تومان</span>
+              <span>Total amount:</span>
+              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '0'} $</span>
             </div>
           </div>
         </div>
 
         <div className={styles.infoCards}>
           <div className={styles.infoCard}>
-            <h3>اطلاعات ارسال</h3>
+            <h3>Customer Information</h3>
             <div className={styles.infoContent}>
-              <p>
-                <strong>آدرس:</strong> {order.shippingAddress?.address || '---'}
-              </p>
-              <p>
-                <strong>شهر:</strong> {order.shippingAddress?.city || '---'}
-              </p>
-              <p>
-                <strong>کد پستی:</strong> {order.shippingAddress?.postalCode || '---'}
-              </p>
-              <p>
-                <strong>کشور:</strong> {order.shippingAddress?.country || '---'}
-              </p>
+              <p><strong>Name:</strong> {order.user?.firstname} {order.user?.lastname}</p>
+              <p><strong>Email:</strong> {order.user?.email}</p>
+              <p><strong>Phone:</strong> {order.user?.phone}</p>
+              <p><strong>Address:</strong> {order.user?.address?.street}, {order.user?.address?.city}, {order.user?.address?.postalCode}</p>
             </div>
           </div>
 
           <div className={styles.infoCard}>
-            <h3>روش پرداخت</h3>
+            <h3>Payment Method</h3>
             <div className={styles.infoContent}>
               <p>
-                <strong>نوع پرداخت:</strong> 
-                {order.paymentMethod === 'online' ? 'پرداخت آنلاین' : 'پرداخت با کارت'}
+                <strong>Payment type: </strong>
+                {order.paymentMethod === 'online' ? 'Online Payment' : 'Card Payment'}
               </p>
               <p>
-                <strong>وضعیت پرداخت:</strong> پرداخت شده
+                <strong>Payment status:</strong> Paid
               </p>
               <p>
-                <strong>تاریخ پرداخت:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fa-IR') : '---'}
+                <strong>Payment date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
               </p>
             </div>
           </div>
@@ -190,21 +182,21 @@ export default function OrderSuccess() {
             onClick={() => window.print()} 
             className={styles.printButton}
           >
-            <FiPrinter /> چاپ فاکتور
+            <FiPrinter /> Print invoice
           </button>
           <button 
             onClick={() => router.push('/products')} 
             className={styles.continueButton}
           >
-            <FiShoppingBag /> ادامه خرید
+            <FiShoppingBag /> Continue shopping
           </button>
         </div>
 
         <div className={styles.footerNote}>
           <p>
-            در صورت هرگونه سوال یا مشکل می‌توانید با پشتیبانی ما تماس بگیرید.
+            If you have any questions or problems, you can contact our support.
           </p>
-          <p>ساعات کاری: شنبه تا پنجشنبه، ۹ صبح تا ۵ بعدازظهر</p>
+          <p>Working hours: Saturday to Thursday, 9 AM to 5 PM</p>
         </div>
       </div>
     </>
