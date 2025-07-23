@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import styles from './paymentPage.module.css';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import {AppContext } from '@/pages/_app';
+import { AppContext } from '@/pages/_app';
 import { useContext } from 'react';
 
 const PaymentPage = () => {
@@ -19,16 +19,16 @@ const PaymentPage = () => {
   const router = useRouter();
   const { setAddToCard } = useContext(AppContext);
 
-  // دریافت سبد خرید از API
+  // Fetch cart from API
   const fetchCart = async () => {
     try {
       const res = await fetch("/api/cart");
-      if (!res.ok) throw new Error("خطا در دریافت سبد خرید");
+      if (!res.ok) throw new Error("Error fetching cart");
       const data = await res.json();
       setCartItems(data.cart?.products || []);
     } catch (error) {
       console.error("Error fetching cart:", error);
-      setError("خطا در دریافت سبد خرید");
+      setError("Error fetching cart");
     } finally {
       setLoading(false);
     }
@@ -39,15 +39,14 @@ const PaymentPage = () => {
   }, []);
 
   useEffect(() => {
-  if (paymentSuccess) {
-    const timeout = setTimeout(() => {
-      router.push("/profile");
-    }, 3000); // بعد از ۳ ثانیه هدایت شود
+    if (paymentSuccess) {
+      const timeout = setTimeout(() => {
+        router.push("/profile");
+      }, 3000); // Redirect after 3 seconds
 
-    return () => clearTimeout(timeout);
-  }
-}, [paymentSuccess]);
-
+      return () => clearTimeout(timeout);
+    }
+  }, [paymentSuccess]);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
@@ -68,10 +67,10 @@ const PaymentPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          paymentMethod: "credit_card", // ✅ مقدار معتبر
+          paymentMethod: "credit_card", // ✅ Valid value
           shippingAddress: {
-            address: "آدرس نمونه",
-            city: "تهران",
+            address: "Sample address",
+            city: "Tehran",
             postalCode: "1234567890",
           },
           subtotal: totalAmount,
@@ -89,13 +88,11 @@ const PaymentPage = () => {
             section: item.section,
             model: item.model
           }))
-        
         })
-
       });
 
       if (!orderResponse.ok) {
-        throw new Error('خطا در ثبت سفارش');
+        throw new Error('Error placing order');
       }
 
       const orderData = await orderResponse.json();
@@ -104,11 +101,9 @@ const PaymentPage = () => {
       setPaymentSuccess(true);
       router.push(`/orderSuccess?orderId=${orderData.order._id}`);
 
-     
-
     } catch (error) {
-      console.error('خطا در پرداخت:', error);
-      setError('خطا در پرداخت: ' + error.message);
+      console.error('Payment error:', error);
+      setError('Payment error: ' + error.message);
     } finally {
       setIsProcessing(false);
     }
@@ -127,7 +122,7 @@ const PaymentPage = () => {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.spinner}></div>
-        <p>در حال بارگذاری سبد خرید...</p>
+        <p>Loading cart...</p>
       </div>
     );
   }
@@ -141,7 +136,7 @@ const PaymentPage = () => {
           className={styles.retryButton}
           onClick={fetchCart}
         >
-          تلاش مجدد
+          Try Again
         </button>
       </div>
     );
@@ -151,8 +146,8 @@ const PaymentPage = () => {
     return (
       <div className={styles.successContainer}>
         <div className={styles.successIcon}>✓</div>
-        <h2>پرداخت موفقیت‌آمیز بود</h2>
-        <p>در حال انتقال به صفحه تأیید پرداخت...</p>
+        <h2>Payment was successful</h2>
+        <p>Redirecting to payment confirmation page...</p>
       </div>
     );
   }
@@ -163,17 +158,17 @@ const PaymentPage = () => {
         className={styles.backButton}
         onClick={() => router.back()}
       >
-        ← بازگشت به سبد خرید
+        ← Back to cart
       </button>
 
-      <h1 className={styles.pageTitle}>تکمیل فرآیند پرداخت</h1>
+      <h1 className={styles.pageTitle}>Complete payment process</h1>
       
       <div className={styles.contentWrapper}>
         <div className={styles.cartSummary}>
-          <h2 className={styles.sectionTitle}>خلاصه سفارش</h2>
+          <h2 className={styles.sectionTitle}>Order summary</h2>
           
           {cartItems.length === 0 ? (
-            <p className={styles.emptyCart}>سبد خرید شما خالی است</p>
+            <p className={styles.emptyCart}>Your cart is empty</p>
           ) : (
             <>
               <div className={styles.itemsList}>
@@ -189,7 +184,7 @@ const PaymentPage = () => {
                     </div>
                     <div className={styles.itemDetails}>
                       <h4>{item.productName}</h4>
-                      <p>تعداد: {item.count}</p>
+                      <p>Quantity: {item.count}</p>
                     </div>
                     <div className={styles.itemPrice}>
                       ${(item.totalPrice || 0).toFixed(2)}
@@ -199,7 +194,7 @@ const PaymentPage = () => {
               </div>
               
               <div className={styles.summaryTotal}>
-                <span>جمع کل:</span>
+                <span>Total:</span>
                 <span className={styles.totalAmount}>
                   ${cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2)}
                 </span>
@@ -209,11 +204,11 @@ const PaymentPage = () => {
         </div>
 
         <div className={styles.paymentForm}>
-          <h2 className={styles.sectionTitle}>اطلاعات پرداخت</h2>
+          <h2 className={styles.sectionTitle}>Payment information</h2>
           
           <form onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
-              <label htmlFor="cardNumber">شماره کارت</label>
+              <label htmlFor="cardNumber">Card number</label>
               <input
                 type="text"
                 id="cardNumber"
@@ -226,7 +221,7 @@ const PaymentPage = () => {
             </div>
             
             <div className={styles.formGroup}>
-              <label htmlFor="cardName">نام صاحب کارت</label>
+              <label htmlFor="cardName">Cardholder name</label>
               <input
                 type="text"
                 id="cardName"
@@ -239,7 +234,7 @@ const PaymentPage = () => {
             
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label htmlFor="expiry">تاریخ انقضا</label>
+                <label htmlFor="expiry">Expiration date</label>
                 <input
                   type="text"
                   id="expiry"
@@ -270,7 +265,7 @@ const PaymentPage = () => {
               className={styles.submitButton}
               disabled={isProcessing || cartItems.length === 0}
             >
-              {isProcessing ? 'در حال پرداخت...' : 'تأیید و پرداخت'}
+              {isProcessing ? 'Processing payment...' : 'Confirm and pay'}
             </button>
           </form>
         </div>
