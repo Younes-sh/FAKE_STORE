@@ -1,3 +1,4 @@
+// pages/api/orders/create.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import dbConnect from "@/lib/dbConnect";
@@ -43,7 +44,7 @@ export default async function handler(req, res) {
         priceAtPurchase: product.price,
         image: product.image,
         section: product.section,
-        model: product.model
+        model: product.model,
       };
     }));
 
@@ -55,15 +56,15 @@ export default async function handler(req, res) {
 
     // اعتبارسنجی آدرس
     const shippingAddress = {
-      street: orderData.shippingAddress?.address || '',
+      street: orderData.shippingAddress?.street || '',
       city: orderData.shippingAddress?.city || '',
       state: orderData.shippingAddress?.state || '',
       postalCode: orderData.shippingAddress?.postalCode || '',
-      country: orderData.shippingAddress?.country || 'IR'
+      country: orderData.shippingAddress?.country || '',
     };
 
-    if (!shippingAddress.street || !shippingAddress.city) {
-      throw new Error("آدرس ارسال ناقص است");
+    if (!shippingAddress.street || !shippingAddress.city || !shippingAddress.country) {
+      throw new Error("آدرس ارسال ناقص است (لطفاً خیابان، شهر و کشور را وارد کنید)");
     }
 
     // ایجاد سفارش
@@ -79,14 +80,14 @@ export default async function handler(req, res) {
       totalAmount,
       paymentMethod: orderData.paymentMethod || 'credit_card',
       shippingAddress,
-      status: 'processing'
+      status: 'processing',
     });
 
     await order.save();
     await Cart.findOneAndUpdate(
       { userId: user._id },
       { $set: { products: [] } },
-      { new: true }
+      { new: true },
     );
 
     return res.status(201).json({
@@ -95,15 +96,15 @@ export default async function handler(req, res) {
       order: {
         _id: order._id,
         orderNumber: order.orderNumber,
-        totalAmount: order.totalAmount
-      }
+        totalAmount: order.totalAmount,
+      },
     });
 
   } catch (error) {
     console.error("Order creation error:", error);
     return res.status(400).json({
       success: false,
-      message: error.message || "خطا در ثبت سفارش"
+      message: error.message || "خطا در ثبت سفارش",
     });
   }
 }
