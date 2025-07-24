@@ -51,7 +51,7 @@ export default function ProfilePage() {
             height={100}
           />
           <div className={Styles.userInfo}>
-            <h1 className={Styles.userName}>{session.user.name}</h1>
+            <h1 className={Styles.userName}>{session.user.username}</h1>
             <p className={Styles.userEmail}>{session.user.email}</p>
           </div>
 

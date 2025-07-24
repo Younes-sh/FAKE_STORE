@@ -13,7 +13,9 @@ export default function CheckoutPage() {
     fullName: '',
     address: '',
     city: '',
+    state: '',
     postalCode: '',
+    country: 'IR',
     phone: ''
   });
 
@@ -53,7 +55,9 @@ export default function CheckoutPage() {
         name: item.productName,
         quantity: item.count,
         priceAtPurchase: item.price,
-        image: item.image
+        image: item.image,
+        section: item.section,
+        model: item.model
       }));
 
       const subtotal = cartData.products.reduce((sum, item) => sum + item.totalPrice, 0);
@@ -74,9 +78,9 @@ export default function CheckoutPage() {
           shippingAddress: {
             street: shippingAddress.address,
             city: shippingAddress.city,
-            state: '',
+            state: shippingAddress.state,
             postalCode: shippingAddress.postalCode,
-            country: 'IR'
+            country: shippingAddress.country
           }
         })
       });
@@ -138,9 +142,11 @@ export default function CheckoutPage() {
           <h3>Shipping Information</h3>
           <div className={Style.addressForm}>
             <input name="fullName" value={shippingAddress.fullName} onChange={handleInputChange} placeholder="Full Name" required />
-            <textarea name="address" value={shippingAddress.address} onChange={handleInputChange} placeholder="Address" rows="2" required />
+            <textarea name="address" value={shippingAddress.address} onChange={handleInputChange} placeholder="Street Address" rows="2" required />
             <input name="city" value={shippingAddress.city} onChange={handleInputChange} placeholder="City" required />
+            <input name="state" value={shippingAddress.state} onChange={handleInputChange} placeholder="State" />
             <input name="postalCode" value={shippingAddress.postalCode} onChange={handleInputChange} placeholder="Postal Code" />
+            <input name="country" value={shippingAddress.country} onChange={handleInputChange} placeholder="Country" />
             <input name="phone" value={shippingAddress.phone} onChange={handleInputChange} placeholder="Phone Number" required />
           </div>
 

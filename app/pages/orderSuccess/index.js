@@ -1,3 +1,4 @@
+// pages/orderSuccess.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -46,7 +47,7 @@ export default function OrderSuccess() {
         <div className={styles.errorIcon}>!</div>
         <h2>Error in receiving order</h2>
         <p>{error}</p>
-        <button 
+        <button
           className={styles.homeButton}
           onClick={() => router.push('/')}
         >
@@ -62,7 +63,7 @@ export default function OrderSuccess() {
         <div className={styles.errorIcon}>!</div>
         <h2>No order found</h2>
         <p>Unfortunately, your order information is not available</p>
-        <button 
+        <button
           className={styles.homeButton}
           onClick={() => router.push('/')}
         >
@@ -98,7 +99,8 @@ export default function OrderSuccess() {
                 <strong>Order number:</strong> {order.orderNumber || order._id}
               </span>
               <span>
-                <strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
+                <strong>Date:</strong>{' '}
+                {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
               </span>
               <span>
                 <strong>Status:</strong> {order.status === 'completed' ? 'Completed' : 'Processing'}
@@ -127,7 +129,10 @@ export default function OrderSuccess() {
                   </div>
                 </div>
                 <div className={styles.productTotal}>
-                  {(item.priceAtPurchase && item.quantity) ? (item.priceAtPurchase * item.quantity).toLocaleString() : '0'} $
+                  {(item.priceAtPurchase && item.quantity)
+                    ? (item.priceAtPurchase * item.quantity).toLocaleString()
+                    : '0'}{' '}
+                  $
                 </div>
               </div>
             ))}
@@ -153,10 +158,20 @@ export default function OrderSuccess() {
           <div className={styles.infoCard}>
             <h3>Customer Information</h3>
             <div className={styles.infoContent}>
-              <p><strong>Name:</strong> {order.user?.firstname} {order.user?.lastname}</p>
-              <p><strong>Email:</strong> {order.user?.email}</p>
-              <p><strong>Phone:</strong> {order.user?.phone}</p>
-              <p><strong>Address:</strong> {order.user?.address?.street}, {order.user?.address?.city}, {order.user?.address?.postalCode}</p>
+              <p>
+                <strong>Name:</strong> {order.user?.firstname} {order.user?.lastname}
+              </p>
+              <p>
+                <strong>Email:</strong> {order.user?.email}
+              </p>
+              <p>
+                <strong>Phone:</strong> {order.user?.phone}
+              </p>
+              <p>
+                <strong>Address:</strong>{' '}
+                {order.shippingAddress?.street}, {order.shippingAddress?.city},{' '}
+                {order.shippingAddress?.postalCode || '---'}
+              </p>
             </div>
           </div>
 
@@ -171,31 +186,24 @@ export default function OrderSuccess() {
                 <strong>Payment status:</strong> Paid
               </p>
               <p>
-                <strong>Payment date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
+                <strong>Payment date:</strong>{' '}
+                {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
               </p>
             </div>
           </div>
         </div>
 
         <div className={styles.actionButtons}>
-          <button 
-            onClick={() => window.print()} 
-            className={styles.printButton}
-          >
+          <button onClick={() => window.print()} className={styles.printButton}>
             <FiPrinter /> Print invoice
           </button>
-          <button 
-            onClick={() => router.push('/products')} 
-            className={styles.continueButton}
-          >
+          <button onClick={() => router.push('/products')} className={styles.continueButton}>
             <FiShoppingBag /> Continue shopping
           </button>
         </div>
 
         <div className={styles.footerNote}>
-          <p>
-            If you have any questions or problems, you can contact our support.
-          </p>
+          <p>If you have any questions or problems, you can contact our support.</p>
           <p>Working hours: Saturday to Thursday, 9 AM to 5 PM</p>
         </div>
       </div>
