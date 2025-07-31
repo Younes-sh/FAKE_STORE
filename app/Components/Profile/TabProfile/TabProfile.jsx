@@ -3,7 +3,7 @@ import styles from './tab.module.css';
 import PurchasesTab from '../EditProfile/PurchasesTab/PurchasesTab';
 import FavoritesTab from '../EditProfile/FavoritesTab/FavoritesTab';
 import TrackingTab from '../EditProfile/TrackingTab/TrackingTab';
-import MyOrdersTab from '../EditProfile/MyOrders/myOrders';
+import MyOrdersTab from '../EditProfile/MyOrders/MyOrders';
 
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState('orders');
