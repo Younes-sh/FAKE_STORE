@@ -19,7 +19,7 @@ export default function PurchasesTab({ products }) {
           </div>
         ))
       ) : (
-        <p>No purchases found.</p>
+        <p>No purchases found!</p>
       )}
 
       </div>
