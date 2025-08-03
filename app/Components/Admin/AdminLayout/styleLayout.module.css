@@ -219,3 +219,37 @@
     margin-right: 0;
   }
 }
+
+/* Hidden text */
+.hiddenText {
+  display: none !important;
+}
+
+/* تغییرات برای سایدبار */
+.closed .sidebarHeader h2 {
+  display: none;
+}
+
+.closed .sidebarNav li a {
+  justify-content: center;
+}
+
+.closed .sidebarNav li a span {
+  display: none;
+}
+
+.closed .userInfo,
+.closed .logoutBtn span {
+  display: none;
+}
+
+/* تغییرات برای محتوای اصلی */
+.mainOpen {
+  margin-right: var(--sidebar-width);
+  transition: margin-right 0.3s ease;
+}
+
+.mainClosed {
+  margin-right: var(--sidebar-collapsed-width);
+  transition: margin-right 0.3s ease;
+}

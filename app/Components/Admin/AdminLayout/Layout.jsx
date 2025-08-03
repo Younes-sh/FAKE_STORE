@@ -43,12 +43,13 @@ export default function AdminLayout({ children }) {
     { href: "/younessheikhlar/setting", label: "Settings" },
   ];
 
+  
   return (
     <div className={Style.adminContainer}>
       {/* Sidebar */}
       <aside className={`${Style.adminSidebar} ${sidebarOpen ? Style.open : Style.closed}`}>
         <div className={Style.sidebarHeader}>
-          <h2>Admin Panel</h2>
+          <h2 className={sidebarOpen ? '' : Style.hiddenText}>Admin Panel</h2>
           <button 
             className={Style.toggleBtn}
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -63,7 +64,7 @@ export default function AdminLayout({ children }) {
               <li key={item.href}>
                 <Link 
                   href={item.href}
-                  className={pathname === item.href ? Style.active : ''}
+                  className={`${pathname === item.href ? Style.active : ''} ${sidebarOpen ? '' : Style.hiddenText}`}
                 >
                   {item.label}
                 </Link>
@@ -73,12 +74,12 @@ export default function AdminLayout({ children }) {
         </nav>
         
         <div className={Style.sidebarFooter}>
-          <div className={Style.userInfo}>
+          <div className={`${Style.userInfo} ${sidebarOpen ? '' : Style.hiddenText}`}>
             <span className={Style.username}>{session.user.username}</span>
             <span className={Style.role}>{session.user.role}</span>
           </div>
           <button 
-            className={Style.logoutBtn}
+            className={`${Style.logoutBtn} ${sidebarOpen ? '' : Style.hiddenText}`}
             onClick={() => signOut()}
           >
             Logout
@@ -87,7 +88,7 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <main className={Style.adminMain}>
+      <main className={`${Style.adminMain} ${sidebarOpen ? Style.mainOpen : Style.mainClosed}`}>
         <header className={Style.adminHeader}>
           <h1>{navItems.find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
         </header>

@@ -8,13 +8,10 @@ import DefaultImage from '@/public/user.png';
 import Tabs from '@/Components/Profile/TabProfile/TabProfile';
 import { useRouter } from 'next/router';
 
-
-
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
-
   const router = useRouter();
 
   if (!session) {
@@ -49,6 +46,7 @@ export default function ProfilePage() {
             className={Styles.avatar}
             width={100}
             height={100}
+            priority
           />
           <div className={Styles.userInfo}>
             <h1 className={Styles.userName}>{session.user.username}</h1>
@@ -58,7 +56,6 @@ export default function ProfilePage() {
           {/* Account Settings */}
           <h2 className={Styles.sectionTitle}>Account Settings</h2>
           <ul className={Styles.settingsList}>
-            
             <li className={Styles.settingItem}>
               <span className={Styles.settingLabel}>Email Notifications</span>
               <label className={Styles.toggleSwitch}>
@@ -91,7 +88,7 @@ export default function ProfilePage() {
 
         {/* Profile Content */}
         <div className={Styles.profileContent}>
-         <Tabs />
+          <Tabs />
         </div>
       </div>
 
