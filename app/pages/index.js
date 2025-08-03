@@ -20,7 +20,6 @@ export default function Home() {
         <SectionOne />
         <Section2 />
         <Section3 />
-
       </div>
     </div>
   );

@@ -14,30 +14,38 @@ export default function Tabs() {
         <button
           onClick={() => setActiveTab('orders')}
           className={`${styles.tabButton} ${activeTab === 'orders' ? styles.active : ''}`}
+          aria-selected={activeTab === 'orders'}
+          role="tab"
         >
           My Orders
         </button>
         <button
           onClick={() => setActiveTab('purchases')}
           className={`${styles.tabButton} ${activeTab === 'purchases' ? styles.active : ''}`}
+          aria-selected={activeTab === 'purchases'}
+          role="tab"
         >
           Purchases
         </button>
         <button
           onClick={() => setActiveTab('favorites')}
           className={`${styles.tabButton} ${activeTab === 'favorites' ? styles.active : ''}`}
+          aria-selected={activeTab === 'favorites'}
+          role="tab"
         >
           Favorites
         </button>
         <button
           onClick={() => setActiveTab('tracking')}
           className={`${styles.tabButton} ${activeTab === 'tracking' ? styles.active : ''}`}
+          aria-selected={activeTab === 'tracking'}
+          role="tab"
         >
           Order Tracking
         </button>
       </div>
 
-      <div className={styles.tabContent}>
+      <div  role="tabpanel">
         {activeTab === 'orders' && <MyOrdersTab />}
         {activeTab === 'purchases' && <PurchasesTab />}
         {activeTab === 'favorites' && <FavoritesTab />}

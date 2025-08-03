@@ -10,11 +10,13 @@
   justify-content: center;
   border-bottom: 1px solid #d3d2d2;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .tabButton {
-  padding: 10px 20px;
-  margin: 0 5px;
+  padding: 0.75rem 1rem;
+  margin: 0 0.25rem;
   background-color: transparent;
   border: none;
   border-bottom: 3px solid transparent;
@@ -22,6 +24,8 @@
   font-size: 1rem;
   color: #aca6a6;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  min-width: max-content;
 }
 
 .tabButton:hover {
@@ -34,9 +38,31 @@
   font-weight: bold;
 }
 
-.tabContent {
-  padding: 20px;
-  background-color: rgb(31,41,55);
-  border-radius: 8px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .tabHeader {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .tabHeader::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+  
+  .tabButton {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabButton {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+  }
 }
