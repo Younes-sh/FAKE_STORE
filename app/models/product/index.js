@@ -5,7 +5,7 @@
    {
      productName: {
        type: String,
-       required: [true, 'نام محصول الزامی است'],
+       required: [true, 'Product name is required.'],
        trim: true,
      },
      description: {
@@ -15,22 +15,22 @@
      },
      price: {
        type: Number,
-       required: [true, 'قیمت محصول الزامی است'],
-       min: [0, 'قیمت نمی‌تواند منفی باشد'],
+       required: [true, 'Product price is required.'],
+       min: [0, 'Product price cannot be negative.'],
      },
      model: {
        type: String,
-       required: [true, 'مدل محصول الزامی است'],
+       required: [true, 'Product model is required.'],
        trim: true,
      },
      section: {
        type: String,
-       required: [true, 'بخش محصول الزامی است'],
+       required: [true, 'Product section is required.'],
        trim: true,
      },
      image: {
        type: String,
-       required: [true, 'آدرس تصویر الزامی است'],
+       required: [true, 'Product image URL is required.'],
      },
    },
    {
