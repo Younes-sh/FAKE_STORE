@@ -1,16 +1,25 @@
 import React from 'react';
 // import ProductCard from '@/Components/Cards/ProductCard/ProductCard';
 import ProductCard from '@/Components/Cards/CardProduct/CardProduct';
-
+import {useState} from 'react';
+import ProductFilter from '@/Components/Filter/ProductFilter';
 import Style from "./style.module.css";
 
 export default function index({ productData }) {
+  const [filteredProducts, setFilteredProducts] = useState(productData);
+
   return (
     <div className={Style.backgroundProduct}>
       <div className='container'>
-        <h1>Products</h1>
+
+        {/* اضافه کردن کامپوننت فیلتر */}
+        <ProductFilter 
+          products={productData} 
+          onFilterChange={setFilteredProducts} 
+        />
+        
         <div className='row'>
-            {productData.map(product => (
+            {filteredProducts.map(product => (
               <div className='col' key={product._id}>
                 <ProductCard  {...product}/>
               </div>
