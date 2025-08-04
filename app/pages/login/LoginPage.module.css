@@ -29,7 +29,10 @@
     border-radius: 8px;
   }
 }
-
+.loginImagePlaceholder a {
+  color: #6366f1;
+  text-decoration: none;
+}
 .loginFormSection {
   flex: 1;
   display: flex;
