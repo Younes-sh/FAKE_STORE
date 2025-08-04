@@ -2,17 +2,12 @@ import React, { useState , useEffect} from 'react';
 import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
 import ProductCard from '@/Components/Admin/Cards/ProductCard/ProductCard';
 import InputSearch from '@/Components/Input/Input';
+import ProductFilter from '@/Components/Filter/ProductFilter';
 
 export default  function index({ productData }) {
-  const [textSearch, setTextSearch] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(productData);
 
-  // useEffect(() => {
-  //   const filtered = productData.filter(product =>
-  //     product.name.toLowerCase().includes(textSearch.toLowerCase())
-  //   );
-  //   setFilteredProducts(filtered);
-  // }, [textSearch, productData]);
+
 
   
   return (
@@ -21,15 +16,18 @@ export default  function index({ productData }) {
       <br/>
 
       {/* Input search, this input comes from (component input) */}
-      <InputSearch onChange={(e) => setTextSearch(e.target.value)}  />
-
-      <div className='row'>
-          {productData.map(product => (
-        <div className='col' key={product._id}>
-          <ProductCard  {...product}/>
+       <ProductFilter 
+          products={productData} 
+          onFilterChange={setFilteredProducts} 
+        />
+        
+        <div className='row'>
+            {filteredProducts.map(product => (
+              <div className='col' key={product._id}>
+                <ProductCard  {...product}/>
+              </div>
+            ))}
         </div>
-          ))}
-      </div>
     </AdminLayout>
   )
 }
