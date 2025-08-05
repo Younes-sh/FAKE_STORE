@@ -4,6 +4,7 @@ import BasketCard from '@/Components/Cards/BasketCard/BasketCard';
 import Link from 'next/link';
 import emptyCard from '@/public/asset/Basket/emptyCard.jpg';
 import Image from 'next/image';
+import Footer from '@/Components/Footer';
 
 export default function BasketPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -68,6 +69,8 @@ export default function BasketPage() {
           )}
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

@@ -1,16 +1,132 @@
 .footer {
-    width: 100%;
-    height: 400px;
-    padding: 20px;
-    /* position: absolute; */
-    color: aliceblue;
-    background-color: rgb(11, 60, 116);
+  background-color: #1a1a2e;
+  color: #e6e6e6;
+  padding: 60px 0 0;
+  font-family: 'Playfair Display', serif;
 }
 
-.containerFooter {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
- 
+.footerColumns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.footerColumn {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: 30px;
+  padding: 0 15px;
+}
+
+.footerHeading {
+  color: #d4af37; /* Gold color */
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.footerText {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #b8b8b8;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+}
+
+.footerLinks li {
+  margin-bottom: 10px;
+}
+
+.footerLinks a {
+  color: #b8b8b8;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-size: 14px;
+}
+
+.footerLinks a:hover {
+  color: #d4af37;
+}
+
+.newsletterForm {
+  display: flex;
+  margin-top: 15px;
+}
+
+.newsletterInput {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+}
+
+.newsletterButton {
+  background-color: #d4af37;
+  color: #1a1a2e;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.newsletterButton:hover {
+  background-color: #f1c40f;
+}
+
+.footerBottom {
+  border-top: 1px solid #333;
+  padding-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright {
+  font-size: 13px;
+  color: #b8b8b8;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 15px;
+}
+
+.socialIcons a {
+  color: #b8b8b8;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.socialIcons a:hover {
+  color: #d4af37;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footerColumn {
+    flex: 100%;
+    margin-bottom: 30px;
+  }
+  
+  .footerBottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+}
