@@ -4,6 +4,7 @@ import SectionOne from "@/Components/HomePage/Section1/SectionOne";
 import Section2 from "@/Components/HomePage/Section2/Section2";
 import Section3 from "@/Components/HomePage/Section3/Section3";
 // Footer
+import Footer from "@/Components/Footer";
 
 
 export default function Home() {
@@ -21,6 +22,8 @@ export default function Home() {
         <Section2 />
         <Section3 />
       </div>
+
+      <Footer />
     </div>
   );
 }
