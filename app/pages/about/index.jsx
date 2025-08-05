@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from './About.module.css'; // Assuming you have a CSS module
+import Footer from "@/Components/Footer"; // Importing Footer component
 
 export default function About() {
   return (
@@ -81,6 +82,8 @@ export default function About() {
           </div>
         </section>
       </div>
+      
+      <Footer />
     </div>
   )
 }
