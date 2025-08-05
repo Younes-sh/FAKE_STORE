@@ -4,6 +4,7 @@ import ProductCard from '@/Components/Cards/CardProduct/CardProduct';
 import {useState} from 'react';
 import ProductFilter from '@/Components/Filter/ProductFilter';
 import Style from "./style.module.css";
+import Footer from "@/Components/Footer";
 
 export default function index({ productData }) {
   const [filteredProducts, setFilteredProducts] = useState(productData);
@@ -26,6 +27,7 @@ export default function index({ productData }) {
             ))}
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
