@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FiMail, FiPhone, FiMapPin, FiArrowLeft } from "react-icons/fi";
 import { FaTelegram, FaWhatsapp, FaLinkedin } from "react-icons/fa";
 import styles from './ContactPage.module.css';
+import Footer from "@/Components/Footer";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -38,7 +39,8 @@ export default function ContactPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <>
+      <div className={styles.container}>
       <Head>
         <title>Contact Us | Our Website</title>
         <meta name="description" content="Contact page with contact form and information" />
@@ -196,6 +198,11 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+
+      
     </div>
+
+      <Footer />
+    </>
   );
 }
