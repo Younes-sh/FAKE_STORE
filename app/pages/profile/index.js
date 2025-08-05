@@ -7,6 +7,7 @@ import EditProfileModal from '@/Components/Profile/EditProfile/EditProfileModal'
 import DefaultImage from '@/public/user.png';
 import Tabs from '@/Components/Profile/TabProfile/TabProfile';
 import { useRouter } from 'next/router';
+import Footer from '@/Components/Footer';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -36,7 +37,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className={Styles.profileContainer}>
+    <>
+      <div className={Styles.profileContainer}>
       <div className={Styles.profileCard}>
         {/* Profile Header */}
         <div className={Styles.profileHeader}>
@@ -100,5 +102,8 @@ export default function ProfilePage() {
         />
       )}
     </div>
+
+      <Footer />
+    </>
   );
 }
