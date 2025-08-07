@@ -2,6 +2,7 @@ import React from 'react';
 import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
 import { useState } from 'react';
 import Style from './style.module.css';
+import {AlertModal} from '@/Components/AlertModal/AlertModal';
 
 export default function PostProduct() {
   const [productName, setProductName] = useState('');
@@ -11,7 +12,9 @@ export default function PostProduct() {
   const [category, setCategory] = useState('');
   const [image, setImage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,10 +37,9 @@ export default function PostProduct() {
       });
       
       const data = await res.json();
-      console.log(data);
       
       if (res.ok) {
-        setSuccessMessage('Product added successfully!');
+        setShowSuccessModal(true);
         // Reset form
         setProductName('');
         setDescription('');
@@ -45,26 +47,31 @@ export default function PostProduct() {
         setModel('');
         setCategory('');
         setImage('');
-        
-        setTimeout(() => setSuccessMessage(''), 3000);
+      } else {
+        setErrorMessage(data.message || 'Failed to add product');
+        setShowErrorModal(true);
       }
     } catch (error) {
       console.error('Error:', error);
+      setErrorMessage('An error occurred while adding the product');
+      setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+  }
+
+  const handleErrorModalClose = () => {
+    setShowErrorModal(false);
   }
 
   return (
     <AdminLayout>
       <div className={Style.container}>
         <h1 className={Style.title}>Add New Product</h1>
-        
-        {successMessage && (
-          <div className={Style.successMessage}>
-            {successMessage}
-          </div>
-        )}
         
         <form className={Style.form} onSubmit={handleSubmit}>
           <div className={Style.formGroup}>
@@ -119,12 +126,11 @@ export default function PostProduct() {
               onChange={(e) => setCategory(e.target.value)}
               required
             >
-              <option value="books">Ring</option>
-              <option value="books">Necklace</option>
-              <option value="books">Bracelet</option>
-              <option value="books">Watch</option>
-
               <option value="">Select category</option>
+              <option value="ring">Ring</option>
+              <option value="necklace">Necklace</option>
+              <option value="bracelet">Bracelet</option>
+              <option value="watch">Watch</option>
               <option value="electronics">Electronics</option>
               <option value="clothing">Clothing</option>
               <option value="home">Home & Kitchen</option>
@@ -158,6 +164,29 @@ export default function PostProduct() {
           </button>
         </form>
       </div>
+
+      {/* مودال موفقیت آمیز */}
+      <AlertModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        title="Success"
+        message="Product added successfully!"
+        type="success"
+        confirmText="OK"
+        showCancel={false}
+        imageUrl={image}
+      />
+
+      {/* مودال خطا */}
+      <AlertModal
+        isOpen={showErrorModal}
+        onClose={handleErrorModalClose}
+        title="Error"
+        message={errorMessage}
+        type="error"
+        confirmText="OK"
+        showCancel={false}
+      />
     </AdminLayout>
   )
 }
