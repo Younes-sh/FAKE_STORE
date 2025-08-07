@@ -1,9 +1,15 @@
+/* singleItem.module.css */
+
 .singleItemPage {
     display: flex;
     justify-content: center;
     align-items: center;
     border: solid 1px #f1f1f1;
     border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .image {
@@ -12,128 +18,169 @@
     padding: 4px;
     object-fit: cover;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .textContainer {
     width: 70%;
     padding: 20px;
-    line-height: 50px;
+    line-height: 1.6;
 }
 
 .buttonContainer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 30px;
+    gap: 15px;
 }
 
-/* .buttonContainer button {
-    padding: 10px 20px;
+.buttonContainer a {
+    text-decoration: none;
+}
+
+/* استایل دکمه Save */
+.btnSave {
+    padding: 12px 25px;
     border: none;
-    border-radius: 5px;
-    background-color: #f1f1f1;
+    border-radius: 6px;
+    background-color: #4CAF50;
+    color: white;
     cursor: pointer;
-} */
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/* Form input */
+.btnSave:hover {
+    background-color: #3e8e41;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
 
+/* استایل دکمه Back */
+.btnBack {
+    padding: 12px 25px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.btnBack:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    color: #000;
+}
+
+/* استایل دکمه Delete */
+.btnDelete {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    background-color: #f44336;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnDelete:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* استایل‌های فرم */
 .formInput {
     width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.formInput:focus {
-    outline: none;
-    border: 1px solid #ccc;
+.formInput label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
 }
 
 .formInput input {
     width: 100%;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.formInput input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 .textarea {
     width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: large;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    min-height: 150px;
+    resize: vertical;
+    transition: border-color 0.3s;
 }
 
-/* Form submit button */
-
-.btnSave {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #80c264;
-    color: #fff;
-    cursor: pointer;
-    margin-top: 10px;
+.textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
-.btnSave:hover {
-    background-color: #4d7c3c;
-}
-
-.btnDelete {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: rgb(214, 82, 82);
-    color: #fff;
-    cursor: pointer;
-}
-.btnDelete:hover {
-    background-color: rgb(171, 66, 66);
-}
 /* Responsive design */
-
 @media (max-width: 768px) {
     .singleItemPage {
         flex-direction: column;
-        align-items: center;
     }
 
-    .image {
+    .image, .textContainer {
         width: 100%;
-        height: auto;
-    }
-
-    .textContainer {
-        width: 100%;
-        padding: 10px;
     }
 
     .buttonContainer {
-        margin-top: 10px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btnSave, .btnBack, .btnDelete {
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .singleItemPage {
-        margin-top: 20px;
+        padding: 15px;
     }
-    .image {
-        width: 100%;
-        height: auto;
-    }
-    .textContainer {
-        width: 100%;
+    
+    .formInput input, .textarea {
         padding: 10px;
     }
-    .buttonContainer {
-        margin-top: 10px;
-    }
-    .formInput {
-        width: 100%;
-    }
-    .formSubmitButton {
-        width: 100%;
-    }
 }
-
-/* Product details page */
