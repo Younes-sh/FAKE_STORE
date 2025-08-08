@@ -103,6 +103,12 @@ const PaymentPage = () => {
       return;
     }
 
+    // اعتبارسنجی تاریخ انقضا
+    if (!validateExpiry()) {
+      setIsProcessing(false);
+      return;
+    }
+
     console.log('Sending order data:', {
       paymentMethod: 'credit_card',
       shippingAddress,
@@ -187,34 +193,58 @@ const PaymentPage = () => {
   };
 
   const handleExpiryChange = (e) => {
-  let value = e.target.value.replace(/\D/g, '');
-  
-  // اعتبارسنجی ماه
-  if (value.length <= 2) {
-    const month = parseInt(value, 10);
-    if (month > 12) {
-      setExpiryError('Month must be between 01 and 12');
-      value = '12'; // مقدار را به حداکثر ماه معتبر محدود کنید
-    } else if (month === 0) {
-      setExpiryError('Month must be between 01 and 12');
-      value = '01'; // مقدار را به حداقل ماه معتبر محدود کنید
-    } else {
-      setExpiryError('');
+    let value = e.target.value;
+    const position = e.target.selectionStart;
+    
+    // حذف همه کاراکترهای غیرعددی به جز اسلش
+    value = value.replace(/[^0-9/]/g, '');
+    
+    // اگر کاربر در حال حذف اسلش است، اجازه بده
+    if (position === 3 && value.length === 4 && value[2] !== '/') {
+      value = value.substring(0, 2) + value.substring(3);
     }
-  } else {
+    
+    // اضافه کردن خودکار اسلش
+    if (value.length === 2 && position === 2 && !value.includes('/')) {
+      value = value + '/';
+    }
+    
+    // محدودیت طول
+    if (value.length > 5) {
+      value = value.substring(0, 5);
+    }
+    
+    setExpiry(value);
     setExpiryError('');
-  }
-  
-  // اضافه کردن اسلش بعد از 2 رقم
-  if (value.length > 2) {
-    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-  }
-  
-  setExpiry(value);
-};
+  };
+
+  const validateExpiry = () => {
+    if (!expiry) {
+      setExpiryError('Expiration date is required');
+      return false;
+    }
+    
+    const parts = expiry.split('/');
+    if (parts.length !== 2 || parts[0].length !== 2 || parts[1].length !== 2) {
+      setExpiryError('Invalid format (MM/YY)');
+      return false;
+    }
+    
+    const month = parseInt(parts[0], 10);
+    if (month < 1 || month > 12) {
+      setExpiryError('Month must be between 01-12');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleExpiryBlur = () => {
+    validateExpiry();
+  };
 
   const handleCvvChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // فقط اعداد را نگه دار
+    const value = e.target.value.replace(/\D/g, '');
     setCvv(value);
   };
 
@@ -387,16 +417,18 @@ const PaymentPage = () => {
             </div>
 
             <div className={styles.formGroup}>
-            <label htmlFor="expiry">Expiration date</label>
-            <input
+              <label htmlFor="expiry">Expiration date</label>
+              <input
                 type="text"
                 id="expiry"
                 value={expiry}
                 onChange={handleExpiryChange}
+                onBlur={handleExpiryBlur}
                 placeholder="MM/YY"
                 maxLength="5"
                 required
               />
+              {expiryError && <span className={styles.errorMessage}>{expiryError}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -411,8 +443,6 @@ const PaymentPage = () => {
                 required
               />
             </div>
-
-    
 
             <button
               type="submit"
