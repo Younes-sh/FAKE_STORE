@@ -17,48 +17,53 @@ export default function PostProduct() {
   const [errorMessage, setErrorMessage] = useState('');
   
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      const res = await fetch('/api/product', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productName,
-          price,
-          model,
-          description,
-          section: category,
-          image,
-        }),
-      });
-      
-      const data = await res.json();
-      
-      if (res.ok) {
-        setShowSuccessModal(true);
-        // Reset form
-        setProductName('');
-        setDescription('');
-        setPrice('');
-        setModel('');
-        setCategory('');
-        setImage('');
-      } else {
-        setErrorMessage(data.message || 'Failed to add product');
-        setShowErrorModal(true);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('An error occurred while adding the product');
-      setShowErrorModal(true);
-    } finally {
-      setIsSubmitting(false);
+  e.preventDefault();
+  setIsSubmitting(true);
+  
+  try {
+    const res = await fetch('/api/products', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productName,
+        price: Number(price), // اطمینان از عدد بودن
+        model,
+        description,
+        section: category,
+        image,
+      }),
+    });
+
+    // ابتدا وضعیت پاسخ را بررسی کنید
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to add product');
     }
+
+    const data = await res.json();
+    setShowSuccessModal(true);
+    resetForm();
+
+  } catch (error) {
+    console.error('Error:', error);
+    setErrorMessage(error.message || 'An error occurred while adding the product');
+    setShowErrorModal(true);
+  } finally {
+    setIsSubmitting(false);
   }
+}
+
+// تابع برای ریست فرم
+const resetForm = () => {
+  setProductName('');
+  setDescription('');
+  setPrice('');
+  setModel('');
+  setCategory('');
+  setImage('');
+};
 
   const handleSuccessModalClose = () => {
     setShowSuccessModal(false);
