@@ -17,6 +17,7 @@ const PaymentPage = () => {
   const [cvv, setCvv] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [expiryError, setExpiryError] = useState('');
   const [shippingAddress, setShippingAddress] = useState({
     street: '',
     city: '',
@@ -183,6 +184,38 @@ const PaymentPage = () => {
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
     setShippingAddress(prev => ({ ...prev, [name]: value.trim() }));
+  };
+
+  const handleExpiryChange = (e) => {
+  let value = e.target.value.replace(/\D/g, '');
+  
+  // اعتبارسنجی ماه
+  if (value.length <= 2) {
+    const month = parseInt(value, 10);
+    if (month > 12) {
+      setExpiryError('Month must be between 01 and 12');
+      value = '12'; // مقدار را به حداکثر ماه معتبر محدود کنید
+    } else if (month === 0) {
+      setExpiryError('Month must be between 01 and 12');
+      value = '01'; // مقدار را به حداقل ماه معتبر محدود کنید
+    } else {
+      setExpiryError('');
+    }
+  } else {
+    setExpiryError('');
+  }
+  
+  // اضافه کردن اسلش بعد از 2 رقم
+  if (value.length > 2) {
+    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+  }
+  
+  setExpiry(value);
+};
+
+  const handleCvvChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // فقط اعداد را نگه دار
+    setCvv(value);
   };
 
   if (loadingCart || loadingAddress) {
@@ -353,33 +386,33 @@ const PaymentPage = () => {
               />
             </div>
 
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label htmlFor="expiry">Expiration date</label>
-                <input
-                  type="text"
-                  id="expiry"
-                  value={expiry}
-                  onChange={(e) => setExpiry(e.target.value)}
-                  placeholder="MM/YY"
-                  maxLength="5"
-                  required
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="cvv">CVV</label>
-                <input
-                  type="text"
-                  id="cvv"
-                  value={cvv}
-                  onChange={(e) => setCvv(e.target.value)}
-                  placeholder="123"
-                  maxLength="3"
-                  required
-                />
-              </div>
+            <div className={styles.formGroup}>
+            <label htmlFor="expiry">Expiration date</label>
+            <input
+                type="text"
+                id="expiry"
+                value={expiry}
+                onChange={handleExpiryChange}
+                placeholder="MM/YY"
+                maxLength="5"
+                required
+              />
             </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="cvv">CVV</label>
+              <input
+                type="text"
+                id="cvv"
+                value={cvv}
+                onChange={handleCvvChange}
+                placeholder="123"
+                maxLength="3"
+                required
+              />
+            </div>
+
+    
 
             <button
               type="submit"
