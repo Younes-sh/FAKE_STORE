@@ -78,7 +78,7 @@ export default function BasketCard({ _id, productName, price, image, count, tota
       const items = updated.cart?.products || [];
 
       setAddProduct(items);
-      // setAddToCard(updated.cart?.products?.length || 0);
+      setAddToCard(updated.cart?.products?.length || 0);
     } catch (err) {
       console.error("Error deleting item:", err);
     }
