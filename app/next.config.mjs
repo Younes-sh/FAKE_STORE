@@ -1,18 +1,35 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
+  // هر چی لازم داری اینجا بگذار
   env: {
     NEXTAUTH_DEBUG: "true",
+    // این‌ها رو هم در .env.local بذار، ولی چون NEXT_PUBLIC هست،
+    // اگر بخوای اینجا mirror کنی هم ایراد نداره:
+    // NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    // NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
   },
 
   images: {
+    // می‌تونی فرمت‌های بهینه هم فعال کنی (اختیاری)
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
+      // دامنه‌ی سایت خودت (همون قبلی)
       {
         protocol: 'https',
         hostname: 'younessheikhlar.com',
       },
+      // دامنه‌ی Cloudinary برای نمایش تصاویر آپلود شده
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        // اگر خواستی محدودترش کنی، می‌تونی pathname رو هم ست کنی:
+        // pathname: '/YOUR_CLOUD_NAME/**'
+      },
     ],
   },
+
   async headers() {
     return [
       {
@@ -25,7 +42,7 @@ const nextConfig = {
         ]
       }
     ]
-  }
+  },
 };
 
 export default nextConfig;
