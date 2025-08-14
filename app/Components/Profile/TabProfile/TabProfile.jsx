@@ -45,7 +45,7 @@ export default function Tabs() {
         </button>
       </div>
 
-      <div  role="tabpanel">
+      <div  role="tabpanel" className={styles.tabContent}>
         {activeTab === 'orders' && <MyOrdersTab />}
         {activeTab === 'purchases' && <PurchasesTab />}
         {activeTab === 'favorites' && <FavoritesTab />}
