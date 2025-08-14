@@ -86,9 +86,9 @@ export default function SingleItem({ dataProduct }) {
     }
   };
 
-  const buyNowHandler = () => {
-    router.push(`/checkout?productId=${dataProduct._id}`);
-  };
+  // const buyNowHandler = () => {
+  //   router.push(`/checkout?productId=${dataProduct._id}`);
+  // };
 
   return (
     <div className='container main'>
@@ -169,12 +169,12 @@ export default function SingleItem({ dataProduct }) {
           {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
         </button>
         <Link href={'/products'} className={Style.btnBack}>Back to </Link>
-        <button 
+        {/* <button 
           className={`${Style.button} ${Style.btnBuyNow}`}
           onClick={buyNowHandler}
         >
           Buy now
-        </button>
+        </button> */}
       </div>
     </div>
   );

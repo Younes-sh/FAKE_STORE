@@ -87,9 +87,9 @@ export default function ProductCard({
     }
   };
 
-  const buyNowHandler = () => {
-    router.push(`/checkout?productId=${_id}`);
-  };
+  // const buyNowHandler = () => {
+  //   router.push(`/checkout?productId=${_id}`);
+  // };
 
   return (
     <div className={Style.productCard}>
@@ -126,9 +126,9 @@ export default function ProductCard({
             {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
           </button>
 
-          <button className={Style.btnBuy} onClick={buyNowHandler}>
+          {/* <button className={Style.btnBuy} onClick={buyNowHandler}>
             Buy Now
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
