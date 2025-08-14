@@ -1,0 +1,185 @@
+.uploadContainer {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.uploadWrapper {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.fileInputContainer {
+  position: relative;
+  flex-grow: 1;
+}
+
+.fileInput {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.fileInputLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fileInputLabel:hover {
+  background-color: #f0f0f0;
+}
+
+.fileInputText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #555;
+  font-size: 14px;
+}
+
+.fileInputButton {
+  background-color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.fileInputLabel:hover .fileInputButton {
+  background-color: #d0d0d0;
+}
+
+.uploadButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.uploadButton:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.uploadButtonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fileInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.fileDetails {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.fileName {
+  font-size: 14px;
+  color: #333;
+}
+
+.fileSize {
+  font-size: 12px;
+  color: #777;
+  background-color: #e0e0e0;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #f44336;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.removeButton:hover {
+  background-color: #ffebee;
+}
+
+.progressContainer {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progressBar {
+  flex-grow: 1;
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 12px;
+  color: #666;
+  min-width: 40px;
+  text-align: right;
+}
+
+.errorMessage {
+  margin-top: 8px;
+  color: #f44336;
+  font-size: 13px;
+  padding: 6px 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  border-left: 3px solid #f44336;
+}
