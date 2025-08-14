@@ -1,6 +1,6 @@
 /* Main Layout */
 .profileContainer {
-  height: 100vh;
+  min-height: 100vh;
   margin: 100px 0;
   padding: 2rem 0 0;
 }
