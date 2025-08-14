@@ -68,17 +68,18 @@
   
   .buttonContainer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-top: 20px;
     margin-bottom: 20px;
+    direction: rtl;
   }
   
   .buttonContainer button {
-    padding: 10px 20px;
+    padding: 9px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0 7px;
   }
   
   .btnAddtoCard {
