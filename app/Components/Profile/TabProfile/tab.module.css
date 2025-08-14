@@ -8,7 +8,7 @@
 .tabHeader {
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #d3d2d2;
+  border-bottom: 1px solid #104612;
   margin-bottom: 1rem;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -22,7 +22,7 @@
   border-bottom: 3px solid transparent;
   cursor: pointer;
   font-size: 1rem;
-  color: #aca6a6;
+  color: #ab1313;
   transition: all 0.3s ease;
   white-space: nowrap;
   min-width: max-content;
@@ -38,6 +38,12 @@
   font-weight: bold;
 }
 
+.tabContent {
+  min-height: 200px;
+  padding: 1rem;
+  border: 1px solid #d3d2d2;
+  border-radius: 4px;
+}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
