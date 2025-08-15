@@ -173,7 +173,7 @@ input:checked + .slider:before {
 
 /* Profile Content */
 .profileContent {
-  padding: 2rem;
+  padding: 0.3rem;
   overflow-y: auto;
 }
 
@@ -186,7 +186,7 @@ input:checked + .slider:before {
 
 @media (max-width: 768px) {
   .profileContainer {
-    padding: 1rem;
+    padding: 0.3rem;
   }
   
   .profileCard {
@@ -194,7 +194,7 @@ input:checked + .slider:before {
   }
   
   .profileHeader {
-    padding: 1.5rem;
+    padding: .5rem;
     position: static;
   }
   
