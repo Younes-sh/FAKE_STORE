@@ -5,31 +5,31 @@ import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/pages/_app";
+import { useSession } from "next-auth/react"; // اضافه شد
+import { AlertModal } from "@/Components/AlertModal/AlertModal"; // مسیر خودت
 
 export default function ProductCard({
   _id, productName, description, price, image, model, section
 }) {
   const router = useRouter();
   const { setAddToCard } = useContext(AppContext);
+  const { data: session } = useSession(); // گرفتن سشن
 
-  // آیا این محصول در سبد خرید هست؟
   const [isInCart, setIsInCart] = useState(false);
-  const [adding, setAdding] = useState(false); // برای جلوگیری از دابل کلیک/نمایش لودینگ
+  const [adding, setAdding] = useState(false);
+  const [showLoginAlert, setShowLoginAlert] = useState(false); // state برای مودال
 
-  // یک‌بار روی mount چک می‌کنیم آیا این محصول در سبد هست
   useEffect(() => {
     let ignore = false;
 
     const checkInCart = async () => {
       try {
         const res = await fetch('/api/cart');
-        if (!res.ok) return; // اگر لاگین نیست یا اروری بود، بی‌خیال
+        if (!res.ok) return;
         const data = await res.json();
         const exists = (data.cart?.products || []).some(p => p._id === _id);
         if (!ignore) setIsInCart(exists);
-      } catch (e) {
-        // بی‌سر و صدا
-      }
+      } catch (e) {}
     };
 
     checkInCart();
@@ -37,11 +37,16 @@ export default function ProductCard({
   }, [_id]);
 
   const addProductBtn = async () => {
+    // اگر لاگین نیست، مودال را باز کن و ادامه نده
+    if (!session) {
+      setShowLoginAlert(true);
+      return;
+    }
+
     if (adding) return;
     setAdding(true);
 
     try {
-      // اول ببین الان چند تا از همین محصول توی سبد هست
       const res = await fetch('/api/cart');
       const cartData = await res.json();
       const current = cartData.cart?.products?.find(p => p._id === _id);
@@ -71,28 +76,32 @@ export default function ProductCard({
         throw new Error(err.message || 'خطا در افزودن به سبد خرید');
       }
 
-      // اگر برای اولین بار اضافه شد، شمارنده‌ی Navbar رو یک واحد زیاد کن
       if (!current) {
         setAddToCard(prev => prev + 1);
       }
-
-      // از این به بعد دکمه باید “Add again” شود
       setIsInCart(true);
 
     } catch (error) {
       console.error("❌ خطا در افزودن به سبد خرید:", error);
-      // می‌تونی toast/alert بزنی
     } finally {
       setAdding(false);
     }
   };
 
-  // const buyNowHandler = () => {
-  //   router.push(`/checkout?productId=${_id}`);
-  // };
-
   return (
     <div className={Style.productCard}>
+      {/* مودال هشدار ورود */}
+      <AlertModal
+        isOpen={showLoginAlert}
+        onClose={() => setShowLoginAlert(false)}
+        title="Login required"
+        message="To add a product to the cart, please log in first."
+        confirmText="Login"
+        cancelText="Close"
+        type="warning"
+        onConfirm={() => router.push('/login')} // مسیر صفحه لاگین
+      />
+
       <Link href={`/products/${_id}`} className={Style.Link}>
         <div className={Style.imageContainer}>
           <Image
@@ -110,7 +119,6 @@ export default function ProductCard({
         <h4>{productName}</h4>
         <p>Price: {price}</p>
 
-        {/* نشان “داخل سبد” (دلخواه) */}
         {isInCart && (
           <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a' }}>
             ✓ This item is in your cart
@@ -125,10 +133,6 @@ export default function ProductCard({
           >
             {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
           </button>
-
-          {/* <button className={Style.btnBuy} onClick={buyNowHandler}>
-            Buy Now
-          </button> */}
         </div>
       </div>
     </div>
