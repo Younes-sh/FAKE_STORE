@@ -17,9 +17,11 @@
 
 /* Admin Container */
 .adminContainer {
+  /* max-width: 1200px; */
   display: flex;
   min-height: 100vh;
   background-color: #f5f7fa;
+  margin: auto;
 }
 
 /* Loading Styles */
