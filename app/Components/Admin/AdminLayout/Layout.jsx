@@ -1,4 +1,3 @@
-// components/AdminLayout.jsx
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -10,7 +9,7 @@ export default function AdminLayout({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // تغییر به false برای حالت بسته پیش‌فرض
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -35,12 +34,12 @@ export default function AdminLayout({ children }) {
   }
 
   const navItems = [
-    { href: "/younessheikhlar", label: "Dashboard" },
-    { href: "/younessheikhlar/postProduct", label: "New Products" },
-    { href: "/younessheikhlar/products", label: "Manage Products" },
-    { href: "/younessheikhlar/users", label: "Users" },
-    { href: "/younessheikhlar/message", label: "Messages" },
-    { href: "/younessheikhlar/setting", label: "Settings" },
+    { href: "/aXdmiNPage", label: "Dashboard" },
+    { href: "/aXdmiNPage/postProduct", label: "New Products" },
+    { href: "/aXdmiNPage/products", label: "Manage Products" },
+    { href: "/aXdmiNPage/users", label: "Users" },
+    { href: "/aXdmiNPage/message", label: "Messages" },
+    { href: "/aXdmiNPage/setting", label: "Settings" },
   ];
 
   
@@ -93,7 +92,7 @@ export default function AdminLayout({ children }) {
           <h1>{navItems.find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
         </header>
         
-        <div className={Style.contentWrapper}>
+        <div className={`${Style.contentWrapper} ${Style.container}`}>
           {children}
         </div>
       </main>

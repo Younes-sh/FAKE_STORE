@@ -80,7 +80,7 @@ export default function ProfilePage() {
               Edit Profile
             </button>
             <button 
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: '/login' })}
               className={`${Styles.btn} ${Styles.dangerBtn}`}
             >
               Logout

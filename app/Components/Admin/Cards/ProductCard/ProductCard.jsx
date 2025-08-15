@@ -13,7 +13,7 @@ export default function ProductCard({
     image
 }) {
   return (
-    <Link href={`/younessheikhlar/products/${_id}`} className={Style.productCard}>
+    <Link href={`/aXdmiNPage/products/${_id}`} className={Style.productCard}>
         <div className={Style.imageContainer}>
           <Image src={image} alt={section} width={16} height={9} layout="responsive" objectFit="cover" />
         </div>
