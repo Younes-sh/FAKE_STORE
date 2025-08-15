@@ -47,7 +47,7 @@ export default function NavProfile() {
           <br />
           <br />
 
-          <button type="button" onClick={() => signOut()}>Logout</button>
+          <button type="button" onClick={() => signOut({ callbackUrl: '/login' })}>Logout</button>
         </div>
       )}
     </div>
