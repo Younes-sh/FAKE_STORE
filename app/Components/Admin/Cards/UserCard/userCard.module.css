@@ -1,23 +1,77 @@
 .link {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: inherit;
 }
 
 .userCard {
-    width: 250px;
-    height: 200px;
-    margin-top: 5px;
-    border: solid 1px #ccc;
-    padding: 5px;
-    border-radius: 4px;
-    overflow: hidden;
-    p {
-        margin-top: 7px;
-        padding: 2px;
-    }
-    p:nth-child(odd) {
-        background-color: #ccc;
-    }
+  min-height: 130px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #eaeaea;
 }
 
+.userCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
 
+.userAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRole {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #4f46e5;
+  background: #eef2ff;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.userEmail {
+  margin: 8px 0 0 0;
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

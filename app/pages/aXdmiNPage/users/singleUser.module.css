@@ -1,10 +1,160 @@
-.infoContainer {
+.mainContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
 
-    p {
-        padding: 7px;
-    }
-    p:nth-child(odd) {
-        background-color: #cccccc45;
-    }
+.title {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.userStatus {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.active {
+  background-color: #e6f6ec;
+  color: #0a8f4e;
+}
+
+.inactive {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.roleBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+.backLink {
+	padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: #e0e7ff;
+  color: #830854;
+	background-color: #ffe0f6;
+	cursor: pointer;
+}
+
+.profileContainer {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.userMainInfo {
+  flex: 1;
+}
+
+.userName {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.userEmail {
+  margin: 0.25rem 0 0 0;
+  color: #666;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.detailSection {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  margin: 0 0 1rem 0;
+  color: #1a1a1a;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.detailItem {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+
+.detailLabel {
+  font-weight: 500;
+  color: #4b5563;
+  min-width: 120px;
+}
+
+.detailValue {
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .profileHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .userMainInfo {
+    text-align: center;
+  }
+  
+  .detailItem {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .detailLabel {
+    min-width: auto;
+  }
 }

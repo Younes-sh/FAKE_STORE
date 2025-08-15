@@ -12,15 +12,21 @@ export default function UserCard({
   role,
 }) {
   return (
-    <Link href={`/younessheikhlar/users/${_id}`} className={Style.link}>
+    <Link href={`/aXdmiNPage/users/${_id}`} className={Style.link}>
       <div className={Style.userCard}>
-        <p>firstname: {firstname}</p>
-        <p>lastname: {lastname}</p>
-        <p>username: {username}</p>
-        <p>email: {email}</p>
-        <p>phone: {phone}</p>
-        <p>address: {address}</p>
-        <p>role: {role}</p>
+        <div className={Style.userAvatar}>
+          {/* {firstname.charAt(0)}{lastname.charAt(0)} */}
+          <img
+            src={`https://ui-avatars.com/api/?name=${firstname}+${lastname}&background=random&size=128`}
+            alt={`${firstname} ${lastname}`}
+            className={Style.avatarImage}
+          />
+        </div>
+        <div className={Style.userInfo}>
+          <h3 className={Style.userName}>{firstname} {lastname}</h3>
+          <p className={Style.userRole}>{role}</p>
+          <p className={Style.userEmail}>{email}</p>
+        </div>
       </div>
     </Link>
   )

@@ -7,7 +7,7 @@ export default function index({ userData}) {
 
   
   return (
-    <AdminLayout>
+    <AdminLayout className="Container">
       <h1>User</h1>
       <p>This is the User page</p>
       <br/>
