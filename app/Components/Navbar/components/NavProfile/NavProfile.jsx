@@ -39,7 +39,7 @@ export default function NavProfile() {
 
           {session?.user?.role === "admin" && (
             <p>
-              <Link href="/younessheikhlar">Admin</Link>
+              <Link href="/aXdmiNPage">Admin</Link>
             </p>
           )}
 

@@ -49,7 +49,7 @@ export default function SingleItemDashboard({dataProduct}) {
     });
 
     if (res.ok) {
-      router.push(`/younessheikhlar/products/`);
+      router.push(`/aXdmiNPage/products/`);
     }
   }
 
@@ -63,7 +63,7 @@ export default function SingleItemDashboard({dataProduct}) {
 
   const handleSaveSuccess = () => {
     setShowSaveModal(false);
-    router.push(`/younessheikhlar/products/`);
+    router.push(`/aXdmiNPage/products/`);
   }
 
   return (
@@ -128,7 +128,7 @@ export default function SingleItemDashboard({dataProduct}) {
           <button className={Style.btnSave} onClick={btnSave}>
             Save
           </button>
-          <Link href={`/younessheikhlar/products`}>Back</Link>
+          <Link href={`/aXdmiNPage/products`}>Back</Link>
           <button className={Style.btnDelete} onClick={confirmDelete}>
             Delete
           </button>
