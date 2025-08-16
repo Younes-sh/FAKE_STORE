@@ -286,3 +286,48 @@
     background-color: #9d174d;
   }
 }
+
+/* اضافه به singleUser.module.css */
+.deleteButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.deleteButton:hover {
+  background-color: #fecaca;
+}
+
+.deleteButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.deleteButton::before {
+  content: "🗑";
+}
+
+/* برای حالت تاریک */
+@media (prefers-color-scheme: dark) {
+  .deleteButton {
+    background-color: #450a0a;
+    border-color: #7f1d1d;
+    color: #f87171;
+  }
+  
+  .deleteButton:hover {
+    background-color: #7f1d1d;
+  }
+}

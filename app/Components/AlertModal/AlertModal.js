@@ -1,4 +1,4 @@
-// components/AlertModal.js
+// @/Components/AlertModal.js
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import style from './AlertModal.module.css';
