@@ -11,6 +11,10 @@
   margin-bottom: 2rem;
 }
 
+.header h1 {
+  color: #1e293b94;
+}
+
 .title {
   font-size: 1.8rem;
   color: #2d3748;
@@ -329,5 +333,146 @@
   
   .deleteButton:hover {
     background-color: #7f1d1d;
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.actionButtons button {
+  /* border-radius: 0.5rem; */
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+}
+
+.changeRoleButton {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  border-color: #c7d2fe;
+}
+
+.changeRoleButton:hover {
+  background-color: #c7d2fe;
+}
+
+.blockButton {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.blockButton:hover {
+  background-color: #fecaca;
+}
+
+.unblockButton {
+  background-color: #dcfce7;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.unblockButton:hover {
+  background-color: #bbf7d0;
+}
+
+.deleteButton {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border-color: #fee2e2;
+}
+
+.deleteButton:hover {
+  background-color: #fee2e2;
+}
+
+.deleteButton::before {
+  content: "🗑";
+  margin-right: 0.5rem;
+}
+
+/* حالت غیرفعال برای همه دکمه‌ها */
+.actionButtons button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* برای حالت موبایل */
+@media (max-width: 768px) {
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* حالت تاریک */
+@media (prefers-color-scheme: dark) {
+  .changeRoleButton {
+    background-color: #1e1b4b;
+    border-color: #4338ca;
+    color: #a5b4fc;
+  }
+  
+  .changeRoleButton:hover {
+    background-color: #4338ca;
+  }
+  
+  .blockButton {
+    background-color: #450a0a;
+    border-color: #7f1d1d;
+    color: #f87171;
+  }
+  
+  .blockButton:hover {
+    background-color: #7f1d1d;
+  }
+  
+  .unblockButton {
+    background-color: #052e16;
+    border-color: #14532d;
+    color: #4ade80;
+  }
+  
+  .unblockButton:hover {
+    background-color: #14532d;
+  }
+  
+  .deleteButton {
+    background-color: #450a0a;
+    border-color: #7f1d1d;
+    color: #f87171;
+  }
+  
+  .deleteButton:hover {
+    background-color: #7f1d1d;
+  }
+}
+.deleteButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* برای حالت موبایل */
+@media (max-width: 768px) {
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .changeRoleButton,
+  .blockButton,
+  .deleteButton {
+    width: 100%;
   }
 }
