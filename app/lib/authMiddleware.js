@@ -1,22 +1,46 @@
-// middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
 import { getToken } from 'next-auth/jwt';
+import User from '@/models/User'; // مدل کاربر شما
+import dbConnect from '@/utils/dbConnect'; // اتصال به دیتابیس
 
-export const authMiddleware = (handler) => {
-  return async (req, res) => {
+export const authMiddleware = (requiredRoles = []) => {
+  return async (req, res, next) => {
     try {
-      // روش 1: بررسی توکن NextAuth.js (ترجیحی)
+      await dbConnect(); // اتصال به دیتابیس
+
+      // 1. بررسی توکن NextAuth.js
       const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
       
       if (nextAuthToken) {
-        if (nextAuthToken.role !== 'admin') {
-          return res.status(403).json({ message: 'Access denied - Admin role required' });
+        // بررسی آخرین وضعیت کاربر از دیتابیس
+        const currentUser = await User.findById(nextAuthToken.id).select('role isActive');
+        
+        if (!currentUser) {
+          return res.status(404).json({ message: 'User not found' });
         }
-        req.user = nextAuthToken;
-        return handler(req, res);
+        
+        if (!currentUser.isActive) {
+          return res.status(403).json({ message: 'Account is blocked' });
+        }
+        
+        // بررسی نقش کاربر
+        if (requiredRoles.length > 0 && !requiredRoles.includes(currentUser.role)) {
+          return res.status(403).json({ 
+            message: `Access denied - Required roles: ${requiredRoles.join(', ')}`,
+            yourRole: currentUser.role
+          });
+        }
+        
+        req.user = {
+          ...nextAuthToken,
+          role: currentUser.role, // استفاده از نقش از دیتابیس نه توکن
+          isActive: currentUser.isActive
+        };
+        
+        return next();
       }
 
-      // روش 2: بررسی توکن JWT استاندارد (برای سازگاری با سیستم‌های قدیمی)
+      // 2. بررسی توکن JWT استاندارد
       const authHeader = req.headers.authorization;
       if (!authHeader) {
         return res.status(401).json({ message: 'Authorization header missing' });
@@ -29,25 +53,38 @@ export const authMiddleware = (handler) => {
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
-      if (!decoded.role || decoded.role !== 'admin') {
+      // بررسی آخرین وضعیت کاربر از دیتابیس
+      const currentUser = await User.findById(decoded.id).select('role isActive');
+      
+      if (!currentUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      if (!currentUser.isActive) {
+        return res.status(403).json({ message: 'Account is blocked' });
+      }
+      
+      // بررسی نقش مورد نیاز
+      if (requiredRoles.length > 0 && !requiredRoles.includes(currentUser.role)) {
         return res.status(403).json({ 
-          message: 'Access denied - Invalid privileges',
-          details: 'User role does not have admin access'
+          message: `Access denied - Required roles: ${requiredRoles.join(', ')}`,
+          yourRole: currentUser.role
         });
       }
 
-      // اضافه کردن اطلاعات کاربر به درخواست
+      // به‌روزرسانی اطلاعات کاربر با آخرین وضعیت از دیتابیس
       req.user = {
-        id: decoded.id,
+        id: currentUser._id,
         email: decoded.email,
-        role: decoded.role,
+        role: currentUser.role, // استفاده از نقش از دیتابیس
+        isActive: currentUser.isActive,
         username: decoded.username
       };
 
-      // لاگ برای بررسی‌های امنیتی
-      console.log(`Admin access granted to: ${decoded.email}`);
+      // لاگ دسترسی
+      console.log(`Access granted to: ${decoded.email} with role: ${currentUser.role}`);
 
-      return handler(req, res);
+      return next();
     } catch (error) {
       console.error('Authentication error:', error.message);
       
@@ -55,26 +92,29 @@ export const authMiddleware = (handler) => {
       if (error.name === 'TokenExpiredError') {
         return res.status(401).json({ 
           message: 'Session expired',
-          solution: 'Please refresh your token'
+          solution: 'Please login again',
+          errorCode: 'TOKEN_EXPIRED'
         });
       }
       
       if (error.name === 'JsonWebTokenError') {
         return res.status(401).json({ 
           message: 'Invalid token',
-          solution: 'Please login again'
+          solution: 'Please login again',
+          errorCode: 'INVALID_TOKEN'
         });
       }
 
       return res.status(500).json({ 
         message: 'Authentication failed',
-        technicalDetails: error.message 
+        technicalDetails: error.message,
+        errorCode: 'AUTH_ERROR'
       });
     }
   };
 };
 
-// میدلور برای بررسی API Key در صورت نیاز
+// میدلور برای بررسی API Key
 export const apiKeyMiddleware = (handler) => {
   return async (req, res) => {
     const apiKey = req.headers['x-api-key'];
@@ -82,7 +122,8 @@ export const apiKeyMiddleware = (handler) => {
     if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
       return res.status(401).json({ 
         message: 'Invalid API Key',
-        documentation: 'https://example.com/api-docs' 
+        documentation: 'https://example.com/api-docs',
+        errorCode: 'INVALID_API_KEY'
       });
     }
     
