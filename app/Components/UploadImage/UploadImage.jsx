@@ -113,7 +113,7 @@ export default function UploadImage({ onUploaded }) {
           />
           <label htmlFor="upload-input" className={Style.fileInputLabel}>
             <span className={Style.fileInputText}>
-              {file ? file.name : 'Select file'}
+              {/* {file ? file.name : 'Select file'} */}
             </span>
             <span className={Style.fileInputButton}>
               {file ? 'Change file' : 'Choose file'}

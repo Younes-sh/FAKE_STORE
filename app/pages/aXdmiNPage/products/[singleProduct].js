@@ -4,7 +4,8 @@ import Image from "next/image";
 import Style from './singleItem.module.css';
 import Link from "next/link";
 import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
-import {AlertModal} from "@/Components/AlertModal/AlertModal"; // مسیر صحیح به کامپوننت AlertModal
+import {AlertModal} from "@/Components/AlertModal/AlertModal";
+import UploadImage from "@/Components/UploadImage/UploadImage"; // اضافه کردن کامپوننت UploadImage
 
 export default function SingleItemDashboard({dataProduct}) {
   const [productName, setProductName] = useState(dataProduct.productName);
@@ -19,6 +20,10 @@ export default function SingleItemDashboard({dataProduct}) {
   const IDProduct = useRouter();
   const ID = IDProduct.query.singleProduct;
   const router = useRouter();
+
+  const handleImageUploaded = (imageUrl) => {
+    setImage(imageUrl);
+  };
 
   const btnSave = async () => {
     const res = await fetch(`/api/products/${ID}`, {
@@ -71,14 +76,18 @@ export default function SingleItemDashboard({dataProduct}) {
       <div className="container main">
         <div className={Style.singleItemPage}>
           <div className={Style.image}>
-            <Image 
-              src={dataProduct.image} 
-              alt={dataProduct.section} 
-              width={16} 
-              height={9} 
-              layout="responsive" 
-              objectFit="cover" 
-            />
+            {image ? (
+              <Image 
+                src={image} 
+                alt={productName} 
+                width={16} 
+                height={9} 
+                layout="responsive" 
+                objectFit="cover" 
+              />
+            ) : (
+              <div className={Style.placeholderImage}>No Image</div>
+            )}
           </div>
           
           <div className={Style.textContainer}>
@@ -104,8 +113,19 @@ export default function SingleItemDashboard({dataProduct}) {
               </label>
 
               <label>
-                Image
-                <input type="text" onChange={(e) => setImage(e.target.value)} value={image} />
+                Product Image
+                <UploadImage onUploaded={handleImageUploaded} />
+                {image && (
+                  <div className={Style.imagePreviewContainer}>
+                    <button
+                      type="button"
+                      className={Style.removeImageButton}
+                      onClick={() => setImage('')}
+                    >
+                      Remove Current Image
+                    </button>
+                  </div>
+                )}
               </label>
 
               <label>
