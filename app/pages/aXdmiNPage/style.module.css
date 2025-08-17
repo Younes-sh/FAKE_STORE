@@ -1,31 +1,15 @@
-.adminDashboard {
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+/* موجودهای قبلی: .card .title .chartWrapper ... */
+
+/* گرید سه‌تایی پایین داشبورد */
+.grid3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* ریسپانسیو */
+@media (min-width: 900px) {
+  .grid3 {
+    grid-template-columns: 1fr 1fr 1fr;
   }
-  
-  .dashboardTitle {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: #2d3748;
-  }
-  
-  .statsGrid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  @media (min-width: 768px) {
-    .statsGrid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .statsGrid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
+}
