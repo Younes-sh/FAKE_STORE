@@ -1,6 +1,15 @@
 import { model, models, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const AddressSchema = new Schema({
+  street: { type: String, default: '' },
+  city: { type: String, default: '' },
+  postalCode: { type: String, default: '' },
+  number: { type: String, default: '' },
+  floor: { type: String, default: '' },
+  country: { type: String, default: '' },
+}, { _id: false });
+
 const UserSchema = new Schema(
   {
     firstname: {
@@ -27,7 +36,7 @@ const UserSchema = new Schema(
       trim: true,
       lowercase: true,
       match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
         'Please enter a valid email',
       ],
     },
@@ -42,35 +51,16 @@ const UserSchema = new Schema(
       trim: true,
       maxlength: [20, 'Phone number too long'],
     },
-    address: {
-      street: { type: String, default: '' },
-      city: { type: String, default: '' },
-      postalCode: { type: String, default: '' },
-      number: { type: String, default: '' },
-      floor: { type: String, default: '' },
-      country: { type: String, default: '' }
-    },
+    address: AddressSchema,
 
     role: {
       type: String,
       default: 'user',
-      enum: {
-        values: ['user', 'admin'],
-        message: 'User role is not valid',
-      },
+      enum: ['user', 'admin'],
     },
     isActive: {
       type: Boolean,
       default: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      immutable: true,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
@@ -80,10 +70,9 @@ const UserSchema = new Schema(
   }
 );
 
-// 🔐 هش کردن رمز عبور قبل از ذخیره در DB
+// 🔐 هش کردن رمز
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next(); // اگر پسورد تغییر نکرد، هش نکن
-
+  if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -100,8 +89,8 @@ UserSchema.virtual('fullName').get(function () {
 });
 
 // 🔍 ایندکس‌ها
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ username: 1 }, { unique: true });
 
 const User = models.User || model('User', UserSchema);
 export default User;
