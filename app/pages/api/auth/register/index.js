@@ -2,12 +2,12 @@
 
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
-import { hash } from "bcryptjs";
+import { hash as bcryptHash } from "bcryptjs";
+import { sendVerificationCode } from "@/lib/mailer";
+import { generate6DigitCode } from "@/lib/verifyCode";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
 
   const { username, email, password } = req.body;
 
@@ -28,31 +28,27 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
 
-    // بررسی وجود ایمیل تکراری
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(422).json({ message: "This email is already registered" });
-    }
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] }).select('+verificationCodeHash +verificationExpires');
+    if (existingUser) return res.status(422).json({ message: "این ایمیل یا نام‌کاربری قبلاً ثبت شده است." });
 
-    // هش کردن پسورد
-    // const hashedPassword = await hash(password, 12);
+    const newUser = new User({ username, email, password });
 
-    // ایجاد کاربر جدید
-    const newUser = new User({
-      username,
-      email,
-      password,
-      createdAt: new Date(),
-    });
+    const code = generate6DigitCode();
+    const hash = await bcryptHash(code, 10);      // ✅ حالا تعریف شده
+    newUser.verificationCodeHash = hash;
+    newUser.verificationExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     await newUser.save();
+    await sendVerificationCode({ to: email, code });
 
     return res.status(201).json({
-      message: "User created successfully",
-      userId: newUser._id,
+      message: "کاربر ایجاد شد. کُد تأیید به ایمیل ارسال شد.",
+      email,
+      next: `/verify?email=${encodeURIComponent(email)}`
     });
   } catch (err) {
     console.error("Registration error:", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+
