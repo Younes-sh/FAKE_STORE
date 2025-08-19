@@ -51,7 +51,11 @@ const UserSchema = new Schema(
       trim: true,
       maxlength: [20, 'Phone number too long'],
     },
-    address: AddressSchema,
+    // داخل UserSchema:
+    address: {
+      type: AddressSchema,
+      default: () => ({}),   // مهم: خودِ address همیشه یک آبجکت باشد
+    },
 
     role: {
       type: String,
@@ -62,6 +66,11 @@ const UserSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    // اطلاعات سرویس ایمیل
+    emailVerified: { type: Date, default: null },
+    verificationCodeHash: { type: String, select: false },
+    verificationExpires: { type: Date, select: false },
+    verificationAttempts: { type: Number, default: 0, select: false },
   },
   {
     timestamps: true,
