@@ -23,6 +23,10 @@ export const authOptions = {
             throw new Error("No user found with this email");
           }
 
+          // 🚫 جلوگیری از ورود بدون تأیید ایمیل
+          if (!user.emailVerified) {
+            throw new Error("Please verify your email before logging in");
+          }
           // بررسی صحت رمز عبور
           const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
