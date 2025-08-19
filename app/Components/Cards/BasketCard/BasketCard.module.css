@@ -40,7 +40,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-
+        
         .btnRemove {
             background-color: transparent;
         }
@@ -55,6 +55,7 @@
         display: flex;
         flex-direction: column;
         /* justify-content: space-around; */
+        
     
         .counter {
             display: flex;
@@ -64,9 +65,11 @@
             border-bottom: solid 2px #000;
             border-radius: 20px;
             overflow: hidden;
+                margin-top: 30px;
             button {
                 width: 30%;
             }
+            
         }
         .deacreseBtn {
             background-color: rgb(241, 219, 18);

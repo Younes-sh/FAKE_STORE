@@ -7,10 +7,13 @@ import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { useContext } from "react";
 import { AppContext } from "@/pages/_app";
+import { AlertModal } from "@/Components/AlertModal/AlertModal";
+import { useState } from "react";
 
 export default function BasketCard({ _id, productName, price, image, count, totalPrice , refreshCart }) {
   const router = useRouter();
   const { setAddProduct, setAddToCard } = useContext(AppContext);
+  const [showAlert, setShowAlert] = useState(false);
 
 
   const increaseItem = async () => {
@@ -88,7 +91,9 @@ export default function BasketCard({ _id, productName, price, image, count, tota
     const productLink = `${window.location.origin}/products/${_id}`;
     try {
       await navigator.clipboard.writeText(productLink);
-      alert('لینک محصول کپی شد!');
+      setShowAlert(true)
+      // Optionally, you can show a success message or alert
+
     } catch (err) {
       console.error('Failed to copy text: ', err);
     }
@@ -141,7 +146,9 @@ export default function BasketCard({ _id, productName, price, image, count, tota
             <p><b>{count}</b></p>
             <button className={Style.increaseBtn} onClick={increaseItem}>+</button>
           </div>
-          <div className={Style.Btn}>
+
+          {/* The buy button is hidden because the button event is not complete. */}
+          <div className={Style.Btn} style={{ visibility: "hidden" }}>
             <button className={Style.btnBuy} onClick={checkoutHandler}>Buy</button>
           </div>
         </div>
@@ -151,6 +158,15 @@ export default function BasketCard({ _id, productName, price, image, count, tota
           <button className={Style.btnRemove} onClick={handleShareClick}>Share</button>
         </div>
       </div>
+      <AlertModal
+        isOpen={showAlert}  // استفاده از isOpen به جای show
+        onClose={() => setShowAlert(false)}
+        title="Link copied."
+        message="Product link copied successfully!"
+        confirmText="OK"
+        showCancel={false} // غیرفعال کردن دکمه cancel
+        type="success" // تعیین نوع modal به success
+      />
     </div>
   );
 }
