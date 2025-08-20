@@ -15,14 +15,24 @@ export async function sendVerificationCode({ to, code }) {
   const appName = 'Jewelry store';
   const subject = `${appName} - Your verification code`;
   const html = `
-    <div style="font-family:Tahoma,Verdana,Arial,sans-serif;max-width:500px;margin:auto">
-      <h2>${appName}</h2>
-      <p>Hello,</p>
-      <p>Your verification code is:</p>
-      <div style="font-size:28px;letter-spacing:6px;font-weight:bold">${code}</div>
-      <p>This code is valid for 15 minutes.</p>
+  <div style="font-family: Tahoma, Verdana, Arial, sans-serif; max-width: 500px; margin: auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid #eee;">
+    <div style="background: linear-gradient(135deg, #b38bff, #805ad5); color: white; padding: 20px; text-align: center;">
+      <h2 style="margin: 0; font-size: 22px;">${appName}</h2>
     </div>
-  `;
+    <div style="padding: 25px; color: #333; text-align: center;">
+      <p style="font-size: 16px; margin-bottom: 12px;">Hello,</p>
+      <p style="font-size: 16px; margin-bottom: 20px;">Your verification code is:</p>
+      <div style="font-size: 32px; letter-spacing: 8px; font-weight: bold; background: #f9f9f9; padding: 15px 20px; border-radius: 8px; display: inline-block; margin-bottom: 20px; border: 1px dashed #805ad5;">
+        ${code}
+      </div>
+      <p style="font-size: 14px; color: #666; margin-top: 15px;">This code is valid for <b>15 minutes</b>.</p>
+    </div>
+    <div style="background: #f5f5f5; text-align: center; padding: 15px; font-size: 12px; color: #777;">
+      Please do not share this code with anyone.
+    </div>
+  </div>
+`;
+
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to,
