@@ -18,19 +18,19 @@ export default async function handler(req, res) {
 
     // چک انقضا
     if (!user.verificationExpires || user.verificationExpires < new Date()) {
-      return res.status(410).json({ message: "کُد منقضی شده است. درخواست ارسال مجدد بدهید." });
+      return res.status(410).json({ message: "The code has expired. Request a resend." });
     }
 
     // محدودیت تلاش (دلخواه)
     if (user.verificationAttempts >= 5) {
-      return res.status(429).json({ message: "تعداد تلاش‌ها زیاد است. کمی بعد دوباره تلاش کنید." });
+      return res.status(429).json({ message: "Too many attempts. Please try again later." });
     }
 
     const ok = await bcrypt.compare(code, user.verificationCodeHash || "");
     if (!ok) {
       user.verificationAttempts += 1;
       await user.save();
-      return res.status(401).json({ message: "کُد نادرست است." });
+      return res.status(401).json({ message: "Invalid code." });
     }
 
     // موفق: تأیید ایمیل - Successful: Email verification

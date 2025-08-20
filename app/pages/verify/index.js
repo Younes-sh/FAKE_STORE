@@ -36,7 +36,7 @@ export default function VerifyPage() {
     setMsg("");
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/resend-code", {
+      const res = await fetch("/api/auth/resendCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
