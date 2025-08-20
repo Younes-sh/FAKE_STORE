@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const canResendAt = user._resendAt?.getTime?.() || 0;
     if (now - canResendAt < 60 * 1000) {
       const wait = Math.ceil((60 * 1000 - (now - canResendAt)) / 1000);
-      return res.status(429).json({ message: `لطفاً ${wait} ثانیه صبر کنید.` });
+      return res.status(429).json({ message: `Please wait ${wait} seconds.` });
     }
 
     const code = generate6DigitCode();
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     await user.save();
 
     await sendVerificationCode({ to: email, code });
-    return res.status(200).json({ message: "کُد جدید ارسال شد." });
+    return res.status(200).json({ message: "New code sent." });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: "Internal server error" });
