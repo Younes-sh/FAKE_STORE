@@ -104,10 +104,16 @@ export default function LoginPage() {
             </div>
           </form>
           <div className={styles.registerLink}>
-            <Link href="/register">
+            <Link href="/register" className={styles.registerLinkText}>
               <span>{`Don't have an account? Register`}</span>
             </Link>
+            <br />
+            <Link href="/forgetPassword" className={styles.forgetPasswordLinkText}>
+              <span>Forgot your password?</span>
+            </Link>
           </div>
+
+          
         </div>
       </div>
     </div>

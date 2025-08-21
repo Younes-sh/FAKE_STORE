@@ -51,12 +51,10 @@ const UserSchema = new Schema(
       trim: true,
       maxlength: [20, 'Phone number too long'],
     },
-    // داخل UserSchema:
     address: {
       type: AddressSchema,
-      default: () => ({}),   // مهم: خودِ address همیشه یک آبجکت باشد
+      default: () => ({}),
     },
-
     role: {
       type: String,
       default: 'user',
@@ -71,6 +69,16 @@ const UserSchema = new Schema(
     verificationCodeHash: { type: String, select: false },
     verificationExpires: { type: Date, select: false },
     verificationAttempts: { type: Number, default: 0, select: false },
+    
+    // 🔑 فیلدهای جدید برای بازیابی رمز عبور
+    resetPasswordToken: { 
+      type: String, 
+      select: false 
+    },
+    resetPasswordExpires: { 
+      type: Date, 
+      select: false 
+    },
   },
   {
     timestamps: true,
@@ -100,6 +108,7 @@ UserSchema.virtual('fullName').get(function () {
 // 🔍 ایندکس‌ها
 UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ username: 1 }, { unique: true });
+UserSchema.index({ resetPasswordExpires: 1 }); // ایندکس جدید برای پاکسازی خودکار
 
 const User = models.User || model('User', UserSchema);
 export default User;
