@@ -123,6 +123,21 @@
   text-decoration: underline;
 }
 
+.registerLinkText {
+  color: #6366f1;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+
+.forgetPasswordLinkText {
+  color: #6366f1;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
 @media (max-width: 768px) {
   .loginContainer {
     flex-direction: column;
