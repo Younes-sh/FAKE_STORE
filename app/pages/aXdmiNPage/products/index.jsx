@@ -3,13 +3,11 @@ import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
 import ProductCard from '@/Components/Admin/Cards/ProductCard/ProductCard';
 import InputSearch from '@/Components/Input/Input';
 import ProductFilter from '@/Components/Filter/ProductFilter';
+import { fetcher } from '@/utils/fetcher';
 
 export default  function index({ productData }) {
   const [filteredProducts, setFilteredProducts] = useState(productData);
 
-
-
-  
   return (
     <AdminLayout>
       <h1>Products</h1>
@@ -33,9 +31,16 @@ export default  function index({ productData }) {
 }
 
 export async function getServerSideProps() {
-  const res = await fetch('http://localhost:3000/api/products');
-  const data = await res.json();
-  return {
-    props: { productData: data.products}
+  try {
+    const data = await fetcher('/api/products');
+
+    return {
+      props: { productData: data.products || [] },
+    };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return {
+      props: { productData: [] }, // اگر خطا رخ دهد، آرایه خالی برگردان
+    };
   }
 }

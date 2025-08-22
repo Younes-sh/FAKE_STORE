@@ -15,6 +15,19 @@ export default function ProfilePage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const router = useRouter();
 
+   // تابع برای حذف اکانت
+  const handleDeleteAccount = async () => {
+    try {
+      // در اینجا باید API call برای حذف اکانت انجام شود
+      // await deleteAccountAPI(session.user.id);
+      
+      // پس از حذف اکانت، کاربر را خارج کرده و به صفحه اصلی هدایت کنید
+      await signOut({ callbackUrl: '/' });
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
+  };
+
   if (!session) {
     return (
       <div className={Styles.profileContainer}>
