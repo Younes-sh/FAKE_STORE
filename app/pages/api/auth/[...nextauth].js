@@ -17,7 +17,7 @@ export const authOptions = {
           await dbConnect();
 
           // یافتن کاربر با ایمیل وارد شده
-          const user = await User.findOne({ email: credentials.email }).select("+password");
+          const user = await User.findOne({ email: credentials.email }).select("+password +emailVerified +isActive");
           
           if (!user) {
             throw new Error("No user found with this email");
