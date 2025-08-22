@@ -3,6 +3,7 @@ import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
 import Style from './style.module.css';
 import { AlertModal } from '@/Components/AlertModal/AlertModal';
 import UploadImage from '@/Components/UploadImage/UploadImage';
+import { fetcher } from '@/utils/fetcher';
 
 export default function PostProduct() {
   const [productName, setProductName] = useState('');
@@ -36,8 +37,8 @@ export default function PostProduct() {
 
     try {
       if (!image) throw new Error('لطفاً ابتدا تصویر را آپلود کنید.');
-
-      const res = await fetch('/api/products', {
+      // fetcher is a utility function for making API requests (/utils/fetcher.js)!
+      const res = await fetcher('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -50,12 +51,7 @@ export default function PostProduct() {
         }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Failed to add product');
-      }
-
-      await res.json();
+     
       setShowSuccessModal(true);
       resetForm();
     } catch (error) {
