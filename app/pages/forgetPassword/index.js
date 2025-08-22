@@ -34,7 +34,7 @@ export default function ForgotPassword() {
         setError(data.error || 'An error occurred');
       }
     } catch (jsonError) {
-      // اگر parse کردن JSON失敗 شد
+      // اگر parse کردن JSON شد
       if (response.ok) {
         setMessage("A password reset link has been sent to your email.");
       } else {
