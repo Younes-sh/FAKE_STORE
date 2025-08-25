@@ -1,6 +1,6 @@
 /* style.module.css */
 
-/* کانتینر کارت */
+/* استایل‌های عمومی */
 .card {
   background: #ffffff;
   padding: 16px;
@@ -8,6 +8,9 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .card:hover {
@@ -15,149 +18,210 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
-/* عنوان هر چارت */
 .title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 12px;
   color: #333;
+  text-align: center;
 }
 
-/* کانتینر عمومی برای ریسپانسیو */
 .chartWrapper {
   width: 100%;
-  height: 300px;
+  flex: 1;
+  min-height: 250px;
+  position: relative;
 }
 
-/* رنگ‌های عمومی برای چارت‌ها */
-.colorPrimary {
-  stroke: #4f46e5;
-  fill: rgba(79, 70, 229, 0.2);
-}
-
-.colorSecondary {
-  stroke: #10b981;
-  fill: rgba(16, 185, 129, 0.2);
-}
-
-.colorDanger {
-  stroke: #ef4444;
-  fill: rgba(239, 68, 68, 0.2);
-}
-
-/* برای Pie Chart */
-.legend {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #555;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-
-/*  */
-
-
-/* style.module.css */
-
-/* کانتینر کارت */
-.card {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-}
-
-/* عنوان هر چارت */
-.title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-/* کانتینر عمومی برای ریسپانسیو */
-.chartWrapper {
-  width: 100%;
-  height: 300px;
-}
-
-/* رنگ‌های عمومی برای چارت‌ها */
-.colorPrimary {
-  stroke: #4f46e5;
-  fill: rgba(79, 70, 229, 0.2);
-}
-
-.colorSecondary {
-  stroke: #10b981;
-  fill: rgba(16, 185, 129, 0.2);
-}
-
-.colorDanger {
-  stroke: #ef4444;
-  fill: rgba(239, 68, 68, 0.2);
-}
-
-/* برای Pie Chart */
-.legend {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #555;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-/* استایل‌های جدید برای صفحه ادمین */
+/* استایل‌های برای صفحه ادمین */
 .grid3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 24px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .grid2 {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  margin-top: 24px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .chartContainer {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  height: 400px;
 }
 
 .chartLoading {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 250px;
+  height: 100%;
   color: #666;
   font-size: 14px;
+  text-align: center;
+  padding: 20px;
 }
 
-@media (max-width: 768px) {
-  .grid3 {
-    grid-template-columns: 1fr;
+/* استایل‌های برای نمودارها و ابزارها */
+.legend {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #555;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.customTooltip {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: inherit;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.colorPrimary {
+  stroke: #4f46e5;
+  fill: rgba(79, 70, 229, 0.2);
+}
+
+.colorSecondary {
+  stroke: #10b981;
+  fill: rgba(16, 185, 129, 0.2);
+}
+
+.colorDanger {
+  stroke: #ef4444;
+  fill: rgba(239, 68, 68, 0.2);
+}
+
+/* موبایل (صفحه کوچک) */
+@media (max-width: 480px) {
+  .card {
+    padding: 12px;
+    margin-bottom: 16px;
   }
   
-  .grid2 {
-    grid-template-columns: 1fr;
+  .title {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .chartWrapper {
+    min-height: 220px;
   }
   
   .chartContainer {
-    padding: 16px;
+    padding: 12px;
+    height: 320px;
+  }
+  
+  .legend {
+    font-size: 10px;
+    gap: 8px;
+  }
+  
+  .grid3,
+  .grid2 {
+    gap: 12px;
+    margin-top: 12px;
+  }
+}
+
+/* تبلت (صفحه متوسط) */
+@media (min-width: 768px) {
+  .grid2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .chartContainer {
+    height: 350px;
+    padding: 18px;
+  }
+  
+  .title {
+    font-size: 17px;
+  }
+}
+
+/* دسکتاپ (صفحه بزرگ) */
+@media (min-width: 1024px) {
+  .grid3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .chartContainer {
+    height: 380px;
+    padding: 20px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
+  
+  .legend {
+    font-size: 13px;
+  }
+}
+
+/* صفحه بسیار بزرگ */
+@media (min-width: 1440px) {
+  .chartContainer {
+    height: 400px;
+    padding: 24px;
+  }
+  
+  .title {
+    font-size: 20px;
+  }
+}
+
+/* استایل‌های خاص برای محورها در دستگاه‌های کوچک */
+@media (max-width: 768px) {
+  /* کاهش اندازه فونت محورها در موبایل */
+  :global(.recharts-x-axis .recharts-cartesian-axis-tick text),
+  :global(.recharts-y-axis .recharts-cartesian-axis-tick text) {
+    font-size: 10px !important;
+  }
+  
+  /* کاهش فاصله بین آیتم‌های Legend */
+  :global(.recharts-legend-wrapper) {
+    padding-top: 10px;
+  }
+  
+  :global(.recharts-legend-item) {
+    margin-right: 8px !important;
+  }
+}
+
+/* بهبود نمایش Tooltip در دستگاه‌های لمسی */
+@media (hover: none) and (pointer: coarse) {
+  :global(.recharts-tooltip-wrapper) {
+    z-index: 1000;
+    transform: scale(0.9);
+  }
+}
+
+/* حالت افقی برای Legend در دستگاه‌های کوچک */
+@media (max-width: 480px) {
+  :global(.recharts-default-legend) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  :global(.recharts-legend-item) {
+    margin-right: 5px !important;
+    margin-bottom: 5px;
   }
 }

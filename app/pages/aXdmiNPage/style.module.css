@@ -1,17 +1,29 @@
-/* موجودهای قبلی: .card .title .chartWrapper ... */
-
 /* گرید سه‌تایی پایین داشبورد */
+/* استایل‌های پایه */
 .grid3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 16px;
+  margin-top: 16px;
 }
 
-/* ریسپانسیو */
+/* صفحه‌های متوسط و بزرگ */
 @media (min-width: 900px) {
   .grid3 {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
   }
 }
 
+/* صفحه‌های کوچک (موبایل) */
+@media (max-width: 599px) {
+  .grid3 {
+    gap: 12px;
+  }
+  
+  .grid3 .chartContainer {
+    min-height: 300px;
+  }
+}
+ 
 

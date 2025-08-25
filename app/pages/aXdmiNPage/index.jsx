@@ -3,6 +3,7 @@ import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
 import { getSession, useSession } from "next-auth/react";
 import style from "./style.module.css";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 // کامپوننت‌های داینامیک
 const UserMonthlyGrowth = dynamic(() => import("@/components/charts/UserMonthlyGrowth/UserMonthlyGrowth"), { 
@@ -63,10 +64,10 @@ export default function AdminPage({ session: ssrSession }) {
   const isAdmin = userRole === "admin";
   const isEditor = userRole === "editor";
 
-  return (
+   return (
     <AdminLayout>
-      <div style={{ padding: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>
+      <div className={style.container}>
+        <h1 className={style.title}>
           {isAdmin ? "Admin Dashboard" : "Editor Dashboard"}
         </h1>
         
