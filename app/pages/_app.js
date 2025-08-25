@@ -1,64 +1,87 @@
-// _app.js
 import "@/styles/globals.css";
 import NavbarBeforLogin from "@/Components/Navbar/NavbarBeforLogin";
 import NavbarAfterLogin from "@/Components/Navbar/NavbarAfterLogin";
-import { SessionProvider, useSession } from 'next-auth/react'; // useSession اینجا هم لازم است
-import { useState, createContext } from "react";
+import { SessionProvider, useSession } from "next-auth/react";
+import { useState, createContext, useEffect } from "react";
+import { io } from "socket.io-client";
+import { signOut } from "next-auth/react";
+
 
 export const AppContext = createContext();
+let socket;
 
-// کامپوننت Layout
 function Layout({ children }) {
-  const { data: session, status } = useSession(); // دوباره از useSession استفاده می کنیم
+  const { data: session, status, update } = useSession();
+  const [connected, setConnected] = useState(false);
 
-  // این تابع تصمیم می گیرد که کدام Navbar نمایش داده شود
-  const renderNavbar = () => {
-    if (status === "loading") {
-      // در زمان بارگذاری (شامل SSR اولیه), می توانید یک نوبار پیش فرض یا null برگردانید.
-      // مهم است که این وضعیت در SSR و CSR سازگار باشد.
-      // برای رفع مشکل فعلی، می توانیم فرض کنیم تا زمانی که سشن لود نشده، کاربر لاگین نیست.
-      return <NavbarBeforLogin />; // یا null اگر نمی خواهید چیزی در زمان لودینگ نمایش دهید
-    } else if (session) {
-      return <NavbarAfterLogin />;
-    } else {
-      return <NavbarBeforLogin />;
+
+useEffect(() => {
+  if (!session?.user?.id) return;
+  if (!socket) socket = io({ path: "/api/socket" });
+
+  if (!connected) {
+    socket.emit("join", session.user.id);
+    setConnected(true);
+  }
+
+  socket.on("role-changed", async () => {
+    console.log("Role changed, updating session...");
+    await update();
+  });
+
+  socket.on("user-delete", (data) => {
+    if (data._id === session.user.id) {
+      // حذف کاربر → ساین اوت اجباری
+      signOut({ callbackUrl: "/login" });
     }
+  });
+
+  return () => {
+    socket.off("role-changed");
+    socket.off("user-delete");
+  };
+}, [session, update, connected]);
+
+
+  const renderNavbar = () => {
+    if (status === "loading") return <NavbarBeforLogin />;
+    return session ? <NavbarAfterLogin /> : <NavbarBeforLogin />;
   };
 
   return (
     <>
-      {renderNavbar()} {/* فراخوانی تابع برای نمایش نوبار */}
+      {renderNavbar()}
       <div className="app">{children}</div>
     </>
   );
 }
 
-// کامپوننت AppContent
-function AppContent({ Component, pageProps }) { // دیگر نیازی به sessionData به عنوان prop نیست
+function AppContent({ Component, pageProps }) {
   const [addToCard, setAddToCard] = useState(0);
   const [addProduct, setAddProduct] = useState([]);
   const [orders, setOrders] = useState([]);
-  // const { status } = useSession(); // این خط را حذف کنید، زیرا در Layout از آن استفاده می شود
 
   return (
-    <AppContext.Provider value={{
-      addToCard, setAddToCard,
-      addProduct, setAddProduct,
-      orders, setOrders,
-    }}>
-      <Layout> {/* Layout دیگر نیازی به prop sessionData ندارد */}
+    <AppContext.Provider
+      value={{
+        addToCard,
+        setAddToCard,
+        addProduct,
+        setAddProduct,
+        orders,
+        setOrders,
+      }}
+    >
+      <Layout>
         <Component {...pageProps} />
       </Layout>
     </AppContext.Provider>
   );
 }
 
-// کامپوننت اصلی App
 export default function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
-      {/* در اینجا فقط session را به SessionProvider می دهیم. */}
-      {/* AppContent دیگر نیازی به sessionData به عنوان prop ندارد. */}
       <AppContent Component={Component} pageProps={pageProps} />
     </SessionProvider>
   );
