@@ -3,8 +3,8 @@
 /* گرید سه‌تایی پایین داشبورد */
 .grid3 {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 /* ریسپانسیو */
@@ -13,3 +13,5 @@
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
+
+
