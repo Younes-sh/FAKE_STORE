@@ -182,7 +182,7 @@ export default function SingleItem({ dataProduct }) {
 
 export async function getServerSideProps(context) {
   const { singleItem } = context.params;
-  const res = await fetch(`${process.env.URL}/api/products/${singleItem}`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/products/${singleItem}`);
   const data = await res.json();
   return {
     props: { dataProduct: data.data },
