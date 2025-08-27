@@ -32,7 +32,7 @@ const PaymentPage = () => {
   // Fetch cart from API
   const fetchCart = async () => {
     try {
-      const res = await fetch('/api/cart');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`);
       if (!res.ok) throw new Error('Error fetching cart');
       const data = await res.json();
       setCartItems(data.cart?.products || []);
@@ -47,7 +47,7 @@ const PaymentPage = () => {
   // Fetch user address
   const fetchUserAddress = async () => {
     try {
-      const res = await fetch('/api/getUser');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/getUser`);
       if (!res.ok) throw new Error('Error fetching user address');
       const data = await res.json();
       console.log('User data from API:', data);
@@ -79,7 +79,7 @@ const PaymentPage = () => {
   useEffect(() => {
     if (paymentSuccess) {
       const timeout = setTimeout(() => {
-        router.push('/profile');
+        router.push(`${process.env.NEXT_PUBLIC_APP_URL}/profile`);
       }, 3000);
       return () => clearTimeout(timeout);
     }
@@ -130,7 +130,7 @@ const PaymentPage = () => {
     });
 
     try {
-      const orderResponse = await fetch('/api/orders/create', {
+      const orderResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/orders/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

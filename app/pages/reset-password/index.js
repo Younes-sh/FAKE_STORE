@@ -18,7 +18,7 @@ export default function ResetPassword() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/verify-reset-token', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-reset-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export default function ResetPassword() {
         // ذخیره ایمیل و توکن برای صفحه بعد
         localStorage.setItem('resetEmail', email);
         localStorage.setItem('resetToken', token);
-        router.push('/set-new-password');
+        router.push(`${process.env.NEXT_PUBLIC_APP_URL}/set-new-password`);
       } else {
         setError(data.error || 'Invalid token');
       }
@@ -84,7 +84,7 @@ export default function ResetPassword() {
           </form>
 
           <div className={styles.link}>
-            <Link href="/login">
+            <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
               <span>Back to login</span>
             </Link>
           </div>

@@ -24,7 +24,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export default function RegisterPage() {
         throw new Error(data.message || 'Registration failed');
       }
 
-      router.push('/verify');
+      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/verify`);
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
@@ -106,7 +106,7 @@ export default function RegisterPage() {
 
         <p className={styles.loginLink}>
           Already have an account?{' '}
-          <Link href="/login" className={styles.link}>Login</Link>
+          <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`} className={styles.link}>Login</Link>
         </p>
       </form>
     </div>

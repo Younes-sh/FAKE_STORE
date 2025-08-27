@@ -21,7 +21,7 @@ export default function SingleItem({ dataProduct }) {
 
     const checkInCart = async () => {
       try {
-        const res = await fetch('/api/cart');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`);
         if (!res.ok) return; // اگر لاگین نیست یا اروری بود، بی‌خیال
         const data = await res.json();
         const exists = (data.cart?.products || []).some(p => p._id === dataProduct._id);
@@ -41,13 +41,13 @@ export default function SingleItem({ dataProduct }) {
 
     try {
       // اول ببین الان چند تا از همین محصول توی سبد هست
-      const res = await fetch('/api/cart');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`);
       const cartData = await res.json();
       const current = cartData.cart?.products?.find(p => p._id === dataProduct._id);
 
       const nextCount = current ? current.count + 1 : 1;
 
-      const response = await fetch('/api/cart', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -169,12 +169,6 @@ export default function SingleItem({ dataProduct }) {
           {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
         </button>
         <Link href={'/products'} className={Style.btnBack}>Back to </Link>
-        {/* <button 
-          className={`${Style.button} ${Style.btnBuyNow}`}
-          onClick={buyNowHandler}
-        >
-          Buy now
-        </button> */}
       </div>
     </div>
   );

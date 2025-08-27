@@ -16,7 +16,7 @@ export default function VerifyPage() {
     setMsg("");
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/verify", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code }),
@@ -24,7 +24,7 @@ export default function VerifyPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed");
       setMsg("Email verified! You can now log in.");
-      router.push('/login')
+      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)
     } catch (err) {
       setMsg(err.message || "Error");
     } finally {
@@ -36,7 +36,7 @@ export default function VerifyPage() {
     setMsg("");
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/resendCode", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/resendCode`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

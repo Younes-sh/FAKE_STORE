@@ -13,7 +13,7 @@ export default function BasketPage() {
 
   const refreshCart = async () => {
     try {
-      const res = await fetch("/api/cart");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`);
       if (!res.ok) throw new Error("مشکلی در دریافت سبد خرید پیش آمد");
 
       const data = await res.json();

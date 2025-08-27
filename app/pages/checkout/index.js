@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await fetch('/api/cart');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`);
         const data = await res.json();
         setCartData(data.cart);
         setLoading(false);
@@ -65,7 +65,7 @@ export default function CheckoutPage() {
       const taxAmount = subtotal * 0.1;
       const totalAmount = subtotal + shippingFee + taxAmount;
 
-      const response = await fetch('/api/orders/create', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/orders/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

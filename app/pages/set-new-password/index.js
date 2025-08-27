@@ -20,7 +20,7 @@ export default function SetNewPassword() {
     const savedToken = localStorage.getItem('resetToken');
     
     if (!savedEmail || !savedToken) {
-      router.push('/forgot-password');
+      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/forgot-password`);
       return;
     }
     
@@ -45,7 +45,7 @@ export default function SetNewPassword() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/reset-password', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ export default function SetNewPassword() {
           </form>
 
           <div className={styles.link}>
-            <Link href="/login">
+            <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
               <span>Back to login</span>
             </Link>
           </div>

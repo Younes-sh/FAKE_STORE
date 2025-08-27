@@ -18,7 +18,7 @@ export default function OrderSuccess() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`/api/orders/${orderId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/orders/${orderId}`);
         if (!res.ok) throw new Error('Order not found');
         const data = await res.json();
         setOrder(data.order);

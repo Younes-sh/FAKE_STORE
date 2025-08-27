@@ -39,7 +39,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const base = process.env.URL ?? 'http://localhost:3000';
+  const base = `${process.env.NEXT_PUBLIC_APP_URL}` ?? 'http://localhost:3000';
   const res = await fetch(`${base}/api/user`);
   const data = await res.json();
 

@@ -23,7 +23,7 @@ export default function ProfilePage() {
   -------------------------- */
   useEffect(() => {
     if (session) {
-      const newSocket = io({ path: "/api/socket" });
+      const newSocket = io({ path: `${process.env.NEXT_PUBLIC_APP_URL}/api/socket` });
       setSocket(newSocket);
 
       return () => {
@@ -54,7 +54,7 @@ export default function ProfilePage() {
       if (data._id === session.user.id) {
         setIsDeleted(true); // علامتگذاری که کاربر حذف شده
         await signOut({ redirect: false }); // خروج بدون ریدایرکت خودکار
-        router.push("/login?message=account_deleted"); // ریدایرکت به صفحه login با پیام
+        router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login?message=account_deleted`); // ریدایرکت به صفحه login با پیام
       }
     });
 
@@ -69,14 +69,14 @@ export default function ProfilePage() {
   -------------------------- */
   const handleDeleteAccount = async () => {
     try {
-      const res = await fetch(`/api/user/${session.user.id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/${session.user.id}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
         setIsDeleted(true); // علامتگذاری که کاربر حذف شده
         await signOut({ redirect: false }); // خروج بدون ریدایرکت خودکار
-        router.push("/login?message=account_deleted"); // ریدایرکت به صفحه login با پیام
+        router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login?message=account_deleted`); // ریدایرکت به صفحه login با پیام
       } else {
         console.error("Failed to delete account");
       }
@@ -90,7 +90,7 @@ export default function ProfilePage() {
   -------------------------- */
   useEffect(() => {
     if (isDeleted) {
-      router.push("/login?message=account_deleted");
+      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login?message=account_deleted`);
     }
   }, [isDeleted, router]);
 
@@ -105,10 +105,10 @@ export default function ProfilePage() {
             <h2 className={Styles.sectionTitle}>Access Denied</h2>
             <p>You need to be logged in to view this page.</p>
             <div className={Styles.actions}>
-              <Link href="/login" className={`${Styles.btn} ${Styles.primaryBtn}`}>
+              <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`} className={`${Styles.btn} ${Styles.primaryBtn}`}>
                 Login
               </Link>
-              <Link href="/register" className={`${Styles.btn} ${Styles.secondaryBtn}`}>
+              <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/register`} className={`${Styles.btn} ${Styles.secondaryBtn}`}>
                 Register
               </Link>
             </div>

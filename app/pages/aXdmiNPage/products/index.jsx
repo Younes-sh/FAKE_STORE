@@ -32,7 +32,7 @@ export default  function index({ productData }) {
 
 export async function getServerSideProps() {
   try {
-    const data = await fetcher('/api/products');
+    const data = await fetcher(`${process.env.NEXT_PUBLIC_APP_URL}/api/products`);
 
     return {
       props: { productData: data.products || [] },

@@ -18,7 +18,7 @@ export default function LoginPage() {
   // اگر کاربر قبلا لاگین کرده باشد، به صفحه پروفایل هدایت می‌شود
   useEffect(() => {
   if (session) {
-    router.push('/profile');
+    router.push(`${process.env.NEXT_PUBLIC_APP_URL}/profile`);
   }
 }, [session]);
 
