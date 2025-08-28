@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import MessageCard from '@/Components/Admin/Cards/MessageCard/MessageCard';
-import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
+import MessageCard from '../../../Components/Admin/Cards/MessageCard/MessageCard';
+import AdminLayout from '../../../Components/Admin/AdminLayout/Layout';
 import styles from './messages.module.css';
 
 function Messages() {

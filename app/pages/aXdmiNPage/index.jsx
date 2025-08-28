@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
+import AdminLayout from "../../Components/Admin/AdminLayout/Layout";
 import { getSession, useSession } from "next-auth/react";
 import style from "./style.module.css";
 import { useState, useEffect } from "react";
