@@ -5,33 +5,33 @@ import style from "./style.module.css";
 import { useState, useEffect } from "react";
 
 // کامپوننت‌های داینامیک
-const UserMonthlyGrowth = dynamic(() => import("@/components/charts/UserMonthlyGrowth/UserMonthlyGrowth"), { 
+const UserMonthlyGrowth = dynamic(() => import("../../../components/charts/UserMonthlyGrowth/UserMonthlyGrowth"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading user growth chart...</div>
 });
 
-const UsersByRolePie = dynamic(() => import("@/components/charts/UsersByRolePie/UsersByRolePie"), { 
+const UsersByRolePie = dynamic(() => import("../../../components/charts/UsersByRolePie/UsersByRolePie"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading user roles chart...</div>
 });
 
-const ActiveUsersPie = dynamic(() => import("@/components/charts/ActiveUsersPie/ActiveUsersPie"), { 
+const ActiveUsersPie = dynamic(() => import("../../../components/charts/ActiveUsersPie/ActiveUsersPie"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading active users chart...</div>
 });
 
-const TopCountriesBar = dynamic(() => import("@/components/charts/TopCountriesBar/TopCountriesBar"), { 
+const TopCountriesBar = dynamic(() => import("../../../components/charts/TopCountriesBar/TopCountriesBar"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading countries chart...</div>
 });
 
 // کامپوننت‌های جایگزین برای editor
-const EditorStats = dynamic(() => import("@/components/charts/EditorStats/EditorStats"), { 
+const EditorStats = dynamic(() => import("../../../components/charts/EditorStats/EditorStats"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading editor stats...</div>
 });
 
-const ContentActivity = dynamic(() => import("@/components/charts/ContentActivity/ContentActivity"), { 
+const ContentActivity = dynamic(() => import("../../../components/charts/ContentActivity/ContentActivity"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading content activity...</div>
 });
