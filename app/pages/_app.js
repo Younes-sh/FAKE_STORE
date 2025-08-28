@@ -5,6 +5,7 @@ import { SessionProvider, useSession } from "next-auth/react";
 import { useState, createContext, useEffect } from "react";
 import { io } from "socket.io-client";
 import { signOut } from "next-auth/react";
+import "../styles/globals.css";
 
 
 export const AppContext = createContext();

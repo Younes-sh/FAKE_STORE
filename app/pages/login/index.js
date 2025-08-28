@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import styles from './LoginPage.module.css';
 import Image from 'next/image';
-import loginImage from "@/public/watch.jpg"
+import loginImage from "../../../public/watch.jpg"
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

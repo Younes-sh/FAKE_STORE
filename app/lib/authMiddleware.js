@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { getToken } from 'next-auth/jwt';
-import User from '@/models/user'; // مدل کاربر شما
-import dbConnect from '@/utils/dbConnect'; // اتصال به دیتابیس
+import User from '../models/user'; // مدل کاربر شما
+import dbConnect from './dbConnect'; // اتصال به دیتابیس
 
 export const authMiddleware = (requiredRoles = []) => {
   return async (req, res, next) => {

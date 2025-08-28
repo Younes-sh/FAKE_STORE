@@ -5,7 +5,7 @@ import NavProfile from "./components/NavProfile/NavProfile";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/pages/_app";
 import Script from "next/script";
-import GEM from '@/public/asset/Logo/GEM.png';
+import GEM from '../../public/asset/Logo/GEM.png';
 import { usePathname } from "next/navigation";
 
 export default function NavbarAfterLogin() {

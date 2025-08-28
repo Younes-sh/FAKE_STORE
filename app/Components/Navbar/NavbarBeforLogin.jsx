@@ -2,7 +2,7 @@ import Style from "./navbarBeforLogin.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import GEM from '@/public/asset/Logo/GEM.png';
+import GEM from '../../public/asset/Logo/GEM.png';
 import { useState, useEffect } from "react";
 
 export default function Navbar() {

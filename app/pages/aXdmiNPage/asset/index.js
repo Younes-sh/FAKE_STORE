@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import Bracelet1 from '@/public/asset/Bracelet1.jpg';
-import Bracelet2 from '@/public/asset/Bracelet2.jpg';
-import Bracelet3 from '@/public/asset/Bracelet3.jpg';
+import Bracelet1 from '../../../public/asset/Bracelet1.jpg';
+import Bracelet2 from '../../../public/asset/Bracelet2.jpg';
+import Bracelet3 from '../../../public/asset/Bracelet3.jpg';
+
 
 export default function asset() {
   return (

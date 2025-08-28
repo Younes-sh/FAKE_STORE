@@ -1,3 +1,18 @@
+/* Reset and Base Styles */
+:root {
+  --primary-color: #4361ee;
+  --secondary-color: #3f37c9;
+  --accent-color: #4895ef;
+  --dark-color: #1a1a2e;
+  --light-color: #f8f9fa;
+  --success-color: #4cc9f0;
+  --warning-color: #f8961e;
+  --danger-color: #f72585;
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 80px;
+  --header-height: 70px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -64,20 +79,7 @@ body {
 
 /* Admin Styles css */
 
-/* Reset and Base Styles */
-:root {
-  --primary-color: #4361ee;
-  --secondary-color: #3f37c9;
-  --accent-color: #4895ef;
-  --dark-color: #1a1a2e;
-  --light-color: #f8f9fa;
-  --success-color: #4cc9f0;
-  --warning-color: #f8961e;
-  --danger-color: #f72585;
-  --sidebar-width: 250px;
-  --sidebar-collapsed-width: 80px;
-  --header-height: 70px;
-}
+
 
 * {
   margin: 0;
