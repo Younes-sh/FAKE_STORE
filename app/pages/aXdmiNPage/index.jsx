@@ -5,22 +5,22 @@ import style from "./style.module.css";
 import { useState, useEffect } from "react";
 
 // کامپوننت‌های داینامیک
-const UserMonthlyGrowth = dynamic(() => import("@/components/charts/UserMonthlyGrowth"), { 
+const UserMonthlyGrowth = dynamic(() => import("@/components/charts/UserMonthlyGrowth/UserMonthlyGrowth"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading user growth chart...</div>
 });
 
-const UsersByRolePie = dynamic(() => import("@/components/charts/UsersByRolePie"), { 
+const UsersByRolePie = dynamic(() => import("@/components/charts/UsersByRolePie/UsersByRolePie"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading user roles chart...</div>
 });
 
-const ActiveUsersPie = dynamic(() => import("@/components/charts/ActiveUsersPie"), { 
+const ActiveUsersPie = dynamic(() => import("@/components/charts/ActiveUsersPie/ActiveUsersPie"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading active users chart...</div>
 });
 
-const TopCountriesBar = dynamic(() => import("@/components/charts/TopCountriesBar"), { 
+const TopCountriesBar = dynamic(() => import("@/components/charts/TopCountriesBar/TopCountriesBar"), { 
   ssr: false,
   loading: () => <div className={style.chartLoading}>Loading countries chart...</div>
 });
