@@ -2,7 +2,7 @@ import Style from './basket.module.css';
 import { useEffect, useState } from 'react';
 import BasketCard from '@/Components/Cards/BasketCard/BasketCard';
 import Link from 'next/link';
-import emptyCard from '../../../public/asset/Basket/emptyCard.jpg';
+import emptyCard from '../../../public/asset/Basket/empty-card.jpg';
 import Image from 'next/image';
 import Footer from '@/Components/Footer';
 
