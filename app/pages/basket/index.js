@@ -2,7 +2,7 @@ import Style from './basket.module.css';
 import { useEffect, useState } from 'react';
 import BasketCard from '@/Components/Cards/BasketCard/BasketCard';
 import Link from 'next/link';
-import emptyCard from '../../../public/asset/Basket/empty-card.jpg';
+// import emptyCard from '../../../public/asset/Basket/empty-card.jpg';
 import Image from 'next/image';
 import Footer from '@/Components/Footer';
 
@@ -58,13 +58,13 @@ export default function BasketPage() {
             ))
           ) : (
             <div>
-              <Image
+              {/* <Image
                 src={emptyCard}
                 width={400}
                 height={400}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 alt="Empty Cart"
-              />
+              /> */}
             </div>
           )}
         </div>
