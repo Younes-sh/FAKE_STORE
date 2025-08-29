@@ -15,11 +15,6 @@ const nextConfig = {
     // می‌تونی فرمت‌های بهینه هم فعال کنی (اختیاری)
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
-      // دامنه‌ی سایت خودت (همون قبلی)
-      {
-        protocol: 'https',
-        hostname: 'younessheikhlar.com',
-      },
       // دامنه‌ی Cloudinary برای نمایش تصاویر آپلود شده
       {
         protocol: 'https',
@@ -36,7 +31,6 @@ const nextConfig = {
         source: '/api/auth/:path*',
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: 'https://younessheikhlar.com' },
           { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
           { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' },
         ]
