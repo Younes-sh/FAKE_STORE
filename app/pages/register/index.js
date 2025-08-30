@@ -39,7 +39,7 @@ export default function RegisterPage() {
         throw new Error(data.message || 'Registration failed');
       }
 
-      router.push(`${baseUrl}/verify`);
+      router.push(`/verify`);
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
