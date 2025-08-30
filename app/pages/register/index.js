@@ -13,6 +13,9 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+   const isProduction = process.env.NODE_ENV === 'production';
+    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -107,7 +110,7 @@ export default function RegisterPage() {
 
         <p className={styles.loginLink}>
           Already have an account?{' '}
-          <Link href={`/login`} className={styles.link}>Login</Link>
+          <Link href={`${baseUrl}/login`} className={styles.link}>Login</Link>
         </p>
       </form>
     </div>
