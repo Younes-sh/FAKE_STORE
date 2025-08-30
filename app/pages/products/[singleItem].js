@@ -178,12 +178,51 @@ export default function SingleItem({ dataProduct }) {
 }
 
 export async function getServerSideProps(context) {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-  const { singleItem } = context.params;
-  const res = await fetch(`${baseUrl}/api/products/${singleItem}`);
-  const data = await res.json();
-  return {
-    props: { dataProduct: data.data },
-  };
+  try {
+    const { req, params } = context;
+    const { singleItem } = params;
+    
+    // Get the correct base URL for both production and development
+    let baseUrl;
+    
+    if (process.env.NODE_ENV === 'production') {
+      // Use the request headers to get the correct host
+      const host = req.headers.host;
+      const protocol = req.headers['x-forwarded-proto'] || 'https';
+      baseUrl = `${protocol}://${host}`;
+    } else {
+      baseUrl = 'http://localhost:3000';
+    }
+    
+    console.log('Fetching from:', `${baseUrl}/api/products/${singleItem}`);
+    
+    const res = await fetch(`${baseUrl}/api/products/${singleItem}`);
+    
+    if (!res.ok) {
+      throw new Error(`API responded with status ${res.status}`);
+    }
+    
+    const data = await res.json();
+    
+    // Handle case where product is not found
+    if (!data || !data.data) {
+      return {
+        notFound: true,
+      };
+    }
+    
+    return {
+      props: { 
+        dataProduct: data.data 
+      },
+    };
+    
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    
+    // Return 404 page if product not found
+    return {
+      notFound: true,
+    };
+  }
 }
