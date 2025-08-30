@@ -23,10 +23,9 @@ export default function RegisterPage() {
     setError('');
     setIsLoading(true);
 
-    const isProduction = process.env.NODE_ENV === 'production';
-    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    
     try {
-      const response = await fetch(`${baseUrl}/api/auth/register`, {
+      const response = await fetch(`/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +39,7 @@ export default function RegisterPage() {
         throw new Error(data.message || 'Registration failed');
       }
 
-      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/verify`);
+      router.push(`${baseUrl}/verify`);
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
@@ -108,7 +107,7 @@ export default function RegisterPage() {
 
         <p className={styles.loginLink}>
           Already have an account?{' '}
-          <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`} className={styles.link}>Login</Link>
+          <Link href={`/login`} className={styles.link}>Login</Link>
         </p>
       </form>
     </div>
