@@ -178,6 +178,8 @@ export default function SingleItem({ dataProduct }) {
 }
 
 export async function getServerSideProps(context) {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
   const { singleItem } = context.params;
   const res = await fetch(`${baseUrl}/api/products/${singleItem}`);
   const data = await res.json();
