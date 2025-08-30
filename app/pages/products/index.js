@@ -32,14 +32,27 @@ export default function index({ productData }) {
 }
 
 
+// pages/products.js
+
 export async function getServerSideProps() {
   const isProduction = process.env.NODE_ENV === 'production';
   const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
+  // Ensure this line uses the 'baseUrl' variable
   const res = await fetch(`${baseUrl}/api/products`);
+  
+  if (!res.ok) {
+    // This will help you find the actual error message in your Vercel logs
+    const errorBody = await res.text();
+    console.error("Failed to fetch products API:", res.status, errorBody);
+    return {
+      props: { productData: [] } // Fallback to an empty array to prevent app crash
+    };
+  }
+
   const data = await res.json();
 
   return {
     props: { productData: data.products }
-  }
+  };
 }
