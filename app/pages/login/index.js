@@ -17,10 +17,12 @@ export default function LoginPage() {
   
   // اگر کاربر قبلا لاگین کرده باشد، به صفحه پروفایل هدایت می‌شود
   useEffect(() => {
-  if (session) {
-    router.push(`${process.env.NEXT_PUBLIC_APP_URL}/profile`);
-  }
-}, [session]);
+    const isProduction = process.env.NODE_ENV === 'production';
+    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    if (session) {
+      router.push(`${baseUrl}/profile`);
+    }
+  }, [session]);
 
 
   const handleSubmit = async (e) => {
