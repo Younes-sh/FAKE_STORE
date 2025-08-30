@@ -23,8 +23,10 @@ export default function RegisterPage() {
     setError('');
     setIsLoading(true);
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/register`, {
+      const response = await fetch(`${baseUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
