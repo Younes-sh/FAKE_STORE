@@ -34,15 +34,44 @@ export default function index({ productData }) {
 
 // pages/products.js
 
-export async function getServerSideProps() {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+// export async function getServerSideProps() {
+//   const isProduction = process.env.NODE_ENV === 'production';
+//   const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
-  // Ensure this line uses the 'baseUrl' variable
-  const res = await fetch(`${baseUrl}/api/products`);
-  const data = await res.json();
+//   // Ensure this line uses the 'baseUrl' variable
+//   const res = await fetch(`${baseUrl}/api/products`);
+//   const data = await res.json();
 
-  return {
-    props: { productData: data.products }
-  };
+//   return {
+//     props: { productData: data.products }
+//   };
+// }
+
+export async function getServerSideProps({ req }) {
+  try {
+    // ساخت آدرس کامل بر اساس درخواست ورودی
+    const host = req.headers.host;
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    
+    console.log('Fetching from:', `${baseUrl}/api/products`);
+    
+    const res = await fetch(`${baseUrl}/api/products`);
+    
+    if (!res.ok) {
+      throw new Error(`API responded with status ${res.status}`);
+    }
+    
+    const data = await res.json();
+    
+    return {
+      props: { productData: data.products || [] }
+    };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    
+    return {
+      props: { productData: [] }
+    };
+  }
 }
