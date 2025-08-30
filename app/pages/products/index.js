@@ -36,7 +36,7 @@ export async function getServerSideProps() {
   const isProduction = process.env.NODE_ENV === 'production';
   const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
-  const res = await fetch(`/api/products`);
+  const res = await fetch(`${baseUrl}/api/products`);
   const data = await res.json();
 
   return {
