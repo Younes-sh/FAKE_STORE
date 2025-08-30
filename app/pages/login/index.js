@@ -17,10 +17,9 @@ export default function LoginPage() {
   
   // اگر کاربر قبلا لاگین کرده باشد، به صفحه پروفایل هدایت می‌شود
   useEffect(() => {
-    const isProduction = process.env.NODE_ENV === 'production';
-    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    
     if (session) {
-      router.push(`${baseUrl}/profile`);
+      router.push(`/profile`);
     }
   }, [session]);
 
