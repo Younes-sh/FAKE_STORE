@@ -31,7 +31,6 @@ const handleSubmit = async (e) => {
       }),
     });
 
-    console.log('Response status:', response.status);
 
     // بررسی content-type قبل از parse کردن JSON
     const contentType = response.headers.get('content-type');
