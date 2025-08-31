@@ -24,7 +24,7 @@ export default function VerifyPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed");
       setMsg("Email verified! You can now log in.");
-      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)
+      router.push(`/login`)
     } catch (err) {
       setMsg(err.message || "Error");
     } finally {
