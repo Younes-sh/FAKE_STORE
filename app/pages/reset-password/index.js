@@ -1,4 +1,4 @@
-// pages/reset-password.js
+// pages/reset-password.js (بهینه شده)
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -18,7 +18,6 @@ export default function ResetPassword() {
     setError('');
 
     try {
-
       const response = await fetch('/api/auth/verify-reset-token', {
         method: 'POST',
         headers: {
@@ -38,7 +37,7 @@ export default function ResetPassword() {
         setError(data.error || 'Invalid token');
       }
     } catch (error) {
-      setError('Network error');
+      setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +84,7 @@ export default function ResetPassword() {
           </form>
 
           <div className={styles.link}>
-            <Link href={'/login'}>
+            <Link href="/login">
               <span>Back to login</span>
             </Link>
           </div>
