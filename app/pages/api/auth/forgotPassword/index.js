@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     const protocol = req.headers['x-forwarded-proto'] || 'http';
     const baseUrl = `${protocol}://${host}`;
     // const resetUrl = `${baseUrl}/reset-password`;
-    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+    const resetUrl = `/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
     // ارسال ایمیل
     // درون تابع handler:
