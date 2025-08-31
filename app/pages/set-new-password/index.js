@@ -116,7 +116,7 @@ export default function SetNewPassword() {
 
           <div className={styles.link}>
             <Link href={'/login'}>
-              <span>Back to login</span>
+              <span>Back to login test</span>
             </Link>
           </div>
         </div>
