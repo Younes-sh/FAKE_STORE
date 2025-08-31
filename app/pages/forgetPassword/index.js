@@ -19,7 +19,7 @@ const handleSubmit = async (e) => {
   setMessage('');
 
   try {
-    console.log('Sending email:', email);
+    // console.log('Sending email:', email);
 
     const response = await fetch('/api/auth/forgotPassword', {
       method: 'POST',

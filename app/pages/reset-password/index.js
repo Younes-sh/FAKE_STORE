@@ -18,11 +18,8 @@ export default function ResetPassword() {
     setError('');
 
     try {
-      // ساخت آدرس کامل بر اساس درخواست ورودی
-      const host = req.headers.host;
-      const protocol = req.headers['x-forwarded-proto'] || 'http';
-      const baseUrl = `${protocol}://${host}`;
-      const response = await fetch(`${baseUrl}/api/auth/verify-reset-token`, {
+
+      const response = await fetch('/api/auth/verify-reset-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +85,7 @@ export default function ResetPassword() {
           </form>
 
           <div className={styles.link}>
-            <Link href={`/login`}>
+            <Link href={'/login'}>
               <span>Back to login</span>
             </Link>
           </div>
