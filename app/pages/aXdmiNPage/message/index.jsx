@@ -15,9 +15,12 @@ function Messages() {
 
   const fetchMessages = async () => {
     try {
+      const host = req.headers.host;
+      const protocol = req.headers['x-forwarded-proto'] || 'http';
+      const baseUrl = `${protocol}://${host}`;
       setLoading(true);
       const queryParams = new URLSearchParams(filters).toString();
-      const response = await fetch(`/api/contact?${queryParams}`);
+      const response = await fetch(`${baseUrl}/api/contact?${queryParams}`);
       const result = await response.json();
 
       if (result.success) {

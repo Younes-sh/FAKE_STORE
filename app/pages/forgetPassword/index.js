@@ -11,38 +11,48 @@ export default function ForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+// pages/forgotPassword.js
+const handleSubmit = async (e) => {
   e.preventDefault();
   setIsLoading(true);
   setError('');
   setMessage('');
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/forgetPassword`, {
+    console.log('Sending email:', email);
+
+    const response = await fetch('/api/auth/forgotPassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ 
+        email: email.trim().toLowerCase() 
+      }),
     });
 
-    try {
-      const data = await response.json();
-      if (response.ok) {
-        setMessage("A password reset link has been sent to your email.");
-      } else {
-        setError(data.error || 'An error occurred');
-      }
-    } catch (jsonError) {
-      // اگر parse کردن JSON شد
-      if (response.ok) {
-        setMessage("A password reset link has been sent to your email.");
-      } else {
-        setError('Server error. Please try again.');
-      }
+    console.log('Response status:', response.status);
+
+    // بررسی content-type قبل از parse کردن JSON
+    const contentType = response.headers.get('content-type');
+    let data;
+    
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      console.error('Non-JSON response:', text);
+      throw new Error('Server returned non-JSON response: ' + text);
+    }
+    
+    if (response.ok) {
+      setMessage(data.message || "A password reset link has been sent to your email.");
+    } else {
+      setError(data.error || 'An error occurred');
     }
   } catch (error) {
-    setError('A network error occurred');
+    console.error('Error details:', error);
+    setError(error.message || 'A network error occurred. Please try again.');
   } finally {
     setIsLoading(false);
   }

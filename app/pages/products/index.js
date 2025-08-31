@@ -4,12 +4,18 @@ import {useState} from 'react';
 import ProductFilter from '@/Components/Filter/ProductFilter';
 import Style from "./style.module.css";
 import Footer from "@/Components/Footer";
+import Head from 'next/head';
 
 export default function index({ productData }) {
   const [filteredProducts, setFilteredProducts] = useState(productData);
 
   return (
     <div className={Style.backgroundProduct}>
+      <Head>
+        <title>Shop - Products</title>
+        <meta name="description" content="A variety of products at the best prices" />
+        <meta name="keywords" content="products, shopping, store" />
+      </Head>
       <div className='container'>
 
         {/* اضافه کردن کامپوننت فیلتر */}
@@ -32,20 +38,7 @@ export default function index({ productData }) {
 }
 
 
-// pages/products.js
 
-// export async function getServerSideProps() {
-//   const isProduction = process.env.NODE_ENV === 'production';
-//   const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-
-//   // Ensure this line uses the 'baseUrl' variable
-//   const res = await fetch(`${baseUrl}/api/products`);
-//   const data = await res.json();
-
-//   return {
-//     props: { productData: data.products }
-//   };
-// }
 
 export async function getServerSideProps({ req }) {
   try {
@@ -53,8 +46,6 @@ export async function getServerSideProps({ req }) {
     const host = req.headers.host;
     const protocol = req.headers['x-forwarded-proto'] || 'http';
     const baseUrl = `${protocol}://${host}`;
-    
-    console.log('Fetching from:', `${baseUrl}/api/products`);
     
     const res = await fetch(`${baseUrl}/api/products`);
     

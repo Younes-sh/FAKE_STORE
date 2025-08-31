@@ -2,13 +2,22 @@
 import nodemailer from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER_HOST,
-  port: Number(process.env.EMAIL_SERVER_PORT || 465),
+  host: process.env.EMAIL_SERVER_HOST, // مطابق با env شما
+  port: Number(process.env.EMAIL_SERVER_PORT || 465), // مطابق با env شما
   secure: true,
   auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
+    user: process.env.EMAIL_SERVER_USER, // مطابق با env شما
+    pass: process.env.EMAIL_SERVER_PASSWORD, // مطابق با env شما
   },
+});
+
+// اضافه کردن verify برای دیباگ
+transporter.verify(function(error, success) {
+  if (error) {
+    console.log('Email transporter error:', error);
+  } else {
+    console.log('Email transporter is ready to send messages');
+  }
 });
 
 export async function sendVerificationCode({ to, code }) {
@@ -34,7 +43,7 @@ export async function sendVerificationCode({ to, code }) {
 `;
 
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+    from: process.env.EMAIL_FROM, // استفاده از EMAIL_FROM از env
     to,
     subject,
     html,
