@@ -10,6 +10,15 @@ export default async function handler(req, res) {
 
   const { email, token, newPassword } = req.body;
 
+  // اعتبارسنجی داده‌های ورودی
+  if (!email || !token || !newPassword) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
   try {
     await dbConnect();
 
@@ -24,9 +33,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid or expired reset token' });
     }
 
+    // هش کردن پسورد جدید قبل از ذخیره
+    const hashedPassword = await hash(newPassword, 12);
 
     // آپدیت کاربر
-    user.password = newPassword; 
+    user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
