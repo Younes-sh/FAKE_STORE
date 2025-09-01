@@ -48,7 +48,7 @@ export async function getServerSideProps({ req, res }) {
     const protocol = req.headers['x-forwarded-proto'] || 'http';
     const baseUrl = `${protocol}://${host}`;
     
-    const response = await fetch(`${baseUrl}/api/users`);
+    const response = await fetch(`${baseUrl}/api/user`);
     
     if (!response.ok) {
       throw new Error(`API responded with status ${response.status}`);
