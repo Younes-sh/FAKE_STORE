@@ -32,7 +32,7 @@ export default function ResetPassword() {
         // ذخیره ایمیل و توکن برای صفحه بعد
         localStorage.setItem('resetEmail', email);
         localStorage.setItem('resetToken', token);
-        router.push("/set-new-password666");
+        router.push("/set-new-password");
       } else {
         setError(data.error || 'Invalid token');
       }
