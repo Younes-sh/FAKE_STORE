@@ -53,7 +53,7 @@ export default function User({ dataUser }) {
       if (data._id === userData._id) setUserData(prev => ({ ...prev, ...data }));
     });
     socket.on("user-delete", (data) => {
-      if (data._id === userData._id) router.push(`${process.env.NEXT_PUBLIC_APP_URL}/aXdmiNPage/users`);
+      if (data._id === userData._id) router.push("/aXdmiNPage/users");
     });
     return () => {
       socket.off("user-update");
@@ -68,7 +68,7 @@ export default function User({ dataUser }) {
   const handleDeleteUser = async () => {
     if (session?.user.role !== "admin") return;
     setIsDeleting(true);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/${userData._id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/user/${userData._id}`, { method: 'DELETE' });
     if (res.ok) router.push('/aXdmiNPage/users');
     else setIsDeleting(false);
   };
@@ -76,7 +76,7 @@ export default function User({ dataUser }) {
   const handleBlockUser = async () => {
     if (session?.user.role !== "admin") return;
     setIsUpdating(true);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/${userData._id}`, {
+    const res = await fetch(`/api/user/${userData._id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ isActive: !userData.isActive })
@@ -92,7 +92,7 @@ export default function User({ dataUser }) {
   const handleRoleChange = async () => {
     if (session?.user.role !== "admin") return;
     setIsUpdating(true);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/${userData._id}`, {
+    const res = await fetch(`/api/user/${userData._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: selectedRole })
@@ -195,8 +195,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const base = `${process.env.NEXT_PUBLIC_APP_URL}` ?? 'http://localhost:3000';
-    const res = await fetch(`${base}/api/user/${_id}`);
+    const res = await fetch(`/api/user/${_id}`);
     if (!res.ok) return { notFound: true };
     let data = await res.json();
     let dataUser = data?.data ?? null;

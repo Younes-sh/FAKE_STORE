@@ -31,10 +31,8 @@ export default  function index({ productData }) {
 }
 
 export async function getServerSideProps() {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
   try {
-    const data = await fetcher(`${baseUrl}/api/products`);
+    const data = await fetcher("/api/products");
 
     return {
       props: { productData: data.products || [] },

@@ -186,7 +186,7 @@ export default function SingleItemDashboard({dataProduct}) {
 
 export async function getServerSideProps(context) {
   const {singleProduct} = context.params;
-  const res = await fetch(`http://localhost:3000/api/products/${singleProduct}`);
+  const res = await fetch(`/api/products/${singleProduct}`);
   const data = await res.json();
   return {
     props: { dataProduct: data.data }
