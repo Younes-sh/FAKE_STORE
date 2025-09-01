@@ -32,7 +32,12 @@ export default  function index({ productData }) {
 
 export async function getServerSideProps() {
   try {
-    const data = await fetcher("/api/products");
+    
+    // استفاده از آدرس کامل برای API
+    const protocol = context.req.headers['x-forwarded-proto'] || 'http';
+    const host = context.req.headers.host;
+    const baseUrl = `${protocol}://${host}`;
+    const data = await fetcher(`${baseUrl}/api/products`);
 
     return {
       props: { productData: data.products || [] },
