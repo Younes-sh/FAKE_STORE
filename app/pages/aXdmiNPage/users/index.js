@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
   const baseUrl = `${protocol}://${host}`;
 
   try {
-    const res = await fetch(`${baseUrl}/api/user`);
+    const res = await fetch(`${baseUrl}/api/users`);
     
     if (!res.ok) {
       throw new Error(`API responded with status ${res.status}`);
