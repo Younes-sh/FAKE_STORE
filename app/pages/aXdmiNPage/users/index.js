@@ -1,3 +1,4 @@
+// pages/admin/users.js
 import React from 'react';
 import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
 import UserCard from '@/Components/Admin/Cards/UserCard/UserCard';
@@ -33,20 +34,41 @@ export async function getServerSideProps(context) {
   if (!session || !["admin", "editor"].includes(session.user.role)) {
     return {
       redirect: {
-        destination: "/", // یا هر صفحه دیگه
+        destination: "/",
         permanent: false,
       },
     };
   }
 
+  // استفاده از آدرس کامل برای API
+  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
+  const host = context.req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
 
-  const res = await fetch("/api/user");
-  const data = await res.json();
+  try {
+    const res = await fetch(`${baseUrl}/api/user`);
+    
+    if (!res.ok) {
+      throw new Error(`API responded with status ${res.status}`);
+    }
+    
+    const data = await res.json();
 
-  return {
-    props: { 
-      userData: data.users ?? [],
-      session // پاس دادن session به front-end
-    },
-  };
+    return {
+      props: { 
+        userData: data.users ?? [],
+        session
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    
+    return {
+      props: { 
+        userData: [],
+        session,
+        error: error.message
+      },
+    };
+  }
 }
