@@ -28,47 +28,48 @@ export default function UserDataPage({ userData, session: ssrSession }) {
 }
 
 // 🔐 چک کردن نقش در سمت سرور
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
 
-  if (!session || !["admin", "editor"].includes(session.user.role)) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  // استفاده از آدرس کامل برای API
-  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
-
+export async function getServerSideProps({ req, res }) {
   try {
-    const res = await fetch(`${baseUrl}/api/users`);
+    // ابتدا session را بررسی کنید
+    const session = await getSession({ req });
     
-    if (!res.ok) {
-      throw new Error(`API responded with status ${res.status}`);
+    if (!session || !["admin", "editor"].includes(session.user.role)) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    // سپس داده‌ها را fetch کنید
+    const host = req.headers.host;
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    
+    const response = await fetch(`${baseUrl}/api/users`);
+    
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
     }
     
-    const data = await res.json();
-
+    const data = await response.json();
+    
     return {
       props: { 
-        userData: data.users ?? [],
-        session
-      },
+        userData: data.users || [],
+        session // session را هم به props پاس دهید
+      }
     };
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error in getServerSideProps:', error);
     
     return {
       props: { 
         userData: [],
-        session,
         error: error.message
-      },
+      }
     };
   }
 }
