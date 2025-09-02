@@ -195,8 +195,15 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const res = await fetch(`/api/user/${_id}`);
+    // ساخت URL کامل برای API
+    const host = context.req.headers.host;
+    const protocol = context.req.headers['x-forwarded-proto'] || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    
+    const res = await fetch(`${baseUrl}/api/user/${_id}`);
+    
     if (!res.ok) return { notFound: true };
+    
     let data = await res.json();
     let dataUser = data?.data ?? null;
 
@@ -213,6 +220,7 @@ export async function getServerSideProps(context) {
 
     return { props: { dataUser } };
   } catch (e) {
+    console.error("Error fetching user data:", e);
     return { notFound: true };
   }
 }
