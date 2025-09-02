@@ -186,9 +186,25 @@ export default function SingleItemDashboard({dataProduct}) {
 
 export async function getServerSideProps(context) {
   const {singleProduct} = context.params;
-  const res = await fetch(`/api/products/${singleProduct}`);
-  const data = await res.json();
-  return {
-    props: { dataProduct: data.data }
+  try {
+    // ساخت URL کامل برای API
+    const host = context.req.headers.host;
+    const protocol = context.req.headers['x-forwarded-proto'] || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    
+    const res = await fetch(`${baseUrl}/api/products/${singleProduct}`);
+    
+    if (!res.ok) {
+      return { notFound: true };
+    }
+    
+    const data = await res.json();
+    
+    return {
+      props: { dataProduct: data.data }
+    };
+  } catch (error) {
+    console.error('Error fetching product data:', error);
+    return { notFound: true };
   }
 }
