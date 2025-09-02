@@ -6,16 +6,6 @@ import dbConnect from '@/lib/dbConnect';
 import { generateEmailTemplate } from '@/Components/EmailTemplate'; // Import the template
 
 export default async function handler(req, res) {
-   // اضافه کردن headers برای CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight request
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -60,7 +50,8 @@ export default async function handler(req, res) {
     const host = req.headers.host;
     const protocol = req.headers['x-forwarded-proto'] || 'http';
     const baseUrl = `${protocol}://${host}`;
-    const resetUrl = `${baseUrl}/reset-password`;
+    // const resetUrl = `${baseUrl}/reset-password`;
+    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
     // ارسال ایمیل
     // درون تابع handler:

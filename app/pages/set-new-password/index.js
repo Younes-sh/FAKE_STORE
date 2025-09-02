@@ -15,18 +15,27 @@ export default function SetNewPassword() {
   const router = useRouter();
 
   useEffect(() => {
-    // دریافت ایمیل و توکن از localStorage
-    const savedEmail = localStorage.getItem('resetEmail');
-    const savedToken = localStorage.getItem('resetToken');
+    // دریافت ایمیل و توکن از query parameters (از لینک ایمیل)
+    const { email: queryEmail, token: queryToken } = router.query;
     
-    if (!savedEmail || !savedToken) {
-      router.push(`${process.env.NEXT_PUBLIC_APP_URL}/forgot-password`);
-      return;
+    if (queryEmail && queryToken) {
+      // اگر از لینک ایمیل آمده‌اید
+      setEmail(queryEmail);
+      setToken(queryToken);
+    } else {
+      // اگر از صفحه reset-password آمده‌اید
+      const savedEmail = localStorage.getItem('resetEmail');
+      const savedToken = localStorage.getItem('resetToken');
+      
+      if (!savedEmail || !savedToken) {
+        setError('Invalid reset link. Please request a new password reset.');
+        return;
+      }
+      
+      setEmail(savedEmail);
+      setToken(savedToken);
     }
-    
-    setEmail(savedEmail);
-    setToken(savedToken);
-  }, [router]);
+  }, [router.query]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +54,7 @@ export default function SetNewPassword() {
     setError('');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/reset-password`, {
+      const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +77,7 @@ export default function SetNewPassword() {
         setError(data.error || 'Failed to reset password');
       }
     } catch (error) {
-      setError('Network error');
+      setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -91,6 +100,7 @@ export default function SetNewPassword() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 className={styles.input}
+                minLength={6}
               />
             </div>
             
@@ -102,6 +112,7 @@ export default function SetNewPassword() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className={styles.input}
+                minLength={6}
               />
             </div>
 
@@ -115,7 +126,7 @@ export default function SetNewPassword() {
           </form>
 
           <div className={styles.link}>
-            <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
+            <Link href="/login">
               <span>Back to login</span>
             </Link>
           </div>

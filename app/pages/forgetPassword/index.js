@@ -19,7 +19,7 @@ const handleSubmit = async (e) => {
   setMessage('');
 
   try {
-    console.log('Sending email:', email);
+    // console.log('Sending email:', email);
 
     const response = await fetch('/api/auth/forgotPassword', {
       method: 'POST',
@@ -31,7 +31,6 @@ const handleSubmit = async (e) => {
       }),
     });
 
-    console.log('Response status:', response.status);
 
     // بررسی content-type قبل از parse کردن JSON
     const contentType = response.headers.get('content-type');

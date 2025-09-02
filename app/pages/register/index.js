@@ -13,8 +13,8 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-   const isProduction = process.env.NODE_ENV === 'production';
-    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+  //  const isProduction = process.env.NODE_ENV === 'production';
+  //   const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +28,7 @@ export default function RegisterPage() {
 
     
     try {
-      const response = await fetch(`${baseUrl}/api/auth/register`, {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export default function RegisterPage() {
 
         <p className={styles.loginLink}>
           Already have an account?{' '}
-          <Link href={`${baseUrl}/login`} className={styles.link}>Login</Link>
+          <Link href={'/login'} className={styles.link}>Login</Link>
         </p>
       </form>
     </div>

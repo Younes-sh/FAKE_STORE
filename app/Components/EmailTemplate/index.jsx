@@ -117,7 +117,7 @@ export function generateEmailTemplate(resetToken, resetUrl) {
             }
             
             .url-container {
-                background: #f8fafc;
+                background: #a35037ff;
                 border-radius: 8px;
                 padding: 16px;
                 margin: 20px 0;

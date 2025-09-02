@@ -1,3 +1,4 @@
+// pages/admin/users.js
 import React from 'react';
 import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
 import UserCard from '@/Components/Admin/Cards/UserCard/UserCard';
@@ -27,27 +28,48 @@ export default function UserDataPage({ userData, session: ssrSession }) {
 }
 
 // 🔐 چک کردن نقش در سمت سرور
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
 
-  if (!session || !["admin", "editor"].includes(session.user.role)) {
+export async function getServerSideProps({ req, res }) {
+  try {
+    // ابتدا session را بررسی کنید
+    const session = await getSession({ req });
+    
+    if (!session || !["admin", "editor"].includes(session.user.role)) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    // سپس داده‌ها را fetch کنید
+    const host = req.headers.host;
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    
+    const response = await fetch(`${baseUrl}/api/user`);
+    
+    if (!response.ok) {
+      throw new Error(`API responded with status ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
     return {
-      redirect: {
-        destination: "/", // یا هر صفحه دیگه
-        permanent: false,
-      },
+      props: { 
+        userData: data.users || [],
+        session // session را هم به props پاس دهید
+      }
+    };
+  } catch (error) {
+    console.error('Error in getServerSideProps:', error);
+    
+    return {
+      props: { 
+        userData: [],
+        error: error.message
+      }
     };
   }
-
-  const isProduction = process.env.NODE_ENV === 'production';
-  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-  const res = await fetch(`${baseUrl}/api/user`);
-  const data = await res.json();
-
-  return {
-    props: { 
-      userData: data.users ?? [],
-      session // پاس دادن session به front-end
-    },
-  };
 }
