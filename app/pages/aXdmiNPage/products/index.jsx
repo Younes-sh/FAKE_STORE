@@ -45,7 +45,8 @@ export async function getServerSideProps({ req }) {
     }
     
     const data = await res.json();
-    
+    console.log('Fetched products in Admin page:', data);
+
     return {
       props: { productData: data.products || [] }
     };
