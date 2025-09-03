@@ -3,61 +3,24 @@ import Style from "./style.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "@/pages/_app";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { AlertModal } from "@/Components/AlertModal/AlertModal";
+import { useCart } from '@/hooks/useCart';
 
 export default function ProductCard({
   _id, productName, description, price, image, model, section
 }) {
   const router = useRouter();
-  const { setAddToCard } = useContext(AppContext);
   const { data: session } = useSession();
+  const { cart, addToCart, isConnected } = useCart();
 
-  const [isInCart, setIsInCart] = useState(false);
   const [adding, setAdding] = useState(false);
   const [showLoginAlert, setShowLoginAlert] = useState(false);
 
-  // تابع برای گرفتن baseUrl به صورت ایمن
-  const getBaseUrl = () => {
-    if (typeof window !== 'undefined') {
-      // در سمت کلاینت
-      return window.location.origin;
-    }
-    // در سمت سرور - استفاده از environment variableهای Vercel
-    return process.env.NODE_ENV === 'production' 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:3000';
-  };
+  const isInCart = cart.some(item => item._id === _id);
 
-  useEffect(() => {
-    let ignore = false;
-
-    const checkInCart = async () => {
-      if (!session) return;
-      
-      try {
-        const baseUrl = getBaseUrl();
-        const res = await fetch(`${baseUrl}/api/cart`, {
-          credentials: 'include' // برای ارسال کوکی‌ها
-        });
-        
-        if (!res.ok) return;
-        const data = await res.json();
-        const exists = Array.isArray(data.cart?.products) && 
-                       data.cart.products.some(p => p && p._id === _id);
-        if (!ignore) setIsInCart(exists);
-      } catch (e) {
-        console.error("Error checking cart:", e);
-      }
-    };
-
-    checkInCart();
-    return () => { ignore = true; };
-  }, [_id, session]);
-
-  const addProductBtn = async () => {
+  const handleAddToCart = async () => {
     if (!session) {
       setShowLoginAlert(true);
       return;
@@ -67,69 +30,24 @@ export default function ProductCard({
     setAdding(true);
 
     try {
-      const baseUrl = getBaseUrl();
+      const product = {
+        _id,
+        productName,
+        price,
+        image,
+        description,
+        model,
+        section
+      };
+
+      const success = await addToCart(product);
       
-      // ابتدا سبد خرید فعلی را بگیرید
-      const cartRes = await fetch(`${baseUrl}/api/cart`, {
-        credentials: 'include'
-      });
-      const cartData = await cartRes.json();
-      const currentProducts = Array.isArray(cartData.cart?.products) ? cartData.cart.products : [];
-      
-      // بررسی آیا محصول قبلاً وجود دارد
-      const existingProductIndex = currentProducts.findIndex(p => p && p._id === _id);
-      let updatedProducts = [...currentProducts];
-
-      if (existingProductIndex > -1) {
-        // افزایش تعداد اگر وجود دارد
-        updatedProducts[existingProductIndex].count += 1;
-        updatedProducts[existingProductIndex].totalPrice = 
-          updatedProducts[existingProductIndex].price * updatedProducts[existingProductIndex].count;
-      } else {
-        // اضافه کردن محصول جدید
-        updatedProducts.push({
-          _id,
-          productName,
-          price,
-          count: 1,
-          totalPrice: price,
-          image,
-          description,
-          model,
-          section
-        });
-      }
-
-      // به روز رسانی سبد خرید
-      const response = await fetch(`${baseUrl}/api/cart`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ products: updatedProducts })
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Error adding to cart');
-      }
-
-      // به روز رسانی state
-      setAddToCard(prev => prev + 1);
-      setIsInCart(true);
-
-      // برای اطمینان، دوباره وضعیت سبد خرید را چک کنید
-      const verifyRes = await fetch(`${baseUrl}/api/cart`, {
-        credentials: 'include'
-      });
-      if (verifyRes.ok) {
-        const verifyData = await verifyRes.json();
-        const exists = Array.isArray(verifyData.cart?.products) && 
-                       verifyData.cart.products.some(p => p && p._id === _id);
-        setIsInCart(exists);
+      if (!success) {
+        throw new Error('خطا در افزودن به سبد خرید');
       }
 
     } catch (error) {
-      console.error("❌ Error adding to cart:", error);
+      console.error("❌ خطا در افزودن به سبد خرید:", error);
     } finally {
       setAdding(false);
     }
@@ -140,13 +58,26 @@ export default function ProductCard({
       <AlertModal
         isOpen={showLoginAlert}
         onClose={() => setShowLoginAlert(false)}
-        title="Login required"
-        message="To add a product to your cart, please log in first."
-        confirmText="Log in"
-        cancelText="Close"
+        title="ورود لازم است"
+        message="برای افزودن محصول به سبد خرید، لطفاً ابتدا وارد شوید."
+        confirmText="ورود"
+        cancelText="بستن"
         type="warning"
         onConfirm={() => router.push('/login')}
       />
+
+      {!isConnected && (
+        <div style={{ 
+          fontSize: 10, 
+          color: 'orange', 
+          padding: '2px 5px',
+          background: '#fff3cd',
+          borderRadius: '3px',
+          marginBottom: '5px'
+        }}>
+          🔄 در حال اتصال...
+        </div>
+      )}
 
       <Link href={`/products/${_id}`} className={Style.Link}>
         <div className={Style.imageContainer}>
@@ -163,21 +94,23 @@ export default function ProductCard({
 
       <div className={Style.TextContainer}>
         <h4>{productName}</h4>
-        <p>Price: {price}</p>
+        <p>قیمت: {price}</p>
 
         {isInCart && (
-          <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a', paddingTop: 4 }}>
-            ✓ This product is in your cart          
+          <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a' }}>
+            ✓ این محصول در سبد خرید شما است
           </div>
         )}
 
         <div className={Style.buttonContainer}>
           <button
             className={Style.btnAddToCard}
-            onClick={addProductBtn}
-            disabled={adding}
+            onClick={handleAddToCart}
+            disabled={adding || !isConnected}
           >
-            {adding ? 'Adding…' : (isInCart ? 'Re-add' : 'Add to cart')}
+            {adding ? 'در حال افزودن…' : 
+             !isConnected ? 'اتصال…' :
+             isInCart ? 'افزودن مجدد' : 'افزودن به سبد خرید'}
           </button>
         </div>
       </div>
