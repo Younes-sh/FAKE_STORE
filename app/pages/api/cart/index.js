@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     return res.status(404).json({ message: "User not found" });
   }
 
+  const io = res.socket?.server?.io;
   if (req.method === "POST") {
     const { products } = req.body;
 
@@ -31,17 +32,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Invalid product format" });
     }
 
-    try {
+     try {
       let cart = await Cart.findOne({ userId: user._id });
 
       if (!cart) {
-        if (!user._id) {
-          console.error("❌ Cannot create cart without valid userId");
-          return res.status(500).json({ message: "Invalid user ID" });
-        }
-
-        console.log("🟢 user._id:", user._id);
-
         cart = await Cart.create({
           userId: user._id,
           products: [newProduct]
@@ -50,17 +44,22 @@ export default async function handler(req, res) {
         const existingIndex = cart.products.findIndex(p => p._id.toString() === newProduct._id);
 
         if (existingIndex >= 0) {
-          // اگر محصول وجود دارد، فقط تعداد را افزایش بده
           cart.products[existingIndex].count = newProduct.count;
           cart.products[existingIndex].totalPrice =
             cart.products[existingIndex].count * cart.products[existingIndex].price;
         } else {
-          // در غیر اینصورت، اضافه کن
           cart.products.push(newProduct);
         }
 
-
         await cart.save();
+      }
+
+      // ارسال به روزرسانی از طریق Socket.io
+      if (io) {
+        io.to(`cart-${user._id}`).emit('cart-updated', {
+          userId: user._id,
+          cart: cart
+        });
       }
 
       return res.status(200).json({ success: true, cart });
@@ -68,6 +67,7 @@ export default async function handler(req, res) {
       console.error("❌ Error updating cart:", error);
       return res.status(500).json({ message: "Error updating cart" });
     }
+  }
   }
 
   if (req.method === "GET") {
