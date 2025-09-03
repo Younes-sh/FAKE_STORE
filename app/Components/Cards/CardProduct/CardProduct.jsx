@@ -47,11 +47,11 @@ export default function ProductCard({
 
     if (adding) return;
     setAdding(true);
-    let isProduction = process.env.NODE_ENV === 'production';
-    let baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    // let isProduction = process.env.NODE_ENV === 'production';
+    // let baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
     try {
-      const res = await fetch(`${baseUrl}/api/cart`);
+      const res = await fetch("/api/cart");
       const cartData = await res.json();
       const current = cartData.cart?.products?.find(p => p._id === _id);
 
