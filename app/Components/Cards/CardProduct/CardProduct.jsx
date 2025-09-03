@@ -1,45 +1,63 @@
-// Components/CardProduct.js
+// Components/Cards/CardProduct/CardProduct.js
 import Style from "./style.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/pages/_app";
-import { useSession } from "next-auth/react"; // اضافه شد
-import { AlertModal } from "@/Components/AlertModal/AlertModal"; // مسیر خودت
+import { useSession } from "next-auth/react";
+import { AlertModal } from "@/Components/AlertModal/AlertModal";
 
 export default function ProductCard({
   _id, productName, description, price, image, model, section
 }) {
   const router = useRouter();
   const { setAddToCard } = useContext(AppContext);
-  const { data: session } = useSession(); // گرفتن سشن
+  const { data: session } = useSession();
 
   const [isInCart, setIsInCart] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [showLoginAlert, setShowLoginAlert] = useState(false); // state برای مودال
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
+
+  // تابع برای گرفتن baseUrl به صورت ایمن
+  const getBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+      // در سمت کلاینت
+      return window.location.origin;
+    }
+    // در سمت سرور - استفاده از environment variableهای Vercel
+    return process.env.NODE_ENV === 'production' 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'http://localhost:3000';
+  };
 
   useEffect(() => {
     let ignore = false;
 
     const checkInCart = async () => {
-      let isProduction = process.env.NODE_ENV === 'production';
-      let baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+      if (!session) return;
+      
       try {
-        const res = await fetch(`${baseUrl}/api/cart`);
+        const baseUrl = getBaseUrl();
+        const res = await fetch(`${baseUrl}/api/cart`, {
+          credentials: 'include' // برای ارسال کوکی‌ها
+        });
+        
         if (!res.ok) return;
         const data = await res.json();
-        const exists = (data.cart?.products || []).some(p => p._id === _id);
+        const exists = Array.isArray(data.cart?.products) && 
+                       data.cart.products.some(p => p && p._id === _id);
         if (!ignore) setIsInCart(exists);
-      } catch (e) {}
+      } catch (e) {
+        console.error("Error checking cart:", e);
+      }
     };
 
     checkInCart();
     return () => { ignore = true; };
-  }, [_id]);
+  }, [_id, session]);
 
   const addProductBtn = async () => {
-    // اگر لاگین نیست، مودال را باز کن و ادامه نده
     if (!session) {
       setShowLoginAlert(true);
       return;
@@ -47,46 +65,71 @@ export default function ProductCard({
 
     if (adding) return;
     setAdding(true);
-    // let isProduction = process.env.NODE_ENV === 'production';
-    // let baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
     try {
-      const res = await fetch("/api/cart");
-      const cartData = await res.json();
-      const current = cartData.cart?.products?.find(p => p._id === _id);
+      const baseUrl = getBaseUrl();
+      
+      // ابتدا سبد خرید فعلی را بگیرید
+      const cartRes = await fetch(`${baseUrl}/api/cart`, {
+        credentials: 'include'
+      });
+      const cartData = await cartRes.json();
+      const currentProducts = Array.isArray(cartData.cart?.products) ? cartData.cart.products : [];
+      
+      // بررسی آیا محصول قبلاً وجود دارد
+      const existingProductIndex = currentProducts.findIndex(p => p && p._id === _id);
+      let updatedProducts = [...currentProducts];
 
-      const nextCount = current ? current.count + 1 : 1;
+      if (existingProductIndex > -1) {
+        // افزایش تعداد اگر وجود دارد
+        updatedProducts[existingProductIndex].count += 1;
+        updatedProducts[existingProductIndex].totalPrice = 
+          updatedProducts[existingProductIndex].price * updatedProducts[existingProductIndex].count;
+      } else {
+        // اضافه کردن محصول جدید
+        updatedProducts.push({
+          _id,
+          productName,
+          price,
+          count: 1,
+          totalPrice: price,
+          image,
+          description,
+          model,
+          section
+        });
+      }
 
-      const response = await fetch('/api/cart', {
+      // به روز رسانی سبد خرید
+      const response = await fetch(`${baseUrl}/api/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          products: [{
-            _id,
-            productName,
-            price,
-            count: nextCount,
-            totalPrice: price * nextCount,
-            image,
-            description,
-            model,
-            section
-          }]
-        })
+        credentials: 'include',
+        body: JSON.stringify({ products: updatedProducts })
       });
 
       if (!response.ok) {
         const err = await response.json();
-        throw new Error(err.message || 'خطا در افزودن به سبد خرید');
+        throw new Error(err.message || 'Error adding to cart');
       }
 
-      if (!current) {
-        setAddToCard(prev => prev + 1);
-      }
+      // به روز رسانی state
+      setAddToCard(prev => prev + 1);
       setIsInCart(true);
 
+      // برای اطمینان، دوباره وضعیت سبد خرید را چک کنید
+      const verifyRes = await fetch(`${baseUrl}/api/cart`, {
+        credentials: 'include'
+      });
+      if (verifyRes.ok) {
+        const verifyData = await verifyRes.json();
+        const exists = Array.isArray(verifyData.cart?.products) && 
+                       verifyData.cart.products.some(p => p && p._id === _id);
+        setIsInCart(exists);
+      }
+
     } catch (error) {
-      console.error("❌ خطا در افزودن به سبد خرید:", error);
+      console.error("❌ Error adding to cart:", error);
     } finally {
       setAdding(false);
     }
@@ -94,16 +137,15 @@ export default function ProductCard({
 
   return (
     <div className={Style.productCard}>
-      {/* مودال هشدار ورود */}
       <AlertModal
         isOpen={showLoginAlert}
         onClose={() => setShowLoginAlert(false)}
         title="Login required"
-        message="To add a product to the cart, please log in first."
-        confirmText="Login"
+        message="To add a product to your cart, please log in first."
+        confirmText="Log in"
         cancelText="Close"
         type="warning"
-        onConfirm={() => router.push('/login')} // مسیر صفحه لاگین
+        onConfirm={() => router.push('/login')}
       />
 
       <Link href={`/products/${_id}`} className={Style.Link}>
@@ -124,8 +166,8 @@ export default function ProductCard({
         <p>Price: {price}</p>
 
         {isInCart && (
-          <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a' }}>
-            ✓ This item is in your cart
+          <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a', paddingTop: 4 }}>
+            ✓ This product is in your cart          
           </div>
         )}
 
@@ -135,7 +177,7 @@ export default function ProductCard({
             onClick={addProductBtn}
             disabled={adding}
           >
-            {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
+            {adding ? 'Adding…' : (isInCart ? 'Re-add' : 'Add to cart')}
           </button>
         </div>
       </div>
