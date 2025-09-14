@@ -1,70 +1,92 @@
+// pages/basket.js
 import Style from './basket.module.css';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import BasketCard from '@/Components/Cards/BasketCard/BasketCard';
 import Link from 'next/link';
-// import emptyCard from '../../../public/asset/Basket/empty-card.jpg';
-import Image from 'next/image';
 import Footer from '@/Components/Footer';
+import { useSession } from 'next-auth/react';
 
 export default function BasketPage() {
-  const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
+  const [cart, setCart] = useState({ products: [] });
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  const refreshCart = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/cart`);
-      if (!res.ok) throw new Error("مشکلی در دریافت سبد خرید پیش آمد");
+  // Fetch cart data
+  const fetchCart = async () => {
+    if (!session?.user?.id) {
+      setCart({ products: [] });
+      setIsLoading(false);
+      return;
+    }
 
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/cart');
+      if (!res.ok) {
+        throw new Error(`Failed to fetch cart: ${res.status}`);
+      }
       const data = await res.json();
-      setCartItems(data.cart?.products || []);
+      console.log('🛒 Cart data received:', data.cart);
+      setCart(data.cart || { products: [] });
     } catch (error) {
-      console.error("❌ Error fetching cart:", error);
-      setErrorMsg("خطا در دریافت اطلاعات سبد خرید");
+      console.error('Error fetching cart:', error);
+      setErrorMsg('Error retrieving shopping cart information');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    refreshCart();
-  }, []);
+    fetchCart();
 
-  const totalPay = cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+    // Listen for cart update events
+    const handleCartUpdate = () => {
+      console.log('🛒 Cart update event received in BasketPage');
+      fetchCart();
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+  }, [session?.user?.id]);
+
+  const totalPay = cart.products?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || 0;
 
   return (
     <div>
       <div className="container main">
         <div className={Style.Subtotal}>
           <h3>Subtotal</h3>
-          <p>Total pay: ${totalPay}</p>
-          <div className={Style.checkoutBtn}>
-            <Link href={'/PaymentPage'}>purchase to checkout</Link>
-          </div>
+          <p>Total: ${totalPay.toFixed(2)}</p>
+          {cart.products?.length > 0 && (
+            <div className={Style.checkoutBtn}>
+              <Link href={'/PaymentPage'}>Proceed to Checkout</Link>
+            </div>
+          )}
         </div>
 
         {errorMsg && <p className={Style.error}>{errorMsg}</p>}
 
         <div className={Style.basket}>
-          {loading ? (
-            <p>Loading...</p>
-          ) : cartItems.length > 0 ? (
-            cartItems.map(item => (
+          {isLoading ? (
+            <div className={Style.loadingContainer}>
+              <p>Loading your cart...</p>
+            </div>
+          ) : cart.products?.length > 0 ? (
+            cart.products.map(item => (
               <BasketCard
                 key={item._id}
                 {...item}
-                refreshCart={refreshCart}
+                onUpdate={fetchCart}
               />
             ))
           ) : (
-            <div>
-              {/* <Image
-                src={emptyCard}
-                width={400}
-                height={400}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                alt="Empty Cart"
-              /> */}
+            <div className={Style.emptyCart}>
+              <h2>Your cart is empty</h2>
+              <p>You have no items in your shopping cart. To add items, click "Add to cart" next to the product.</p>
+              <Link href="/products" className={Style.continueShopping}>
+                Continue Shopping
+              </Link>
             </div>
           )}
         </div>
