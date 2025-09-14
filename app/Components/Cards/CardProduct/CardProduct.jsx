@@ -1,56 +1,78 @@
-// Components/Cards/CardProduct/CardProduct.js
 import Style from "./style.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/router';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { AlertModal } from "@/Components/AlertModal/AlertModal";
-import { useCart } from '@/hooks/useCart';
+import { useCart } from "@/contexts/CartContext";
 
 export default function ProductCard({
   _id, productName, description, price, image, model, section
 }) {
   const router = useRouter();
   const { data: session } = useSession();
-  const { cart, addToCart, isConnected } = useCart();
-
   const [adding, setAdding] = useState(false);
   const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const { isProductInCart, addToCart, fetchCart } = useCart();
 
-  const isInCart = cart.some(item => item._id === _id);
+  // بررسی وضعیت محصول در سبد خرید
+  useEffect(() => {
+    if (_id) {
+      setIsInCart(isProductInCart(_id));
+    }
+  }, [_id, isProductInCart]);
 
   const handleAddToCart = async () => {
     if (!session) {
       setShowLoginAlert(true);
       return;
     }
-
-    if (adding) return;
+    
     setAdding(true);
 
     try {
-      const product = {
-        _id,
-        productName,
-        price,
-        image,
-        description,
-        model,
+      const product = { 
+        _id, 
+        productName, 
+        price, 
+        image, 
+        description, 
+        model, 
         section
       };
-
+      
+      // console.log('🛒 Adding product to basket:', product);
+      
       const success = await addToCart(product);
       
-      if (!success) {
-        throw new Error('خطا در افزودن به سبد خرید');
+      if (success) {
+        console.log('✅ Product added/updated successfully');
+        setIsInCart(true);
+        await fetchCart();
+      } else {
+        alert('Failed to add product to basket');
       }
-
+      
     } catch (error) {
-      console.error("❌ خطا در افزودن به سبد خرید:", error);
+      console.error('❌ Error adding to basket:', error);
+      alert('Error adding to cart: ' + error.message);
     } finally {
       setAdding(false);
     }
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(price || 0);
   };
 
   return (
@@ -58,59 +80,45 @@ export default function ProductCard({
       <AlertModal
         isOpen={showLoginAlert}
         onClose={() => setShowLoginAlert(false)}
-        title="ورود لازم است"
-        message="برای افزودن محصول به سبد خرید، لطفاً ابتدا وارد شوید."
-        confirmText="ورود"
-        cancelText="بستن"
+        title="Login Required"
+        message="Please log in first to add product to basket."
+        confirmText="Login"
+        cancelText="Close"
         type="warning"
         onConfirm={() => router.push('/login')}
       />
-
-      {!isConnected && (
-        <div style={{ 
-          fontSize: 10, 
-          color: 'orange', 
-          padding: '2px 5px',
-          background: '#fff3cd',
-          borderRadius: '3px',
-          marginBottom: '5px'
-        }}>
-          🔄 در حال اتصال...
-        </div>
-      )}
-
+      
       <Link href={`/products/${_id}`} className={Style.Link}>
         <div className={Style.imageContainer}>
-          <Image
-            src={image}
-            alt={productName}
-            width={16}
-            height={9}
-            layout="responsive"
-            objectFit="cover"
+          <Image 
+            src={imageError ? '/images/placeholder-product.jpg' : image} 
+            alt={productName || 'Product'} 
+            width={300} 
+            height={200} 
+            style={{ objectFit: 'cover' }}
+            onError={handleImageError}
+            onLoad={() => setImageError(false)}
           />
         </div>
       </Link>
-
+      
       <div className={Style.TextContainer}>
-        <h4>{productName}</h4>
-        <p>قیمت: {price}</p>
-
+        <h4>{productName || 'Unknown Product'}</h4>
+        <p>Price: {formatPrice(price)}</p>
+        
         {isInCart && (
-          <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a' }}>
-            ✓ این محصول در سبد خرید شما است
+          <div className={Style.inCartIndicator}>
+            ✓ This product is in your Basket 🛒
           </div>
         )}
-
+        
         <div className={Style.buttonContainer}>
           <button
-            className={Style.btnAddToCard}
+            className={`${Style.baseBtn} ${isInCart ? Style.btnAddAgain : Style.btnAddToCard}`}
             onClick={handleAddToCart}
-            disabled={adding || !isConnected}
+            disabled={adding}
           >
-            {adding ? 'در حال افزودن…' : 
-             !isConnected ? 'اتصال…' :
-             isInCart ? 'افزودن مجدد' : 'افزودن به سبد خرید'}
+            {adding ? 'Processing...' : isInCart ? 'Add More' : 'Add to Basket'}
           </button>
         </div>
       </div>

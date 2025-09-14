@@ -6,7 +6,7 @@ import { useState, createContext, useEffect } from "react";
 import { io } from "socket.io-client";
 import { signOut } from "next-auth/react";
 import "../styles/globals.css";
-
+import { CartProvider } from '@/contexts/CartContext';
 
 export const AppContext = createContext();
 let socket;
@@ -18,7 +18,7 @@ function Layout({ children }) {
 
 useEffect(() => {
   if (!session?.user?.id) return;
-  if (!socket) socket = io({ path: `${process.env.NEXT_PUBLIC_APP_URL}/api/socket` });
+  if (!socket) socket = io({ path: `/api/socket` });
 
   if (!connected) {
     socket.emit("join", session.user.id);
@@ -33,7 +33,7 @@ useEffect(() => {
   socket.on("user-delete", (data) => {
     if (data._id === session.user.id) {
       // حذف کاربر → ساین اوت اجباری
-      signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login` });
+      signOut({ callbackUrl: `/login` });
     }
   });
 
@@ -83,7 +83,9 @@ function AppContent({ Component, pageProps }) {
 export default function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
-      <AppContent Component={Component} pageProps={pageProps} />
+      <CartProvider>
+        <AppContent Component={Component} pageProps={pageProps} />
+      </CartProvider>
     </SessionProvider>
   );
 }

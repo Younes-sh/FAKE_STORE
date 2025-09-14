@@ -1,3 +1,4 @@
+// pages/api/auth/[...nextauth].js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from "@/lib/dbConnect";
@@ -55,6 +56,7 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
+      // در sign-in اولیه: داده‌ها از authorize
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -62,38 +64,43 @@ export const authOptions = {
         token.role = user.role;
         token.isVerified = user.isVerified;
         token.isActive = user.isActive;
+        return token;
       }
 
-      // به‌روزرسانی اطلاعات توکن با آخرین داده‌های دیتابیس
-      // این بخش برای همگام‌سازی توکن با تغییرات نقش در پنل ادمین ضروری است
-      if (token?.id) {
-        await dbConnect();
-        const dbUser = await User.findById(token.id).select("role username emailVerified isActive");
-        if (dbUser) {
-          token.role = dbUser.role?.toLowerCase();
-          token.username = dbUser.username;
-          token.isVerified = !!dbUser.emailVerified;
-          token.isActive = dbUser.isActive;
-        }
-      }
-
-      // این بخش برای زمانی که از update() استفاده می‌شود ضروری است
+      // همگام‌سازی با دیتابیس فقط در trigger="update" (مثل تغییر نقش)
       if (trigger === "update" && session?.role) {
         token.role = session.role;
+        // اختیاری: query دیتابیس برای تأیید تغییرات
+        try {
+          await dbConnect();
+          const dbUser = await User.findById(token.id).select("role username emailVerified isActive");
+          if (dbUser) {
+            token.role = dbUser.role?.toLowerCase();
+            token.username = dbUser.username;
+            token.isVerified = !!dbUser.emailVerified;
+            token.isActive = dbUser.isActive;
+          }
+        } catch (error) {
+          console.error("خطا در همگام‌سازی jwt با دیتابیس:", error);
+          // token را بدون تغییر برگردان (fallback)
+        }
+        return token;
       }
 
-      // console.log("JWT Token:", token);
+      // برای درخواست‌های عادی: token را بدون query دیتابیس برگردان (بهینه‌سازی عملکرد)
       return token;
     },
     async session({ session, token }) {
-      session.user = {
-        id: token.id,
-        email: token.email,
-        username: token.username,
-        role: token.role,
-        isVerified: token.isVerified,
-        isActive: token.isActive,
-      };
+      if (token) {
+        session.user = {
+          id: token.id,
+          email: token.email,
+          username: token.username,
+          role: token.role,
+          isVerified: token.isVerified,
+          isActive: token.isActive,
+        };
+      }
       // console.log("Session:", session);
       return session;
     },

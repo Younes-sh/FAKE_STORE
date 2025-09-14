@@ -1,3 +1,4 @@
+/* navbarAfterLogin.module.css */
 .navbar {
   width: 100%;
   height: 70px;
@@ -11,7 +12,7 @@
   z-index: 1000;
 }
 
-/* دکمه منو */
+/* دکمه منو - فقط در موبایل نمایش داده شود */
 .menuButton {
   background: none;
   border: none;
@@ -20,16 +21,19 @@
   cursor: pointer;
   z-index: 1001;
   display: none;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 .menuButton:hover {
-  opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* لوگو وسط */
+/* لوگو */
 .Logo {
-  left: 50%;
   z-index: 1001;
+  flex-shrink: 0;
 }
 
 .Logo img {
@@ -43,126 +47,187 @@
 /* بخش راست */
 .rightSection {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 20px;
   z-index: 1001;
 }
 
-.rightSection a {
+
+/* منوی اصلی - حالت دسکتاپ */
+.menuContainer {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin: 0 auto;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.navLink.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid yellow;
+}
+
+.navLink:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* لینک سبد خرید در دسکتاپ */
+.desktopCart {
   color: white;
   font-size: 18px;
   position: relative;
-}
-
-/* منوی اصلی */
-.menuContainer {
-  position: fixed;
-  top: auto;
-  bottom: -60%;
-  left: 0;
-  width: 100%;
-  background-color: rgb(11, 60, 116);
-  padding: 40px 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  transition: all 0.3s ease;
-  z-index: 999;
-  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
-  transform: translateY(0);
-}
-
-.menuContainer.menuOpen {
-  bottom: 0px;
-  transform: translateY(0);
-}
-
-.menuContainer a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  padding: 8px 15px;
-  border-radius: 5px;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   transition: all 0.3s;
+  text-decoration: none;
 }
 
-.menuContainer a.active {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-left: 3px solid yellow;
-}
-
-.menuContainer a:hover {
+.desktopCart:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+.desktopCart.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* لینک سبد خرید در موبایل (مخفی در دسکتاپ) */
 .cartLink {
   color: white;
-  font-size: 18px;
+  font-size: 20px;
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: all 0.3s;
+  display: none;
 }
+
 /* بج */
 .badge {
   position: absolute;
   top: -5px;
-  right: -12px;
-  background-color: red;
+  right: -5px;
+  background-color: #ff4757;
   color: white;
   border-radius: 50%;
   width: 20px;
   height: 20px;
+  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
+  border: 3px solid rgb(11, 60, 116);
 }
 
-/* حالت دسکتاپ */
-@media (min-width: 992px) {
-  .menuButton {
-    display: none;
-  }
-  
-  .Logo {
-    position: static;
-    transform: none;
-    margin-right: auto;
-  }
-  
-  .menuContainer {
-    position: static;
-    flex-direction: row;
-    transform: none;
-    width: auto;
-    padding: 0;
-    background-color: transparent;
-    box-shadow: none;
-    margin: 0 auto;
-    bottom: auto;
-  }
-  
-  .menuContainer a {
-    padding: 5px 0;
-  }
-  
-  .menuContainer a.active {
-    border-left: none;
-    border-bottom: 2px solid yellow;
-    background-color: transparent;
-  }
-  
-  .rightSection {
-    margin-left: auto;
-  }
+/* overlay برای موبایل */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  display: none;
+}
+
+/* دکمه شناور برای موبایل */
+.floatingMenuBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgb(11, 60, 116);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.3s;
+  display: none;
 }
 
 /* حالت موبایل و تبلت */
 @media (max-width: 991px) {
   .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .menuContainer {
+    position: fixed;
+    bottom: -60%;
+    left: 0;
+    width: 100%;
+    background-color: rgb(11, 60, 116);
+    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.4s ease;
+    z-index: 999;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .menuContainer.menuOpen {
+    bottom: 0;
+  }
+  
+  .navLink {
+    font-size: 18px;
+    padding: 12px 20px;
+    width: 200px;
+    text-align: center;
+    border-bottom: none;
+  }
+  
+  .navLink.active {
+    border-left: 3px solid yellow;
+    border-bottom: none;
+  }
+  
+  .cartLink {
+    display: flex;
+  }
+  
+  .desktopCart {
+    display: none;
+  }
+  
+  .overlay {
     display: block;
+  }
+  
+  .floatingMenuBtn {
+    display: flex;
   }
   
   .rightSection {
@@ -176,31 +241,60 @@
     width: 60px;
     height: 60px;
   }
-}
-
-/* استایل جدید برای دکمه شناور */
-.floatingMenuBtn {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: rgb(11, 60, 116);
-  color: white;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
-
-/* حالت دسکتاپ - مخفی کردن دکمه */
-@media (min-width: 992px) {
-  .floatingMenuBtn {
-    display: none;
+  
+  .menuContainer {
+    padding: 30px 0;
+    gap: 15px;
   }
+  
+  .navLink {
+    font-size: 16px;
+    padding: 10px 15px;
+    width: 180px;
+  }
+}
+
+/* انیمیشن‌ها برای موبایل */
+@keyframes slideInUp {
+  from {
+    bottom: -60%;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    bottom: 0;
+    opacity: 1;
+  }
+  to {
+    bottom: -60%;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .menuContainer.menuOpen {
+    animation: slideInUp 0.4s ease forwards;
+  }
+  
+  .menuContainer:not(.menuOpen) {
+    animation: slideOutDown 0.4s ease forwards;
+  }
+}
+
+.loadingDot {
+  font-size: 12px;
+  color: #666;
+  margin-left: 4px;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
 }

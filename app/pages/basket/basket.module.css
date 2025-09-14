@@ -1,45 +1,290 @@
 .basket {
-    padding: 60px 10px;
-    text-align:center;
-    height: auto;
+  padding: 40px 20px;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
 }
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
 .Subtotal {
-    position: absolute;
-    width: 300px;
-    min-height: 400px;
-    margin-top: 70px;
-    padding: 0 10px;
-    right: 20;
-    border-left: solid 1px;
-
-    p {
-        margin-top: 10px;
-    }
-    .checkoutBtn {
-
-        margin-top: 100px;
-
-        a {
-            text-decoration: none;
-            padding: 7px 14px;
-            border-radius: 9px;
-            color: aliceblue;
-            background-color: rgb(13, 121, 4);
-        }
-    }
-
-    
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px;
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  z-index: 900;
 }
 
-@media screen and (max-width: 1844px) {
-    .Subtotal {
-        position: relative;
-        min-height: 100px;
-        margin-left: 20px;
-        border: none;
-        .checkoutBtn {
-            margin-top: 20px;
-        }
-    }
-    
+.Subtotal h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+  color: white;
+}
+
+.Subtotal p {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 20px 0;
+  text-align: center;
+  color: white;
+}
+
+.checkoutBtn {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.checkoutBtn a {
+  display: inline-block;
+  background: white;
+  color: #667eea;
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 2px solid transparent;
+}
+
+.checkoutBtn a:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  color: #5a67d8;
+}
+
+.basketContent {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  background: #fee;
+  color: #c53030;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #feb2b2;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: 60px 40px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.emptyCart h2 {
+  color: #2d3748;
+  margin-bottom: 16px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.emptyCart p {
+  color: #718096;
+  margin-bottom: 32px;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.continueShopping {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.continueShopping:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+  color: white;
+}
+
+.loadingContainer {
+  text-align: center;
+  padding: 60px 40px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.loadingContainer p {
+  font-size: 20px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Animation for loading */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.loadingContainer p {
+  animation: pulse 2s infinite;
+}
+
+/* Cart items grid */
+.basketItems {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .Subtotal {
+    position: static;
+    order: -1;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .basket {
+    padding: 20px 15px;
+  }
+  
+  .container {
+    gap: 20px;
+  }
+  
+  .Subtotal {
+    padding: 20px;
+  }
+  
+  .Subtotal h3 {
+    font-size: 20px;
+  }
+  
+  .Subtotal p {
+    font-size: 24px;
+  }
+  
+  .checkoutBtn a {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+  
+  .basketContent {
+    padding: 20px;
+  }
+  
+  .emptyCart {
+    padding: 40px 20px;
+  }
+  
+  .emptyCart h2 {
+    font-size: 24px;
+  }
+  
+  .emptyCart p {
+    font-size: 16px;
+  }
+  
+  .continueShopping {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .Subtotal {
+    padding: 16px;
+  }
+  
+  .Subtotal h3 {
+    font-size: 18px;
+  }
+  
+  .Subtotal p {
+    font-size: 20px;
+  }
+  
+  .checkoutBtn a {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .emptyCart {
+    padding: 30px 16px;
+  }
+  
+  .emptyCart h2 {
+    font-size: 20px;
+  }
+  
+  .emptyCart p {
+    font-size: 14px;
+  }
+}
+
+/* Additional styling for better visual hierarchy */
+.basketHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.basketHeader h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.basketHeader p {
+  font-size: 18px;
+  color: #718096;
+}
+
+/* Smooth transitions */
+.Subtotal, .basketContent, .checkoutBtn a, .continueShopping {
+  transition: all 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.checkoutBtn a:focus-visible,
+.continueShopping:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
 }

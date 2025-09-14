@@ -1,118 +1,334 @@
+/* Components/Cards/BasketCard/BasketCard.module.css */
 .basketCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .basketCard:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .basketCard.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  
+  /* لینک و تصویر */
+  .Link {
+    flex-shrink: 0;
+  }
+  
+  .imageContainer {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+  
+  .image {
     width: 100%;
-    height: 150px;
-    padding: 0 10px;
-    border-radius: 5px;
-    margin-top: 10px ;
-    box-shadow: 0 3px 12px #000000b4;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .Link:hover .image {
+    transform: scale(1.05);
+  }
+  
+  /* اطلاعات محصول */
+  .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .productName {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  .model, .section {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+  
+  .priceInfo {
+    margin-top: auto;
+  }
+  
+  .price {
+    font-size: 14px;
+    color: #666;
+    margin: 4px 0;
+  }
+  
+  .totalPrice {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d5016;
+    margin: 4px 0;
+  }
+  
+  /* کنترل‌های محصول */
+  .controlItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    min-width: 200px;
+  }
+  .quantity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    min-width: 200px;
+  }
+  
+  .quantity h4 {
+    font-size: 14px;
+    margin: auto;
+    color: #333;
+  }
+  
+  .counter {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-    button {
-        cursor: pointer;
-        border: none;
-        padding: 4px;
-        font-weight: 900;
-    }
-
-    a {
-        text-decoration: none;
-    }
-    .imageContainer {
-        width: 120px;
-        height: 120px;
-        border-radius: 3px;
-        /* border: solid 1px #ccc; */
-
-        .image {
-            width: 100%;
-            height: 100%;
-        }
-    }
-    .info {
-        text-align: left;
-        line-height: 22px;
-    }
-
-    .controlItem {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        
-        .btnRemove {
-            background-color: transparent;
-        }
-        .btnRemove:hover {
-            color: red;
-        }
-    }
-    .quantity {
-        width: 200px;
-        height: 100%;
-        padding-top: 20px;
-        display: flex;
-        flex-direction: column;
-        /* justify-content: space-around; */
-        
-    
-        .counter {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            border-bottom: solid 2px #000;
-            border-radius: 20px;
-            overflow: hidden;
-                margin-top: 30px;
-            button {
-                width: 30%;
-            }
-            
-        }
-        .deacreseBtn {
-            background-color: rgb(241, 219, 18);
-        }
-        .increaseBtn {
-            background-color: rgb(65, 180, 65);
-        }
-    
-        .Btn  {
-            display: flex;
-            flex-direction: column;
-            button {
-                width: 100%;
-                border-radius: 20px;
-            }
-            button:hover {
-                cursor: pointer;
-            }
-        
-            .btnBuy {
-                background-color: #0B3C74;
-                color: #ccc;
-                margin-top: 2px;
-            }
-            .btnBuy:hover {
-                color: aliceblue;
-                background-color: #0739c4;
-            }
-        }
-        
-    }
-    
-}
-.basketCard:hover {
-    box-shadow: 0 5px 17px #000000b4;
+    gap: 12px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  
+  .count {
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 30px;
+    text-align: center;
+  }
+  
+  .increaseBtn, .decreaseBtn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: #007bff;
+    color: white;
+    font-size: 16px;
     cursor: pointer;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .increaseBtn:hover:not(:disabled), 
+  .decreaseBtn:hover:not(:disabled) {
+    background: #0056b3;
+    transform: scale(1.1);
+  }
+  
+  .increaseBtn:disabled, 
+  .decreaseBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* دکمه‌های اقدام */
 
-@media screen and (max-width: 666px) {
+  
+  .btnDelete, .btnSave, .btnShare {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+  }
+  
+  .btnDelete {
+    background: #dc3545;
+    color: white;
+  }
+  
+  .btnDelete:hover:not(:disabled) {
+    background: #c82333;
+  }
+  
+  .btnSave {
+    background: #ffc107;
+    color: #333;
+  }
+  
+  .btnSave:hover:not(:disabled) {
+    background: #e0a800;
+  }
+  
+  .btnShare {
+    background: #17a2b8;
+    color: white;
+  }
+  
+  .btnShare:hover:not(:disabled) {
+    background: #138496;
+  }
+  
+  .btnDelete:disabled, 
+  .btnSave:disabled, 
+  .btnShare:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* لودینگ */
+  .loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    z-index: 10;
+  }
+  
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* رسپانسیو */
+  @media (max-width: 768px) {
     .basketCard {
-        flex-direction: column;
-        height: auto;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
     }
-}
+  
+    .imageContainer {
+      width: 80px;
+      height: 80px;
+      align-self: center;
+    }
+  
+    .controlItem {
+      min-width: auto;
+    }
+  
+    .actionButtons {
+      justify-content: center;
+    }
+  
+    .counter {
+      justify-content: center;
+    }
+  }
+  
 
+
+  .actionButtons {
+    display: flex;
+    gap: 12px; /* فاصله بین دکمه‌ها */
+    align-items: center;
+    padding: 8px 0;
+  }
+  
+  /* استایل عمومی دکمه‌ها */
+  .actionButtons button {
+    display: flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 10px;
+    border: none;
+    border-radius: 8px; /* گوشه‌های گرد */
+    cursor: pointer;
+    transition: all 0.3s ease; /* انیمیشن نرم برای تغییرات */
+    outline: none; /* حذف outline پیش‌فرض */
+    bottom: -12px;
+    position: relative;
+  }
+  
+  /* استایل دکمه Delete */
+  .btnDelete {
+    background-color: #ff4d50cd; /* رنگ قرمز ملایم برای حذف */
+    color: #ffffff;
+  }
+  
+  .btnDelete:hover:not(:disabled) {
+    background-color: #d9363e; /* تیره‌تر شدن در هاور */
+    transform: translateY(-2px); /* جابجایی عمودی برای افکت */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* سایه در هاور */
+  }
+  
+  .btnDelete:disabled {
+    background-color: #ff9999; /* رنگ کمرنگ‌تر برای حالت غیرفعال */
+    cursor: not-allowed;
+  }
+  
+  /* استایل دکمه Share */
+  .btnShare {
+    background-color: #188fff96; /* رنگ آبی ملایم برای اشتراک‌گذاری */
+    color: #ffffff;
+  }
+  
+  .btnShare:hover:not(:disabled) {
+    background-color: #096dd9; /* تیره‌تر شدن در هاور */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btnShare:disabled {
+    background-color: #69c0ff; /* رنگ کمرنگ‌تر برای حالت غیرفعال */
+    cursor: not-allowed;
+  }
+  
+  /* استایل‌های ریسپانسیو */
+  @media (max-width: 480px) {
+    .actionButtons {
+      flex-direction: column;
+      gap: 8px; /* فاصله کمتر در حالت موبایل */
+    }
+  
+    .actionButtons button {
+      width: 100%; /* دکمه‌ها در موبایل عرض کامل داشته باشند */
+      padding: 12px; /* پدینگ بیشتر برای راحتی لمس */
+      font-size: 14px; /* فونت کمی کوچکتر برای موبایل */
+    }
+
+    .btnDelete, .btnSave, .btnShare {
+      justify-content: center;
+    }
+  }
 
