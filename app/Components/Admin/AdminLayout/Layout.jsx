@@ -49,6 +49,8 @@ export default function AdminLayout({ children }) {
     { href: "/aXdmiNPage/users", label: "Users", icon: "👥" },
     { href: "/aXdmiNPage/message", label: "Messages", icon: "✉️" },
     { href: "/aXdmiNPage/setting", label: "Settings", icon: "⚙️" },
+    { href: "/aXdmiNPage/notifications", label: "Notifications", icon: "🔔" }
+
   ];
 
   if (status === 'loading') {
