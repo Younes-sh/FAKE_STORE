@@ -1,5 +1,5 @@
 // pages/admin/users.js
-import React from 'react';
+import React, { useState } from 'react';
 import AdminLayout from "@/Components/Admin/AdminLayout/Layout";
 import UserCard from '@/Components/Admin/Cards/UserCard/UserCard';
 import Style from './style.module.css';
@@ -10,25 +10,59 @@ export default function UserDataPage({ userData, session: ssrSession }) {
     required: true,
     initialData: ssrSession,
   });
+  const [filterRole, setFilterRole] = useState('all');
 
   if (status === "loading") return <p>Loading...</p>;
 
+  // فیلتر کردن کاربران بر اساس نقش
+  const filteredUsers = filterRole === 'all' 
+    ? userData 
+    : userData.filter(user => user.role === filterRole);
+
   return (
     <AdminLayout className="Container">
-      <h1>Users</h1>
+      <div className={Style.header}>
+        <h1>Users Management</h1>
+        
+        {/* فیلتر بر اساس نقش */}
+        <div className={Style.filterSection}>
+          <label htmlFor="roleFilter">Filter by Role: </label>
+          <select 
+            id="roleFilter"
+            value={filterRole} 
+            onChange={(e) => setFilterRole(e.target.value)}
+            className={Style.filterSelect}
+          >
+            <option value="all">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="user">User</option>
+          </select>
+          
+          <span className={Style.resultCount}>
+            Showing {filteredUsers.length} of {userData.length} users
+          </span>
+        </div>
+      </div>
+
       <div className={Style.row}>
-        {userData.map(user => (
+        {filteredUsers.map(user => (
           <div className='col' key={user._id}>
             <UserCard {...user} currentUserRole={session?.user?.role} />
           </div>
         ))}
       </div>
+
+      {filteredUsers.length === 0 && (
+        <div className={Style.noResults}>
+          <p>No users found with the selected role.</p>
+        </div>
+      )}
     </AdminLayout>
   );
 }
 
 // 🔐 چک کردن نقش در سمت سرور
-
 export async function getServerSideProps({ req, res }) {
   try {
     // ابتدا session را بررسی کنید

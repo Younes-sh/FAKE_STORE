@@ -1,6 +1,78 @@
+
+
+  .filterSection {
+    display: flex;
+    margin: 10px 0;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filterSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+.filterSelect {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 1rem;
+  }
+  
+  .filterSelect:focus {
+    outline: none;
+    border-color: #0070f3;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+  }
+
+  .resultCount {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
 .row {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
 }
+  
+  .noResults {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+
+
+  .noResults {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+  
+  /* رسپانسیو برای موبایل */
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .filterSection {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .row {
+      grid-template-columns: 1fr;
+    }
+  }
