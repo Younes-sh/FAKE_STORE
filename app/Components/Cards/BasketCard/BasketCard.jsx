@@ -1,171 +1,224 @@
 // Components/Cards/BasketCard/BasketCard.js
 import Style from './BasketCard.module.css';
 import Image from 'next/image';
+import BasketImage from '@/public/basket.png';
 import Link from 'next/link';
-import Head from "next/head";
-import Script from 'next/script';
-import { useRouter } from 'next/router';
-import { useContext } from "react";
-import { AppContext } from "@/pages/_app";
-import { AlertModal } from "@/Components/AlertModal/AlertModal";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { AlertModal } from "@/Components/AlertModal/AlertModal";
 
-export default function BasketCard({ _id, productName, price, image, count, totalPrice , refreshCart }) {
-  const router = useRouter();
-  const { setAddProduct, setAddToCard } = useContext(AppContext);
+export default function BasketCard({ 
+  _id, 
+  productName, 
+  price, 
+  image, 
+  count, 
+  totalPrice,
+  description,
+  section,
+  model,
+  onUpdate
+}) {
+  const { data: session } = useSession();
   const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
-
-  const increaseItem = async () => {
+  const handleUpdateQuantity = async (newCount) => {
+    if (loading || !session?.user?.id) return;
+    
+    setLoading(true);
     try {
-      const response = await fetch('/api/cart', {
-        method: 'POST',
+      const res = await fetch('/api/cart', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          products: [{
-            _id,
-            productName,
-            price,
-            count: count + 1,
-            totalPrice: (count + 1) * price,
-            image
-          }]
-        }),
+        body: JSON.stringify({ productId: _id, count: newCount }),
       });
-      if (response.ok) await refreshCart();
+      
+      if (!res.ok) {
+        throw new Error(`Failed to update quantity: ${res.status}`);
+      }
+
+      // Trigger global update and refresh parent
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      if (onUpdate) onUpdate();
+      
     } catch (error) {
-      console.error("خطا در افزایش محصول:", error);
+      console.error('Error updating product quantity:', error);
+      setAlertMessage('Error updating quantity');
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
     }
-   
   };
 
-  const deacreseItem = async () => {
-  try {
-    if (count <= 1) {
-      await deleteItem();
-      return;
-    }
-    const response = await fetch('/api/cart', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        products: [{
-            _id,
-            productName,
-            price,
-            count: count - 1,
-            totalPrice: (count - 1) * price,
-            image
-          }]
-      }),
-    });
-    if (response.ok) await refreshCart();
-  } catch (error) {
-    console.error("خطا در کاهش محصول:", error);
-  }
-};
-
-
-  const deleteItem = async () => {
+  const handleDeleteItem = async () => {
+    if (loading || !session?.user?.id) return;
+    
+    setLoading(true);
     try {
-      const response = await fetch("/api/cart", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/cart', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: _id }),
       });
-      if (response.ok) await refreshCart();
+      
+      if (!res.ok) {
+        throw new Error(`Failed to delete item: ${res.status}`);
+      }
 
-      // بعد از افزودن به سبد خرید، مقدار سبد را بروز کن
-      const res = await fetch('/api/cart');
-      const updated = await res.json();
-      const items = updated.cart?.products || [];
+      // Trigger global update and refresh parent
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      if (onUpdate) onUpdate();
+      
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      setAlertMessage('Error deleting item');
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      setAddProduct(items);
-      setAddToCard(updated.cart?.products?.length || 0);
-    } catch (err) {
-      console.error("Error deleting item:", err);
+  const increaseItem = () => handleUpdateQuantity(count + 1);
+  
+  const decreaseItem = () => {
+    if (count > 1) {
+      handleUpdateQuantity(count - 1);
+    } else {
+      handleDeleteItem();
     }
   };
 
   const handleShareClick = async () => {
-    const productLink = `${window.location.origin}/products/${_id}`;
     try {
-      await navigator.clipboard.writeText(productLink);
-      setShowAlert(true)
-      // Optionally, you can show a success message or alert
-
+      const productLink = `${window.location.origin}/products/${_id}`;
+      
+      if (navigator.share) {
+        // Use Web Share API if available
+        await navigator.share({
+          title: productName,
+          text: description || 'Check out this product!',
+          url: productLink,
+        });
+      } else if (navigator.clipboard) {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(productLink);
+        setAlertMessage('Product link copied to clipboard!');
+        setShowAlert(true);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = productLink;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setAlertMessage('Product link copied!');
+        setShowAlert(true);
+      }
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error('Error sharing product:', err);
+      if (err.name !== 'AbortError') {
+        setAlertMessage('Error sharing product');
+        setShowAlert(true);
+      }
     }
   };
 
-  const checkoutHandler = () => {
-  const order = {
-    items: [{
-      product: _id,
-      name: productName,
-      quantity: count,
-      priceAtPurchase: price,
-      image
-    }]
+  const formatPrice = (price) => {
+    return `$${price?.toFixed(2) || '0.00'}`;
   };
-  router.push('/checkout');
-};
 
   return (
-    <div className={Style.basketCard}>
-      <Head>
-        <title>Fake Store</title>
-        <meta name="description" content="Store gold silver watch" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Script src="https://kit.fontawesome.com/24d3f7dfbb.js" crossOrigin="anonymous" />
-
-      <Link  href={`/products/${_id}`} className={Style.Link}>
+    <div className={`${Style.basketCard} ${loading ? Style.loading : ''}`}>
+      <Link href={`/products/${_id}`} className={Style.Link}>
         <div className={Style.imageContainer}>
-          <Image src={image} alt={productName} width={100} height={100} className={Style.image} />
+          <Image 
+            src={image || BasketImage} 
+            alt={productName || 'Product image'} 
+            width={120} 
+            height={120} 
+            className={Style.image}
+            onError={(e) => {
+              e.target.src = BasketImage;
+            }}
+          />
         </div>
       </Link>
 
       <div className={Style.info}>
-        <p>Name: {productName}</p>
-        <p>Price: {price}</p>
-        <p>Total price: {totalPrice}</p>
+        <h3 className={Style.productName}>{productName || 'Unknown Product'}</h3>
+        {model && <p className={Style.model}>Model: {model}</p>}
+        {section && <p className={Style.section}>Category: {section}</p>}
+        
+        <p className={Style.price}>Unit Price: {formatPrice(price)}</p>
+        <p className={Style.totalPrice}>Total: {formatPrice(totalPrice)}</p>
       </div>
 
       <div className={Style.controlItem}>
         <div className={Style.quantity}>
+          <h4>Quantity:</h4>
           <div className={Style.counter}>
-            {
-              count > 1
-                ? <button className={Style.deacreseBtn} onClick={deacreseItem}>-</button>
-                : <button className={Style.btnRemove} onClick={deleteItem}>
-                    <i className="fa-solid fa-trash fa-fw"></i>
-                  </button>
-            }
-            <p><b>{count}</b></p>
-            <button className={Style.increaseBtn} onClick={increaseItem}>+</button>
-          </div>
-
-          {/* The buy button is hidden because the button event is not complete. */}
-          <div className={Style.Btn} style={{ visibility: "hidden" }}>
-            <button className={Style.btnBuy} onClick={checkoutHandler}>Buy</button>
+            <button 
+              className={Style.decreaseBtn} 
+              onClick={decreaseItem} 
+              disabled={loading}
+              aria-label="Decrease quantity"
+            >
+              {count > 1 ? '-' : '🗑️'}
+            </button>
+            
+            <span className={Style.count}>{count}</span>
+            
+            <button 
+              className={Style.increaseBtn} 
+              onClick={increaseItem} 
+              disabled={loading}
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
           </div>
         </div>
-        <div>
-          <button className={Style.btnRemove} onClick={deleteItem}>Delete</button>
-          <button className={Style.btnRemove}>Save</button>
-          <button className={Style.btnRemove} onClick={handleShareClick}>Share</button>
+
+        <div className={Style.actionButtons}>
+          <button 
+            className={Style.btnDelete} 
+            onClick={handleDeleteItem}
+            disabled={loading}
+            aria-label="Remove item from cart"
+          >
+            🗑️ Remove
+          </button>
+          
+          <button 
+            className={Style.btnShare} 
+            onClick={handleShareClick}
+            disabled={loading}
+            aria-label="Share product"
+          >
+            🔗 Share
+          </button>
         </div>
       </div>
+
+      {loading && (
+        <div className={Style.loadingOverlay}>
+          <div className={Style.spinner}></div>
+          <p>Updating...</p>
+        </div>
+      )}
+
       <AlertModal
-        isOpen={showAlert}  // استفاده از isOpen به جای show
+        isOpen={showAlert}
         onClose={() => setShowAlert(false)}
-        title="Link copied."
-        message="Product link copied successfully!"
+        title="Notification"
+        message={alertMessage}
         confirmText="OK"
-        showCancel={false} // غیرفعال کردن دکمه cancel
-        type="success" // تعیین نوع modal به success
+        showCancel={false}
+        type="info"
       />
     </div>
   );
