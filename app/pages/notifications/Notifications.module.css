@@ -1,0 +1,126 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .empty {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+  }
+  
+  .notificationsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .notificationItem {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid #0070f3;
+  }
+  
+  .notificationItem.unread {
+    background: #f0f9ff;
+    border-left-color: #0070f3;
+  }
+  
+  .notificationItem.read {
+    background: #f8f9fa;
+    border-left-color: #6c757d;
+    opacity: 0.8;
+  }
+  
+  .notificationItem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .notificationHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .notificationHeader h3 {
+    margin: 0;
+    color: #2c3e50;
+  }
+  
+  .notificationHeader span {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .notificationHeader .info { background: #17a2b8; }
+  .notificationHeader .warning { background: #ffc107; }
+  .notificationHeader .success { background: #28a745; }
+  .notificationHeader .error { background: #dc3545; }
+  .notificationHeader .promotion { background: #6f42c1; }
+  
+  .notificationFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .deleteBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  
+  .deleteBtn:hover {
+    background: #c82333;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .modalActions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+  }
