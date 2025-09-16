@@ -1,0 +1,413 @@
+.section {
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .sectionTitle {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f5f9;
+    font-weight: 600;
+  }
+  
+  /* استایل کارت‌ها */
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .cardTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+  
+  /* استایل فرم‌ها */
+  .formGroup {
+    margin-bottom: 20px;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+  }
+  
+  .formControl {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+  }
+  
+  .formControl:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+  
+  .formControl:disabled {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+  
+  /* استایل دکمه‌ها */
+  .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .btnPrimary {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+  }
+  
+  .btnPrimary:hover {
+    background: linear-gradient(135deg, #4338ca, #6d28d9);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .btnPrimary:active {
+    transform: translateY(0);
+  }
+  
+  .btnSecondary {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .btnSecondary:hover {
+    background: #f1f5f9;
+    color: #334155;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+  
+  /* استایل toggle switch */
+  .toggleSwitch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+  
+  .toggleSwitch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  input:checked + .slider {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  }
+  
+  .toggleLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .toggleText {
+    flex: 1;
+    padding-right: 16px;
+  }
+  
+  .toggleText h4 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    color: #1e293b;
+    font-weight: 600;
+  }
+  
+  .toggleText p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+  
+  /* استایل برای وضعیت موفقیت یا خطا */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .alertSuccess {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  
+  .alertError {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+  
+  /* استایل برای فاصله‌ها و ترازها */
+  .formActions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+  }
+  
+  .passwordStrength {
+    margin-top: 8px;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  
+  .passwordStrengthBar {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  
+  .passwordStrengthWeak {
+    background: #ef4444;
+    width: 33%;
+  }
+  
+  .passwordStrengthMedium {
+    background: #f59e0b;
+    width: 66%;
+  }
+  
+  .passwordStrengthStrong {
+    background: #10b981;
+    width: 100%;
+  }
+  
+  .passwordStrengthText {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+  
+  /* ریسپانسیو برای موبایل */
+  @media (max-width: 768px) {
+    .section {
+      padding: 16px;
+    }
+    
+    .sectionTitle {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .card {
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .toggleLabel {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    
+    .toggleSwitch {
+      align-self: flex-end;
+    }
+    
+    .formActions {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* حالت تیره (Dark Mode) */
+  @media (prefers-color-scheme: dark) {
+    .sectionTitle {
+      color: #e2e8f0;
+      border-bottom-color: #334155;
+    }
+    
+    .card {
+      background: #1f2937;
+      border-color: #374151;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cardTitle {
+      color: #f3f4f6;
+    }
+    
+    .formGroup label {
+      color: #e5e7eb;
+    }
+    
+    .formControl {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+    }
+    
+    .formControl:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+    }
+    
+    .formControl:disabled {
+      background-color: #374151;
+      color: #9ca3af;
+    }
+    
+    .btnSecondary {
+      background: #374151;
+      color: #e5e7eb;
+      border-color: #4b5563;
+    }
+    
+    .btnSecondary:hover {
+      background: #4b5563;
+      color: #f3f4f6;
+    }
+    
+    .slider {
+      background-color: #4b5563;
+    }
+    
+    .toggleLabel {
+      background: #111827;
+      border-color: #374151;
+    }
+    
+    .toggleText h4 {
+      color: #f3f4f6;
+    }
+    
+    .toggleText p {
+      color: #d1d5db;
+    }
+    
+    .passwordStrength {
+      background: #374151;
+    }
+    
+    .passwordStrengthText {
+      color: #d1d5db;
+    }
+  }
+  
+  /* انیمیشن برای تغییرات وضعیت */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+    }
+  }
+  
+  .toggleSwitch:focus-within .slider {
+    animation: pulse 1.5s infinite;
+  }
