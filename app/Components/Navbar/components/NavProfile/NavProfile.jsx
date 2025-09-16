@@ -24,7 +24,7 @@ export default function NavProfile() {
       {isOpen && (
         <div className={Style.menuProfile} onClick={CloseMenuProfile}>
           <p><Link href="/profile">Profile</Link></p>
-          <p><Link href="/settings">Settings</Link></p>
+          <p><Link href="/setting">Setting</Link></p>
           <p><Link href="/notifications">Notification</Link></p>
 
           {/* از متغیر جدید برای بررسی نقش استفاده کنید */}
