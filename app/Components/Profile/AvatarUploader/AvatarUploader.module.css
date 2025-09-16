@@ -1,0 +1,367 @@
+.avatarContainer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .avatarInfo {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .avatarInfo h3 {
+    margin: 0 0 8px 0;
+    color: #1e293b;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .avatarInfo p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .avatarActions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  /* استایل دکمه‌ها */
+  .btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 120px;
+  }
+  
+  .btnPrimary {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+  }
+  
+  .btnPrimary:hover {
+    background: linear-gradient(135deg, #4338ca, #6d28d9);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .btnSecondary {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .btnSecondary:hover {
+    background: #f8fafc;
+    color: #374151;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+  
+  .btnSecondary:active {
+    transform: translateY(0);
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+  
+  /* استایل مخصوص label که به عنوان دکمه عمل می‌کند */
+  .fileInputLabel {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .fileInputLabel:hover {
+    background: #f1f5f9;
+  }
+  
+  /* استایل برای وضعیت آپلود */
+  .uploadStatus {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 8px;
+  }
+  
+  .uploadSpinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* استایل برای پیشنمایش آواتار */
+  .avatarPreview {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .avatarOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .avatarPreview:hover .avatarOverlay {
+    opacity: 1;
+  }
+  
+  .avatarOverlay i {
+    color: white;
+    font-size: 20px;
+  }
+  
+  /* استایل برای placeholder آواتار */
+  .avatarPlaceholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #e2e8f0;
+  }
+  
+  .avatarPlaceholder i {
+    font-size: 32px;
+    color: #94a3b8;
+  }
+  
+  /* استایل برای وضعیت موفقیت یا خطا */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .alertSuccess {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  
+  .alertError {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+  
+  /* ریسپانسیو برای موبایل */
+  @media (max-width: 768px) {
+    .avatarContainer {
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+      gap: 16px;
+    }
+    
+    .avatarInfo {
+      min-width: auto;
+      text-align: center;
+    }
+    
+    .avatarActions {
+      justify-content: center;
+      width: 100%;
+    }
+    
+    .btn {
+      flex: 1;
+      min-width: auto;
+      max-width: 200px;
+    }
+  }
+  
+  /* ریسپانسیو برای تبلت */
+  @media (max-width: 1024px) {
+    .avatarContainer {
+      gap: 16px;
+    }
+    
+    .avatarActions {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .btn {
+      width: 100%;
+      max-width: none;
+    }
+  }
+  
+  /* حالت تیره (Dark Mode) */
+  @media (prefers-color-scheme: dark) {
+    .avatarContainer {
+      background: #1f2937;
+      border-color: #374151;
+    }
+    
+    .avatar {
+      border-color: #4b5563;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .avatarInfo h3 {
+      color: #f3f4f6;
+    }
+    
+    .avatarInfo p {
+      color: #d1d5db;
+    }
+    
+    .btnSecondary {
+      background: #374151;
+      color: #e5e7eb;
+      border-color: #4b5563;
+    }
+    
+    .btnSecondary:hover {
+      background: #4b5563;
+      color: #f3f4f6;
+      border-color: #6b7280;
+    }
+    
+    .avatarPlaceholder {
+      background: linear-gradient(135deg, #374151, #4b5563);
+      border-color: #4b5563;
+    }
+    
+    .avatarPlaceholder i {
+      color: #9ca3af;
+    }
+    
+    .alertSuccess {
+      background-color: #064e3b;
+      color: #a7f3d0;
+      border-color: #065f46;
+    }
+    
+    .alertError {
+      background-color: #7f1d1d;
+      color: #fecaca;
+      border-color: #991b1b;
+    }
+  }
+  
+  /* انیمیشن‌های پیشرفته */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+    }
+  }
+  
+  .btn:focus {
+    outline: none;
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* استایل برای progress bar */
+  .uploadProgress {
+    width: 100%;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  
+  .progressBar {
+    height: 100%;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  
+  /* استایل برای drag and drop */
+  .dropZone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+  }
+  
+  .dropZone:hover {
+    border-color: #4f46e5;
+    background: rgba(79, 70, 229, 0.05);
+  }
+  
+  .dropZoneActive {
+    border-color: #4f46e5;
+    background: rgba(79, 70, 229, 0.1);
+  }
+  
+  .dropZoneText {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .dropZoneText i {
+    margin-right: 8px;
+    color: #94a3b8;
+  }
