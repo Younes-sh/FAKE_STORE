@@ -1,0 +1,32 @@
+.formRow {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .formRow .formGroup {
+    flex: 1;
+  }
+  
+  .passwordSection {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .dangerZone {
+    border-left: 4px solid #ef4444;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+  }
+  
+  @media (max-width: 768px) {
+    .formRow {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
