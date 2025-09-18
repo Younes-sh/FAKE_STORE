@@ -1,126 +1,357 @@
+/* Notifications.module.css */
+
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  .loading {
-    text-align: center;
-    padding: 2rem;
-  }
-  
-  .empty {
-    text-align: center;
-    color: #666;
-    padding: 2rem;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.header hr {
+  border: none;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 20px 0;
+}
+
+.createBtn {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.createBtn:hover {
+  background-color: #3182ce;
+  transform: translateY(-2px);
+}
+
+.formModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.formContent {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.formContent h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #2d3748;
+}
+
+.formContent input,
+.formContent textarea,
+.formContent select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.formContent textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.formContent button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.formContent button[type="submit"] {
+  background-color: #48bb78;
+  color: white;
+}
+
+.formContent button[type="submit"]:hover {
+  background-color: #38a169;
+}
+
+.formContent button[type="button"] {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.formContent button[type="button"]:hover {
+  background-color: #cbd5e0;
+}
+
+.notificationsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.notificationItem {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #4299e1;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.notificationItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notificationItem[data-type="info"] {
+  border-left-color: #4299e1;
+}
+
+.notificationItem[data-type="warning"] {
+  border-left-color: #ed8936;
+}
+
+.notificationItem[data-type="success"] {
+  border-left-color: #48bb78;
+}
+
+.notificationItem[data-type="error"] {
+  border-left-color: #f56565;
+}
+
+.notificationItem[data-type="promotion"] {
+  border-left-color: #9f7aea;
+}
+
+.notificationItem h3 {
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  color: #2d3748;
+}
+
+.notificationItem p {
+  margin: 0 0 15px 0;
+  color: #718096;
+  line-height: 1.5;
+}
+
+.notificationMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.notificationActions {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.editBtn, .deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.editBtn {
+  color: #4299e1;
+}
+
+.editBtn:hover {
+  background-color: #ebf4ff;
+}
+
+.deleteBtn {
+  color: #f56565;
+}
+
+.deleteBtn:hover {
+  background-color: #fed7d7;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #718096;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #a0aec0;
+  grid-column: 1 / -1;
+}
+
+/* استایل‌های مودال برای ویرایش */
+.editModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.editModalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.editModalContent h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #2d3748;
+}
+
+.editModalContent input,
+.editModalContent textarea,
+.editModalContent select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.editModalContent textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.editModalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.editModalActions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editModalActions button:first-child {
+  background-color: #48bb78;
+  color: white;
+}
+
+.editModalActions button:first-child:hover {
+  background-color: #38a169;
+}
+
+.editModalActions button:last-child {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.editModalActions button:last-child:hover {
+  background-color: #cbd5e0;
+}
+
+/* استایل‌های حالت موبایل */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
   }
   
   .notificationsList {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    grid-template-columns: 1fr;
   }
   
-  .notificationItem {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-left: 4px solid #0070f3;
-  }
-  
-  .notificationItem.unread {
-    background: #f0f9ff;
-    border-left-color: #0070f3;
-  }
-  
-  .notificationItem.read {
-    background: #f8f9fa;
-    border-left-color: #6c757d;
-    opacity: 0.8;
-  }
-  
-  .notificationItem:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .notificationHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .notificationHeader h3 {
-    margin: 0;
-    color: #2c3e50;
-  }
-  
-  .notificationHeader span {
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: white;
-  }
-  
-  .notificationHeader .info { background: #17a2b8; }
-  .notificationHeader .warning { background: #ffc107; }
-  .notificationHeader .success { background: #28a745; }
-  .notificationHeader .error { background: #dc3545; }
-  .notificationHeader .promotion { background: #6f42c1; }
-  
-  .notificationFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-  }
-  
-  .deleteBtn {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-  }
-  
-  .deleteBtn:hover {
-    background: #c82333;
-  }
-  
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  
-  .modalContent {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  .modalActions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+  .notificationActions {
+    position: static;
+    margin-top: 15px;
     justify-content: flex-end;
   }
+  
+  .formContent,
+  .editModalContent {
+    padding: 20px;
+    width: 95%;
+  }
+}
+
+/* به فایل Notifications.module.css اضافه کنید */
+.error {
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #c33;
+}
+
+.retryButton {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.retryButton:hover {
+  background-color: #45a049;
+}
