@@ -1,16 +1,28 @@
+// pages/api/notifications/admin/index.js
 import Notification from '@/models/Notification';
 import User from '@/models/User';
 import UserNotification from '@/models/UserNotification';
 import dbConnect from '@/lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
-import mongoose from 'mongoose';
 
 export default async function handler(req, res) {
+  console.log('🔔 API Notifications Admin called:', req.method);
+  
   try {
+    // اتصال به دیتابیس
     await dbConnect();
+    console.log('✅ Database connected successfully');
 
+    // بررسی احراز هویت
     const token = await getToken({ req });
-    if (!token || !['admin', 'editor'].includes(token.role)) {
+    
+    if (!token) {
+      console.log('❌ No token found');
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    
+    if (!['admin', 'editor'].includes(token.role)) {
+      console.log('❌ Invalid role:', token.role);
       return res.status(403).json({ message: 'Access denied' });
     }
 
@@ -18,45 +30,52 @@ export default async function handler(req, res) {
 
     switch (method) {
       case 'GET':
-        // دریافت همه نوتیفیکیشن‌ها برای ادمین
         try {
-          const { page = 1, limit = 20 } = req.query;
+          // console.log('📋 Fetching notifications...');
           
-          const notifications = await Notification.find()
-            .populate('createdBy', 'username email')
-            .populate('relatedProduct', 'productName')
-            .sort({ createdAt: -1 })
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+          // دریافت نوتیفیکیشن‌ها بدون populate مربوط به Product
+          // برای جلوگیری از خطا اگر مدل Product وجود ندارد
+          let notifications;
+          
+          try {
+            // سعی می‌کنیم با populate محصولات دریافت کنیم
+            notifications = await Notification.find({})
+              .populate('createdBy', 'username email')
+              .populate('relatedProduct', 'productName')
+              .sort({ createdAt: -1 })
+              .lean();
+          } catch (populateError) {
+            console.warn('❌ Populate failed, fetching without product data:', populateError.message);
+            // اگر populate با خطا مواجه شد، بدون آن داده را دریافت می‌کنیم
+            notifications = await Notification.find({})
+              .populate('createdBy', 'username email')
+              .sort({ createdAt: -1 })
+              .lean();
+          }
 
-          const total = await Notification.countDocuments();
+          // console.log(`✅ Found ${notifications.length} notifications`);
 
           res.status(200).json({
             success: true,
             notifications,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page,
-            total
+            total: notifications.length
           });
         } catch (error) {
-          res.status(500).json({ message: 'Server error', error: error.message });
+          console.error('❌ Error in GET operation:', error);
+          res.status(500).json({ 
+            message: 'Error fetching notifications',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+          });
         }
         break;
 
       case 'POST':
-        // ایجاد نوتیفیکیشن و ارسال به کاربران
         try {
           const { title, message, type, targetUsers, isForAllUsers, relatedProduct, expiresAt } = req.body;
 
-          console.log('📨 Creating notification with data:', {
-            title,
-            message,
-            type,
-            isForAllUsers,
-            targetUsersCount: targetUsers?.length || 0,
-            relatedProduct
-          });
+          // console.log('📨 Creating notification:', { title, type });
 
+          // ایجاد نوتیفیکیشن جدید
           const notification = new Notification({
             title,
             message,
@@ -69,46 +88,27 @@ export default async function handler(req, res) {
           });
 
           const savedNotification = await notification.save();
-          console.log('✅ Notification created:', savedNotification._id);
-
-          // ایجاد UserNotification برای کاربران هدف
+          // console.log('✅ Notification created:', savedNotification._id);
+           // ایجاد UserNotification برای کاربران هدف
           let usersToNotify = [];
-          
+
           if (isForAllUsers) {
             usersToNotify = await User.find({ isActive: true }).select('_id');
-            console.log(`👥 Found ${usersToNotify.length} active users for all-users notification`);
           } else if (targetUsers && targetUsers.length > 0) {
-            // اطمینان از اینکه targetUsers آرایه ای از ObjectId است
-            const targetUserIds = targetUsers.map(id => 
-              mongoose.Types.ObjectId.isValid(id) ? new mongoose.Types.ObjectId(id) : null
-            ).filter(id => id !== null);
-
-            if (targetUserIds.length > 0) {
-              usersToNotify = await User.find({ 
-                _id: { $in: targetUserIds },
-                isActive: true 
-              }).select('_id');
-              console.log(`👥 Found ${usersToNotify.length} active users from target list`);
-            }
+            usersToNotify = await User.find({ 
+              _id: { $in: targetUsers },
+              isActive: true 
+            }).select('_id');
           }
-
+      
           if (usersToNotify.length > 0) {
             const userNotifications = usersToNotify.map(user => ({
               user: user._id,
-              notification: savedNotification._id
+              notification: savedNotification._id,
+              isRead: false
             }));
-
-            console.log(`📝 Creating ${userNotifications.length} user notifications...`);
-            
-            try {
-              const result = await UserNotification.insertMany(userNotifications, { ordered: false });
-              console.log(`✅ Created ${result.length} user notifications successfully`);
-            } catch (insertError) {
-              // حتی اگر برخی insertها fail شوند، ادامه بده
-              console.log('⚠️ Some user notifications may not have been created:', insertError.message);
-            }
-          } else {
-            console.log('⚠️ No users to notify');
+      
+            await UserNotification.insertMany(userNotifications, { ordered: false });
           }
 
           res.status(201).json({ 
@@ -117,8 +117,11 @@ export default async function handler(req, res) {
             usersNotified: usersToNotify.length
           });
         } catch (error) {
-          console.error('❌ Error creating notification:', error);
-          res.status(500).json({ message: 'Server error', error: error.message });
+          console.error('❌ Error in POST operation:', error);
+          res.status(500).json({ 
+            message: 'Error creating notification',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+          });
         }
         break;
 
@@ -128,6 +131,9 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('❌ General error in admin notifications API:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ 
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
   }
 }
