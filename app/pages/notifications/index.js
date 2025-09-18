@@ -8,6 +8,7 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (session) {
@@ -17,35 +18,47 @@ export default function NotificationsPage() {
 
   const fetchNotifications = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      
+      // استفاده از API درست - برای کاربران معمولی
       const res = await fetch('/api/notifications');
-      if (res.ok) {
-        const data = await res.json();
-        console.log('📨 Notifications data received:', data);
-        
-        // فیلتر کردن نوتیفیکیشن‌هایی که notification دارند
-        const validNotifications = data.notifications.filter(
-          n => n.notification && n.notification.title
-        );
-        
-        console.log(`✅ ${validNotifications.length} valid notifications`);
-        setNotifications(validNotifications);
+      
+      if (!res.ok) {
+        throw new Error(`Failed to fetch notifications: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      console.log('📨 User notifications data received:', data);
+      
+      if (data.success) {
+        // API کاربر باید آرایه‌ای از UserNotificationها را برگرداند
+        setNotifications(data.notifications || []);
+      } else {
+        throw new Error(data.message || 'Failed to fetch notifications');
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
+      setError(error.message);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const markAsRead = async (notificationId) => {
+  const markAsRead = async (userNotificationId) => {
     try {
-      const res = await fetch(`/api/notifications/${notificationId}`, {
-        method: 'PUT'
+      const res = await fetch(`/api/notifications/${userNotificationId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isRead: true })
       });
       
       if (res.ok) {
         setNotifications(prev => prev.map(n => 
-          n.notification._id === notificationId 
+          n._id === userNotificationId 
             ? { ...n, isRead: true, readAt: new Date() }
             : n
         ));
@@ -55,32 +68,28 @@ export default function NotificationsPage() {
     }
   };
 
-  const deleteNotification = async (notificationId) => {
+  const deleteNotification = async (userNotificationId) => {
     try {
-      const res = await fetch(`/api/notifications/${notificationId}`, {
+      const res = await fetch(`/api/notifications/${userNotificationId}`, {
         method: 'DELETE'
       });
       
       if (res.ok) {
-        setNotifications(prev => prev.filter(n => n.notification._id !== notificationId));
+        setNotifications(prev => prev.filter(n => n._id !== userNotificationId));
       }
     } catch (error) {
       console.error('Error deleting notification:', error);
     }
   };
 
-  // تابع helper برای دسترسی ایمن به notification
-  const getNotification = (userNotification) => {
-    return userNotification.notification || {
-      title: 'Unknown Notification',
-      message: 'Notification details not available',
-      type: 'info',
-      _id: 'unknown'
-    };
-  };
-
   if (status === 'loading' || loading) {
-    return <div className={Style.loading}>Loading...</div>;
+    return (
+      <Layout>
+        <div className={Style.container}>
+          <div className={Style.loading}>Loading notifications...</div>
+        </div>
+      </Layout>
+    );
   }
 
   return (
@@ -88,48 +97,53 @@ export default function NotificationsPage() {
       <div className={Style.container}>
         <h1>Notifications</h1>
         
+        {error && (
+          <div className={Style.error}>
+            <p>Error: {error}</p>
+            <button onClick={fetchNotifications} className={Style.retryButton}>
+              Try Again
+            </button>
+          </div>
+        )}
+        
         <div className={Style.notificationsList}>
           {notifications.length === 0 ? (
             <p className={Style.empty}>No notifications yet</p>
           ) : (
-            notifications.map(userNotification => {
-              const notification = getNotification(userNotification);
-              
-              return (
-                <div
-                  key={userNotification._id}
-                  className={`${Style.notificationItem} ${
-                    userNotification.isRead ? Style.read : Style.unread
-                  }`}
-                  onClick={() => {
-                    setSelectedNotification(userNotification);
-                    if (!userNotification.isRead) {
-                      markAsRead(notification._id);
-                    }
-                  }}
-                >
-                  <div className={Style.notificationHeader}>
-                    <h3>{notification.title}</h3>
-                    <span className={Style[notification.type]}>
-                      {notification.type}
-                    </span>
-                  </div>
-                  <p>{notification.message}</p>
-                  <div className={Style.notificationFooter}>
-                    <span>{new Date(userNotification.createdAt).toLocaleDateString()}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteNotification(notification._id);
-                      }}
-                      className={Style.deleteBtn}
-                    >
-                      Delete
-                    </button>
-                  </div>
+            notifications.map(userNotification => (
+              <div
+                key={userNotification._id}
+                className={`${Style.notificationItem} ${
+                  userNotification.isRead ? Style.read : Style.unread
+                }`}
+                onClick={() => {
+                  setSelectedNotification(userNotification);
+                  if (!userNotification.isRead) {
+                    markAsRead(userNotification._id);
+                  }
+                }}
+              >
+                <div className={Style.notificationHeader}>
+                  <h3>{userNotification.notification?.title || 'No title'}</h3>
+                  <span className={Style[userNotification.notification?.type || 'info']}>
+                    {userNotification.notification?.type || 'info'}
+                  </span>
                 </div>
-              );
-            })
+                <p>{userNotification.notification?.message || 'No message'}</p>
+                <div className={Style.notificationFooter}>
+                  <span>{new Date(userNotification.createdAt).toLocaleDateString()}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNotification(userNotification._id);
+                    }}
+                    className={Style.deleteBtn}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
           )}
         </div>
 
@@ -137,11 +151,11 @@ export default function NotificationsPage() {
         {selectedNotification && (
           <div className={Style.modal} onClick={() => setSelectedNotification(null)}>
             <div className={Style.modalContent} onClick={(e) => e.stopPropagation()}>
-              <h2>{getNotification(selectedNotification).title}</h2>
-              <p>{getNotification(selectedNotification).message}</p>
+              <h2>{selectedNotification.notification?.title || 'No title'}</h2>
+              <p>{selectedNotification.notification?.message || 'No message'}</p>
               <div className={Style.modalActions}>
                 <button onClick={() => setSelectedNotification(null)}>Close</button>
-                <button onClick={() => deleteNotification(getNotification(selectedNotification)._id)}>
+                <button onClick={() => deleteNotification(selectedNotification._id)}>
                   Delete
                 </button>
               </div>
