@@ -1,6 +1,6 @@
 // pages/api/notifications/admin/index.js
 import Notification from '@/models/Notification';
-import User from '@/models/User';
+import User from '@/models/user';
 import UserNotification from '@/models/UserNotification';
 import dbConnect from '@/lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
