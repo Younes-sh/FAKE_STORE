@@ -1,12 +1,14 @@
 // pages/api/auth/[...nextauth].js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
 
 export const authOptions = {
   providers: [
+    // احراز هویت با ایمیل و رمز عبور
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -16,24 +18,36 @@ export const authOptions = {
       async authorize(credentials) {
         try {
           await dbConnect();
-          const user = await User.findOne({ email: credentials.email }).select(
+          const email = String(credentials?.email || "").trim().toLowerCase();
+          const password = String(credentials?.password || "");
+
+          if (!email || !password) {
+            throw new Error("ایمیل یا رمز عبور نامعتبر است");
+          }
+
+          const user = await User.findOne({ email }).select(
             "+password +emailVerified +isActive +role"
           );
-          if (!user) throw new Error("کاربری با این ایمیل یافت نشد");
-          if (!user.emailVerified)
+          if (!user) {
+            throw new Error("کاربری با این ایمیل یافت نشد");
+          }
+          if (!user.emailVerified) {
             throw new Error("لطفاً ایمیل خود را قبل از ورود تأیید کنید");
-          if (user.isActive === false)
+          }
+          if (user.isActive === false) {
             throw new Error("حساب شما غیرفعال است. لطفاً با پشتیبانی تماس بگیرید");
-          const isValid = await bcrypt.compare(credentials.password, user.password);
-          if (!isValid) throw new Error("رمز عبور نامعتبر است");
+          }
 
-          // console.log(`کاربر وارد شد: ${user.email} با نقش: ${user.role}`);
+          const isValid = await bcrypt.compare(password, user.password);
+          if (!isValid) {
+            throw new Error("رمز عبور نامعتبر است");
+          }
 
           return {
             id: user._id.toString(),
             email: user.email,
             username: user.username,
-            role: user.role?.toLowerCase() || "user", // نقش به حروف کوچک تبدیل شد
+            role: user.role?.toLowerCase() || "user",
             isVerified: !!user.emailVerified,
             isActive: user.isActive,
           };
@@ -43,11 +57,26 @@ export const authOptions = {
         }
       },
     }),
+    // احراز هویت با Google
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          email: profile.email,
+          username: profile.name,
+          role: "user", // نقش پیش‌فرض برای کاربران Google
+          isVerified: profile.email_verified,
+          isActive: true,
+        };
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60,
-    updateAge: 2 * 60 * 60,
+    maxAge: 24 * 60 * 60, // 24 ساعت
+    updateAge: 2 * 60 * 60, // بروزرسانی هر 2 ساعت
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
@@ -56,7 +85,7 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // در sign-in اولیه: داده‌ها از authorize
+      // در sign-in اولیه
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -64,30 +93,27 @@ export const authOptions = {
         token.role = user.role;
         token.isVerified = user.isVerified;
         token.isActive = user.isActive;
-        return token;
       }
 
-      // همگام‌سازی با دیتابیس فقط در trigger="update" (مثل تغییر نقش)
+      // بروزرسانی توکن در صورت trigger="update"
       if (trigger === "update" && session?.role) {
-        token.role = session.role;
-        // اختیاری: query دیتابیس برای تأیید تغییرات
+        token.role = session.role?.toLowerCase();
         try {
           await dbConnect();
-          const dbUser = await User.findById(token.id).select("role username emailVerified isActive");
+          const dbUser = await User.findById(token.id).select(
+            "role username emailVerified isActive"
+          );
           if (dbUser) {
-            token.role = dbUser.role?.toLowerCase();
+            token.role = dbUser.role?.toLowerCase() || "user";
             token.username = dbUser.username;
             token.isVerified = !!dbUser.emailVerified;
             token.isActive = dbUser.isActive;
           }
         } catch (error) {
-          console.error("خطا در همگام‌سازی jwt با دیتابیس:", error);
-          // token را بدون تغییر برگردان (fallback)
+          console.error("خطا در همگام‌سازی JWT با دیتابیس:", error.message);
         }
-        return token;
       }
 
-      // برای درخواست‌های عادی: token را بدون query دیتابیس برگردان (بهینه‌سازی عملکرد)
       return token;
     },
     async session({ session, token }) {
@@ -101,7 +127,6 @@ export const authOptions = {
           isActive: token.isActive,
         };
       }
-      // console.log("Session:", session);
       return session;
     },
     async redirect({ url, baseUrl }) {
@@ -112,10 +137,10 @@ export const authOptions = {
   },
   events: {
     async signIn({ user }) {
-      // console.log(`کاربر وارد شد: ${user.email} با نقش: ${user.role}`);
+      console.log(`کاربر وارد شد: ${user.email} با نقش: ${user.role}`);
     },
     async signOut({ token }) {
-      // console.log(`کاربر خارج شد: ${token.email}`);
+      console.log(`کاربر خارج شد: ${token.email}`);
     },
   },
   debug: process.env.NODE_ENV === "development",

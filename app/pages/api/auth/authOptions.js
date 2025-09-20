@@ -1,5 +1,6 @@
 // pages/api/auth/authOptions.js
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google"; // مثال برای Google
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
@@ -11,6 +12,12 @@ export const authOptions = {
     updateAge: 2 * 60 * 60,
   },
   providers: [
+    // احراز هویت با Google
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    // احراز هویت با ایمیل و رمز عبور
     CredentialsProvider({
       name: "Credentials",
       credentials: {
