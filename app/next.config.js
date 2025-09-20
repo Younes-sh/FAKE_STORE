@@ -3,12 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
 
   // این بخش حیاتی است
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
   // هر چی لازم داری اینجا بگذار
   env: {
     NEXTAUTH_DEBUG: "true",
