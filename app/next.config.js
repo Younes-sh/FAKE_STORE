@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  distDir: 'build', // هماهنگی با vercel.json
-
+  // حذف distDir: 'build'
   env: {
-    NEXTAUTH_DEBUG: process.env.NODE_ENV === 'development' ? 'true' : 'false', // فعال فقط در توسعه
+    NEXTAUTH_DEBUG: process.env.NODE_ENV === 'development' ? 'true' : 'false',
   },
-
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -16,7 +14,6 @@ const nextConfig = {
       },
     ],
   },
-
   async headers() {
     return [
       {
