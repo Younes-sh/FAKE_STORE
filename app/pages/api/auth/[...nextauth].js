@@ -1,7 +1,7 @@
 // pages/api/auth/[...nextauth].js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+// import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
@@ -58,20 +58,20 @@ export const authOptions = {
       },
     }),
     // احراز هویت با Google
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      profile(profile) {
-        return {
-          id: profile.sub,
-          email: profile.email,
-          username: profile.name,
-          role: "user", // نقش پیش‌فرض برای کاربران Google
-          isVerified: profile.email_verified,
-          isActive: true,
-        };
-      },
-    }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    //   profile(profile) {
+    //     return {
+    //       id: profile.sub,
+    //       email: profile.email,
+    //       username: profile.name,
+    //       role: "user", // نقش پیش‌فرض برای کاربران Google
+    //       isVerified: profile.email_verified,
+    //       isActive: true,
+    //     };
+    //   },
+    // }),
   ],
   session: {
     strategy: "jwt",
