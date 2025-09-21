@@ -25,7 +25,7 @@ const UserSchema = new Schema(
     username: {
       type: String,
       required: [true, 'Username is required'],
-      unique: true,
+      unique: true, // فقط اینجا کافی است
       trim: true,
       minlength: [3, 'Username must be at least 3 characters'],
     },
@@ -106,8 +106,7 @@ UserSchema.virtual('fullName').get(function () {
 });
 
 // 🔍 ایندکس‌ها
-UserSchema.index({ email: 1 }, { unique: true });
-UserSchema.index({ username: 1 }, { unique: true });
+UserSchema.index({ email: 1 }, { unique: true }); // فقط ایندکس برای email و resetPasswordExpires
 UserSchema.index({ resetPasswordExpires: 1 }); // ایندکس جدید برای پاکسازی خودکار
 
 const User = models.User || model('User', UserSchema);
