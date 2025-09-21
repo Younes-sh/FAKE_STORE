@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+// import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
@@ -55,20 +55,20 @@ export const authOptions = {
         }
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      profile(profile) {
-        return {
-          id: profile.sub,
-          email: profile.email,
-          username: profile.name,
-          role: "user",
-          isVerified: profile.email_verified,
-          isActive: true,
-        };
-      },
-    }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    //   profile(profile) {
+    //     return {
+    //       id: profile.sub,
+    //       email: profile.email,
+    //       username: profile.name,
+    //       role: "user",
+    //       isVerified: profile.email_verified,
+    //       isActive: true,
+    //     };
+    //   },
+    // }),
   ],
   session: {
     strategy: "jwt",
