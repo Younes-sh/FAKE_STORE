@@ -10,7 +10,9 @@ export default [
     rules: {
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
-      // قوانین دلخواه
+    },
+    env: {
+      node: true, // اضافه کردن این خط
     },
   },
 ];
