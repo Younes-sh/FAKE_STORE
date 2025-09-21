@@ -1,7 +1,7 @@
 // pages/aXdmiNPage/notifications/index.js
 import { useState, useEffect } from 'react';
 import { useSession, getSession } from 'next-auth/react';
-import AdminLayout from '@/Components/Admin/AdminLayout/Layout';
+import AdminLayout from '../../../Components/Admin/AdminLayout/Layout';
 import Style from './Notifications.module.css';
 
 export default function AdminNotificationsPage() {
