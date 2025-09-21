@@ -1,23 +1,12 @@
-// pages/api/auth/authOptions.js
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google"; // مثال برای Google
-import bcrypt from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
+import bcrypt from "bcryptjs";
 
 export const authOptions = {
-  session: {
-    strategy: "jwt",
-    maxAge: 24 * 60 * 60,
-    updateAge: 2 * 60 * 60,
-  },
   providers: [
-    // احراز هویت با Google
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-    // احراز هویت با ایمیل و رمز عبور
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -25,70 +14,95 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await dbConnect();
+        try {
+          await dbConnect();
+          const email = String(credentials?.email || "").trim().toLowerCase();
+          const password = String(credentials?.password || "");
 
-        const email = String(credentials?.email || "").trim().toLowerCase();
-        const password = String(credentials?.password || "");
+          if (!email || !password) {
+            throw new Error("ایمیل یا رمز عبور نامعتبر است");
+          }
 
-        if (!email || !password) {
-          throw new Error("Invalid email or password");
+          const user = await User.findOne({ email }).select(
+            "+password +emailVerified +isActive +role"
+          );
+          if (!user) {
+            throw new Error("کاربری با این ایمیل یافت نشد");
+          }
+          if (!user.emailVerified) {
+            throw new Error("لطفاً ایمیل خود را قبل از ورود تأیید کنید");
+          }
+          if (user.isActive === false) {
+            throw new Error("حساب شما غیرفعال است. لطفاً با پشتیبانی تماس بگیرید");
+          }
+
+          const isValid = await bcrypt.compare(password, user.password);
+          if (!isValid) {
+            throw new Error("رمز عبور نامعتبر است");
+          }
+
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            username: user.username,
+            role: user.role?.toLowerCase() || "user",
+            isVerified: !!user.emailVerified,
+            isActive: user.isActive,
+          };
+        } catch (error) {
+          console.error("خطای احراز هویت:", error.message);
+          throw new Error(error.message || "احراز هویت ناموفق بود");
         }
-
-        // چون password در schema select:false است
-        const user = await User.findOne({ email }).select("+password +emailVerified +isActive");
-        if (!user) throw new Error("Invalid email or password");
-
-        if (user.isActive === false) {
-          throw new Error("Your account is deactivated. Please contact support.");
-        }
-
-        if (!user.emailVerified) {
-          throw new Error("Please verify your email before logging in");
-        }
-
-        const ok = await bcrypt.compare(password, user.password || "");
-        if (!ok) throw new Error("Invalid email or password");
-
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      profile(profile) {
         return {
-          id: user._id.toString(),
-          email: user.email,
-          username: user.username,
-          role: user.role || "user",
-          emailVerified: !!user.emailVerified,
-          isActive: user.isActive !== false,
+          id: profile.sub,
+          email: profile.email,
+          username: profile.name,
+          role: "user",
+          isVerified: profile.email_verified,
+          isActive: true,
         };
       },
     }),
   ],
-  // این‌ها را هم اینجا نگه داریم تا منبع واحد باشند
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60,
+    updateAge: 2 * 60 * 60,
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
     error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user }) {
       if (user) {
-        token.uid = user.id;
+        token.id = user.id;
         token.email = user.email;
         token.username = user.username;
         token.role = user.role;
-        token.emailVerified = user.emailVerified;
+        token.isVerified = user.isVerified;
         token.isActive = user.isActive;
-      }
-      if (trigger === "update" && session?.role) {
-        token.role = session.role;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user = {
-        id: token.uid,
-        email: token.email,
-        username: token.username,
-        role: token.role,
-        emailVerified: token.emailVerified,
-        isActive: token.isActive,
-      };
+      if (token) {
+        session.user = {
+          id: token.id,
+          email: token.email,
+          username: token.username,
+          role: token.role,
+          isVerified: token.isVerified,
+          isActive: token.isActive,
+        };
+      }
       return session;
     },
     async redirect({ url, baseUrl }) {
@@ -97,14 +111,15 @@ export const authOptions = {
       return baseUrl;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
   events: {
     async signIn({ user }) {
-      console.log(`User signed in: ${user?.email}`);
+      console.log(`کاربر وارد شد: ${user.email} با نقش: ${user.role}`);
     },
     async signOut({ token }) {
-      console.log(`User signed out: ${token?.email}`);
+      console.log(`کاربر خارج شد: ${token.email}`);
     },
   },
+  debug: process.env.NODE_ENV === "development",
 };
+
+export default NextAuth(authOptions);
