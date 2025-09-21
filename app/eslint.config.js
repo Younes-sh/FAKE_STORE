@@ -12,7 +12,9 @@ export default [
       ...nextPlugin.configs['core-web-vitals'].rules,
     },
     env: {
-      node: true, // اضافه کردن این خط
+      node: true, // برای process و console
+      browser: true, // برای محیط مرورگر
+      es2021: true, // برای پشتیبانی از ویژگی‌های جدید JavaScript
     },
   },
 ];
