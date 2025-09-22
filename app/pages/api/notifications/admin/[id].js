@@ -1,6 +1,6 @@
-import Notification from '@/models/Notification';
-import UserNotification from '@/models/UserNotification';
-import dbConnect from '@/lib/dbConnect';
+import Notification from '../../../../models/Notification';
+import UserNotification from '../../../../models/UserNotification';
+import dbConnect from '../../../../lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
 import mongoose from 'mongoose';
 
