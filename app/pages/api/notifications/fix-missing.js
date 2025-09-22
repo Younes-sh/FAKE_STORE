@@ -1,8 +1,8 @@
 // pages/api/notifications/fix-missing.js
-import Notification from '@/models/Notification';
-import User from '@/models/user';
-import UserNotification from '@/models/UserNotification';
-import dbConnect from '@/lib/dbConnect';
+import Notification from '../../../models/Notification';
+import User from '../../../models/user';
+import UserNotification from '../../../models/UserNotification';
+import dbConnect from '../../../lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
 
 export default async function handler(req, res) {
