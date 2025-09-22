@@ -1,7 +1,7 @@
 // pages/api/notifications/settings.js
 import { getToken } from 'next-auth/jwt';
-import User from '@/models/user';
-import dbConnect from '@/lib/dbConnect';
+import User from '../../../models/user';
+import dbConnect from '../../../lib/dbConnect';
 
 export default async function handler(req, res) {
   try {
