@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import Layout from '@/Components/Layout/Layout';
+// import Layout from '@/Components/Layout/Layout';
 import Style from './Notifications.module.css';
 
 export default function NotificationsPage() {
@@ -84,16 +84,16 @@ export default function NotificationsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <Layout>
+      // <Layout>
         <div className={Style.container}>
           <div className={Style.loading}>Loading notifications...</div>
         </div>
-      </Layout>
+      {/* </Layout> */}
     );
   }
 
   return (
-    <Layout>
+    // <Layout>
       <div className={Style.container}>
         <h1>Notifications</h1>
         
@@ -163,6 +163,6 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
-    </Layout>
+    // </Layout>
   );
 }
