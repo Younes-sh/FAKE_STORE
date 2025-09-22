@@ -1,7 +1,7 @@
 // pages/api/notifications/cleanup.js
-import UserNotification from '@/models/UserNotification';
-import Notification from '@/models/Notification';
-import dbConnect from '@/lib/dbConnect';
+import UserNotification from '../../../../models/UserNotification';
+import Notification from '../../../../models/Notification';
+import dbConnect from '../../../../lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
 
 export default async function handler(req, res) {
