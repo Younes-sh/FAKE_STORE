@@ -1,82 +1,83 @@
 // pages/api/auth/[...nextauth].js
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-// import GoogleProvider from "next-auth/providers/google";
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/user";
-import bcrypt from "bcryptjs";
+import NextAuthModule from "next-auth";
+
+const NextAuth = NextAuthModule.default;
 
 export const authOptions = {
   providers: [
-    // احراز هویت با ایمیل و رمز عبور
-    CredentialsProvider({
-      name: "Credentials",
+    {
+      id: "credentials",
+      name: "credentials",
+      type: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
         try {
+          console.log("🔐 Authorize called with:", { 
+            email: credentials?.email,
+            hasPassword: !!credentials?.password 
+          });
+
+          const { default: dbConnect } = await import("@/lib/dbConnect");
+          const { default: User } = await import("@/models/user");
+          const { default: bcrypt } = await import("bcryptjs");
+
           await dbConnect();
-          const email = String(credentials?.email || "").trim().toLowerCase();
-          const password = String(credentials?.password || "");
+          console.log("✅ Database connected");
 
-          if (!email || !password) {
-            throw new Error("ایمیل یا رمز عبور نامعتبر است");
+          if (!credentials?.email || !credentials?.password) {
+            console.log("❌ Missing email or password");
+            return null;
           }
 
-          const user = await User.findOne({ email }).select(
-            "+password +emailVerified +isActive +role"
-          );
+          const email = credentials.email.trim().toLowerCase();
+          console.log("🔍 Searching for user:", email);
+
+          const user = await User.findOne({ email }).select("+password +emailVerified +isActive +role");
+          console.log("👤 User found:", user ? "yes" : "no");
+
           if (!user) {
-            throw new Error("کاربری با این ایمیل یافت نشد");
-          }
-          if (!user.emailVerified) {
-            throw new Error("لطفاً ایمیل خود را قبل از ورود تأیید کنید");
-          }
-          if (user.isActive === false) {
-            throw new Error("حساب شما غیرفعال است. لطفاً با پشتیبانی تماس بگیرید");
+            console.log("❌ User not found");
+            return null;
           }
 
-          const isValid = await bcrypt.compare(password, user.password);
+          if (!user.isActive) {
+            console.log("❌ User not active");
+            return null;
+          }
+
+          // 🔥 تست: چک کردن مستقیم پسورد
+          console.log("🔑 Comparing passwords...");
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          console.log("🔑 Password valid:", isValid);
+
           if (!isValid) {
-            throw new Error("رمز عبور نامعتبر است");
+            console.log("❌ Invalid password");
+            return null;
           }
 
+          console.log("✅ Authorization successful for:", email);
+          
           return {
             id: user._id.toString(),
             email: user.email,
             username: user.username,
-            role: user.role?.toLowerCase() || "user",
-            isVerified: !!user.emailVerified,
-            isActive: user.isActive,
+            role: user.role || "user",
+            image: user.image || null,
           };
+
         } catch (error) {
-          console.error("خطای احراز هویت:", error.message);
-          throw new Error(error.message || "احراز هویت ناموفق بود");
+          console.error("❌ Auth error:", error);
+          return null;
         }
-      },
-    }),
-    // احراز هویت با Google
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    //   profile(profile) {
-    //     return {
-    //       id: profile.sub,
-    //       email: profile.email,
-    //       username: profile.name,
-    //       role: "user", // نقش پیش‌فرض برای کاربران Google
-    //       isVerified: profile.email_verified,
-    //       isActive: true,
-    //     };
-    //   },
-    // }),
+      }
+    }
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 ساعت
-    updateAge: 2 * 60 * 60, // بروزرسانی هر 2 ساعت
+    maxAge: 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
@@ -84,66 +85,28 @@ export const authOptions = {
     error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      // در sign-in اولیه
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.username = user.username;
         token.role = user.role;
-        token.isVerified = user.isVerified;
-        token.isActive = user.isActive;
+        token.image = user.image || null;
       }
-
-      // بروزرسانی توکن در صورت trigger="update"
-      if (trigger === "update" && session?.role) {
-        token.role = session.role?.toLowerCase();
-        try {
-          await dbConnect();
-          const dbUser = await User.findById(token.id).select(
-            "role username emailVerified isActive"
-          );
-          if (dbUser) {
-            token.role = dbUser.role?.toLowerCase() || "user";
-            token.username = dbUser.username;
-            token.isVerified = !!dbUser.emailVerified;
-            token.isActive = dbUser.isActive;
-          }
-        } catch (error) {
-          console.error("خطا در همگام‌سازی JWT با دیتابیس:", error.message);
-        }
-      }
-
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user = {
-          id: token.id,
-          email: token.email,
-          username: token.username,
-          role: token.role,
-          isVerified: token.isVerified,
-          isActive: token.isActive,
-        };
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.username = token.username;
+        session.user.role = token.role;
+        session.user.image = token.image;
       }
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
-    },
+    }
   },
-  events: {
-    async signIn({ user }) {
-      console.log(`کاربر وارد شد: ${user.email} با نقش: ${user.role}`);
-    },
-    async signOut({ token }) {
-      console.log(`کاربر خارج شد: ${token.email}`);
-    },
-  },
-  debug: process.env.NODE_ENV === "development",
+  debug: true, // 🔥 فعال کردن دیباگ
 };
 
 export default NextAuth(authOptions);

@@ -11,6 +11,8 @@ export default function OrderSuccess() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // error image state
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const { orderId } = router.query;
@@ -47,10 +49,7 @@ export default function OrderSuccess() {
         <div className={styles.errorIcon}>!</div>
         <h2>Error in receiving order</h2>
         <p>{error}</p>
-        <button
-          className={styles.homeButton}
-          onClick={() => router.push('/')}
-        >
+        <button className={styles.homeButton} onClick={() => router.push('/')}>
           <FiHome /> Return to home page
         </button>
       </div>
@@ -63,15 +62,33 @@ export default function OrderSuccess() {
         <div className={styles.errorIcon}>!</div>
         <h2>No order found</h2>
         <p>Unfortunately, your order information is not available</p>
-        <button
-          className={styles.homeButton}
-          onClick={() => router.push('/')}
-        >
+        <button className={styles.homeButton} onClick={() => router.push('/')}>
           <FiHome /> Return to home page
         </button>
       </div>
     );
   }
+
+  // تبدیل مقادیر enum به متن قابل نمایش
+  const getPaymentMethodText = (method) => {
+    switch (method) {
+      case 'credit_card': return 'Credit Card';
+      case 'paypal': return 'PayPal';
+      case 'bank_transfer': return 'Bank Transfer';
+      case 'cash_on_delivery': return 'Cash on Delivery';
+      default: return 'Unknown';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'processing': return 'Processing';
+      case 'shipped': return 'Shipped';
+      case 'delivered': return 'Delivered';
+      case 'cancelled': return 'Cancelled';
+      default: return 'Unknown';
+    }
+  };
 
   return (
     <>
@@ -95,37 +112,42 @@ export default function OrderSuccess() {
           <div className={styles.orderHeader}>
             <h2>Order Summary</h2>
             <div className={styles.orderMeta}>
-              <span>
-                <strong>Order number:</strong> {order.orderNumber || order._id}
-              </span>
+              <span><strong>Order number:</strong> {order.orderNumber || order._id}</span>
               <span>
                 <strong>Date:</strong>{' '}
                 {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}
               </span>
-              <span>
-                <strong>Status:</strong> {order.status === 'completed' ? 'Completed' : 'Processing'}
-              </span>
+              <span><strong>Status:</strong> {getStatusText(order.status)}</span>
             </div>
           </div>
 
           <div className={styles.productsList}>
             <h3>Products</h3>
-            {order.items.map((item) => (
-              <div key={item._id} className={styles.productItem}>
-                <div className={styles.productImage}>
-                  <Image
-                    src={item.image || '/images/default-product.png'}
-                    alt={item.name || 'Product'}
-                    width={80}
-                    height={80}
-                    objectFit="contain"
-                  />
-                </div>
+            {order.items.map((item, index) => (
+              <div key={index} className={styles.productItem}>
+                {/* there is a image error */}
+                
+                {/* <div className={styles.productImage}>
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt={item.name || 'Product'}
+                      width={80}
+                      height={80}
+                      style={{ objectFit: "contain" }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  ) : (
+                    <div className={styles.placeholderImage}>
+                      <FiShoppingBag size={24} />
+                    </div>
+                  )}
+                </div> */}
                 <div className={styles.productDetails}>
-                  <h4>{item.name}</h4>
+                  <h4>{item.name || 'Unnamed Product'}</h4>
                   <div className={styles.productMeta}>
                     <span>Quantity: {item.quantity || 0}</span>
-                    <span>Unit price: {item.priceAtPurchase ? item.priceAtPurchase.toLocaleString() : '0'} $</span>
+                    <span>Unit price: {item.priceAtPurchase?.toLocaleString() || '0'} $</span>
                   </div>
                 </div>
                 <div className={styles.productTotal}>
@@ -141,15 +163,15 @@ export default function OrderSuccess() {
           <div className={styles.orderTotals}>
             <div className={styles.totalRow}>
               <span>Subtotal:</span>
-              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '0'} $</span>
+              <span>{order.subtotal?.toLocaleString() || '0'} $</span>
             </div>
             <div className={styles.totalRow}>
               <span>Shipping cost:</span>
-              <span>Free</span>
+              <span>{order.shippingFee?.toLocaleString() || '0'} $</span>
             </div>
             <div className={`${styles.totalRow} ${styles.grandTotal}`}>
               <span>Total amount:</span>
-              <span>{order.totalAmount ? order.totalAmount.toLocaleString() : '0'} $</span>
+              <span>{order.totalAmount?.toLocaleString() || '0'} $</span>
             </div>
           </div>
         </div>
@@ -158,19 +180,12 @@ export default function OrderSuccess() {
           <div className={styles.infoCard}>
             <h3>Customer Information</h3>
             <div className={styles.infoContent}>
-              <p>
-                <strong>Name:</strong> {order.user?.firstname} {order.user?.lastname}
-              </p>
-              <p>
-                <strong>Email:</strong> {order.user?.email}
-              </p>
-              <p>
-                <strong>Phone:</strong> {order.user?.phone}
-              </p>
+              <p><strong>Name:</strong> {order.user?.firstname || '---'} {order.user?.lastname || ''}</p>
+              <p><strong>Email:</strong> {order.user?.email || '---'}</p>
+              <p><strong>Phone:</strong> {order.user?.phone || '---'}</p>
               <p>
                 <strong>Address:</strong>{' '}
-                {order.shippingAddress?.street}, {order.shippingAddress?.city},{' '}
-                {order.shippingAddress?.postalCode || '---'}
+                {order.shippingAddress?.street || '---'}, {order.shippingAddress?.city || '---'}, {order.shippingAddress?.postalCode || '---'}
               </p>
             </div>
           </div>
@@ -178,13 +193,8 @@ export default function OrderSuccess() {
           <div className={styles.infoCard}>
             <h3>Payment Method</h3>
             <div className={styles.infoContent}>
-              <p>
-                <strong>Payment type: </strong>
-                {order.paymentMethod === 'online' ? 'Online Payment' : 'Card Payment'}
-              </p>
-              <p>
-                <strong>Payment status:</strong> Paid
-              </p>
+              <p><strong>Payment type: </strong>{getPaymentMethodText(order.paymentMethod)}</p>
+              <p><strong>Payment status:</strong> {getStatusText(order.paymentStatus)}</p>
               <p>
                 <strong>Payment date:</strong>{' '}
                 {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-US') : '---'}

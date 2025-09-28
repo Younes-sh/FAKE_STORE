@@ -11,32 +11,35 @@ export default function MyOrders({ user }) {
   const [error, setError] = useState(null);
   const router = useRouter();
 
+  // در MyOrders.js - اضافه کردن دیباگ پیشرفته
   useEffect(() => {
     const fetchOrders = async () => {
       try {
+        console.log('🔄 Fetching orders for user...');
         const response = await fetch('/api/orders');
+        console.log('📨 Response status:', response.status);
+        
         const data = await response.json();
+        console.log('📊 Full response data:', data);
         
         if (data.success) {
+          console.log(`✅ Loaded ${data.orders.length} orders`);
+          console.log('📦 Orders structure:', data.orders);
           setOrders(data.orders);
         } else {
+          console.error('❌ API error:', data.message);
           setError(data.message);
         }
       } catch (err) {
+        console.error('❌ Fetch error:', err);
         setError('Failed to fetch orders');
       } finally {
         setLoading(false);
       }
-      
     };
-
+  
     fetchOrders();
-    // وقتی route تغییر می‌کند دوباره fetch کن
-    router.events.on('routeChangeComplete', fetchOrders);
-    return () => {
-      router.events.off('routeChangeComplete', fetchOrders);
-    };
-  }, [router]);
+  }, []);
 
   if (loading) return <div className={styles.loading}>Loading orders...</div>;
   if (error) return <div className={styles.error}>{error}</div>;

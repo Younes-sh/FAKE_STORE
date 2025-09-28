@@ -1,3 +1,4 @@
+// pages/register/index.js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -13,42 +14,47 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  //  const isProduction = process.env.NODE_ENV === 'production';
-  //   const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
+  // pages/register.js - اضافه کردن console.log
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setIsLoading(true);
 
-    
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+  console.log("🔄 Registration form submitted:", formData);
 
-      const data = await response.json();
+  try {
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
+    const data = await response.json();
+    console.log("📨 Registration response:", data);
 
-      router.push(`/verify`);
-    } catch (err) {
-      setError(err.message || 'Something went wrong');
-    } finally {
-      setIsLoading(false);
+    if (!response.ok) {
+      throw new Error(data.message || 'Registration failed');
     }
-  };
+
+    console.log("✅ Registration successful, redirecting to verify");
+    router.push(`/verify?email=${encodeURIComponent(formData.email)}`);
+    
+  } catch (err) {
+    console.error("❌ Registration error:", err);
+    setError(err.message || 'Something went wrong');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className={styles.registerPage}>

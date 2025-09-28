@@ -4,7 +4,7 @@ import Styles from "./profile.module.css";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import EditProfileModal from "@/Components/Profile/EditProfile/EditProfileModal";
-import DefaultImage from "@/public/user.png";
+import UserImage from "@/public/user.png";
 import Tabs from "@/Components/Profile/TabProfile/TabProfile";
 import { useRouter } from "next/router";
 import Footer from "@/Components/Footer";
@@ -127,14 +127,17 @@ export default function ProfilePage() {
         <div className={Styles.profileCard}>
           {/* Profile Header */}
           <div className={Styles.profileHeader}>
-            <Image
-              src={session.user.image || DefaultImage}
+            {/* <Image
+              src={UserImage}
               alt="User Avatar"
               className={Styles.avatar}
               width={100}
               height={100}
               priority
-            />
+            />  */}
+            
+
+
             <div className={Styles.userInfo}>
               <h1 className={Styles.userName}>{session.user.username}</h1>
               <p className={Styles.userEmail}>{session.user.email}</p>

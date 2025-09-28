@@ -1,3 +1,4 @@
+// pages/api/cart/increase.js
 import Cart from '@/models/cart';
 import dbConnect from '@/lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
