@@ -84,11 +84,9 @@ export default function NotificationsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      // <Layout>
         <div className={Style.container}>
           <div className={Style.loading}>Loading notifications...</div>
         </div>
-      {/* </Layout> */}
     );
   }
 
