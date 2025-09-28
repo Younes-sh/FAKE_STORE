@@ -7,6 +7,8 @@ import { io } from "socket.io-client";
 import { signOut } from "next-auth/react";
 import "../styles/globals.css";
 import { CartProvider } from '@/contexts/CartContext';
+import { Analytics } from '@vercel/analytics/next';
+
 
 export const AppContext = createContext();
 let socket;
@@ -85,6 +87,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
     <SessionProvider session={session}>
       <CartProvider>
         <AppContent Component={Component} pageProps={pageProps} />
+        <Analytics />
       </CartProvider>
     </SessionProvider>
   );
