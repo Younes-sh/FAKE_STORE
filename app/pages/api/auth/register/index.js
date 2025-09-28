@@ -1,54 +1,83 @@
 // pages/api/auth/register.js
-
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
-import { hash as bcryptHash } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { sendVerificationCode } from "@/lib/mailer";
 import { generate6DigitCode } from "@/lib/verifyCode";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
   const { username, email, password } = req.body;
 
-  // بررسی اعتبار اولیه ورودی‌ها
-  if (
-    !email ||
-    !email.includes("@") ||
-    !password ||
-    password.trim().length < 6 ||
-    !username ||
-    username.trim().length < 3
-  ) {
-    return res.status(422).json({
-      message: "Invalid input. Password must be at least 6 characters.",
-    });
-  }
+  console.log("📝 Registration attempt:", { username, email });
 
   try {
     await dbConnect();
+    console.log("✅ Database connected");
 
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] }).select('+verificationCodeHash +verificationExpires');
-    if (existingUser) return res.status(422).json({ message: "این ایمیل یا نام‌کاربری قبلاً ثبت شده است." });
+    // بررسی وجود کاربر
+    const existingUser = await User.findOne({ 
+      $or: [
+        { email: email.toLowerCase() }, 
+        { username: username.trim() }
+      ] 
+    });
+    
+    if (existingUser) {
+      console.log("❌ User already exists");
+      return res.status(422).json({ 
+        message: "این ایمیل یا نام‌کاربری قبلاً ثبت شده است." 
+      });
+    }
 
-    const newUser = new User({ username, email, password });
+    // ایجاد کاربر جدید
+    const newUser = new User({ 
+      username: username.trim(),
+      email: email.toLowerCase().trim(),
+      password 
+    });
 
+    // تولید کد تأیید
     const code = generate6DigitCode();
-    const hash = await bcryptHash(code, 10);      // ✅ حالا تعریف شده
+    console.log("🔑 Generated code:", code);
+    
+    const hash = await bcrypt.hash(code, 10);
+    
     newUser.verificationCodeHash = hash;
     newUser.verificationExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     await newUser.save();
-    await sendVerificationCode({ to: email, code });
+    console.log("✅ User saved to database");
 
-    return res.status(201).json({
-      message: "کاربر ایجاد شد. کُد تأیید به ایمیل ارسال شد.",
-      email,
-      next: `/verify?email=${encodeURIComponent(email)}`
-    });
+    // ارسال ایمیل
+    try {
+      await sendVerificationCode({ to: email, code });
+      console.log("✅ Verification email sent");
+      
+      return res.status(201).json({
+        message: "کاربر ایجاد شد. کُد تأیید به ایمیل ارسال شد.",
+        email: email.toLowerCase(),
+        next: `/verify?email=${encodeURIComponent(email.toLowerCase())}`
+      });
+      
+    } catch (emailError) {
+      console.error("❌ Email sending failed:", emailError);
+      
+      // حذف کاربر اگر ایمیل ارسال نشد
+      await User.findByIdAndDelete(newUser._id);
+      
+      return res.status(500).json({ 
+        message: "خطا در ارسال ایمیل. لطفاً دوباره تلاش کنید." 
+      });
+    }
+
   } catch (err) {
-    console.error("Registration error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("❌ Registration error:", err);
+    return res.status(500).json({ 
+      message: "خطای سرور. لطفاً بعداً تلاش کنید." 
+    });
   }
 }
-

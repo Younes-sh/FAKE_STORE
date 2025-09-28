@@ -12,7 +12,7 @@
     padding-top: 200px;
     text-align: center;
 
-    h4 {
+    .h4 {
       margin-bottom: 40px;
       font-size: 30px;
       color: rgb(218, 134, 8);
@@ -24,11 +24,11 @@
       text-shadow: 0 0 0 #b16004b4;
       transition: all 250ms;
     }
-    h4:hover {
+    .h4:hover {
         text-shadow: 4px 4px 0 #b34343;
         transform: translate(-2px, -2px)
     }
-    h1 {
+    .h1 {
         font-size: 70px;
         font-weight: 900;
         margin-bottom: 100px;
@@ -40,7 +40,7 @@
         text-shadow: 0 0 0 #b16004b4;
         transition: all 250ms;
     }
-    h1:hover {
+    .h1:hover {
         text-shadow: 4px 4px 0 #b34343;
         transform: translate(-2px, -2px)
     }
@@ -142,7 +142,7 @@
     background-image: url(../../../public/asset/Header/header-3.jpg);
 
     .textHedearContainer {
-      h1 {
+      .h1 {
         font-size: 40px;
         color: red;
       }

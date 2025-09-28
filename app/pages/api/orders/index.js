@@ -1,11 +1,9 @@
 // api/orders/index.js
 import dbConnect from '@/lib/dbConnect';
 import Order from '@/models/order'; 
-import User from '@/models/user';   
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
-// api/orders/index.js
 export default async function handler(req, res) {
   await dbConnect();
 
@@ -20,16 +18,35 @@ export default async function handler(req, res) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
 
-    // اضافه کردن header برای جلوگیری از کش
-    res.setHeader('Cache-Control', 'no-store, max-age=0');
-
+    // استفاده از user به جای userId (مطابق مدل)
     const orders = await Order.find({ user: session.user.id })
-      .populate('user')
-      .sort({ createdAt: -1 }); // مرتب سازی بر اساس جدیدترین سفارش
+      .populate('user', 'firstname lastname email phone') // populate کاربر
+      .sort({ createdAt: -1 });
+
+    // ساختار مطابق مدل Order
+    const formattedOrders = orders.map(order => ({
+      _id: order._id,
+      orderNumber: order.orderNumber,
+      totalAmount: order.totalAmount,
+      status: order.status,
+      createdAt: order.createdAt,
+      paymentStatus: order.paymentStatus,
+      items: order.items.map(item => ({
+        _id: item._id || item.product, // استفاده از product اگر _id نیست
+        name: item.name,
+        quantity: item.quantity,
+        price: item.priceAtPurchase,
+        priceAtPurchase: item.priceAtPurchase, // برای compatibility
+        image: item.image,
+        totalPrice: item.priceAtPurchase * item.quantity
+      }))
+    }));
+
+    console.log(`📦 Found ${formattedOrders.length} orders for user ${session.user.id}`);
 
     return res.status(200).json({ 
       success: true, 
-      orders: JSON.parse(JSON.stringify(orders)) // برای اطمینان از سریالیزه شدن
+      orders: formattedOrders
     });
 
   } catch (error) {
