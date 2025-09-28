@@ -25,32 +25,33 @@ export default function BasketCard({
   const [alertMessage, setAlertMessage] = useState('');
 
   const handleUpdateQuantity = async (newCount) => {
-    if (loading || !session?.user?.id) return;
+  if (loading || !session?.user?.id) return;
+  
+  setLoading(true);
+  try {
+    const res = await fetch('/api/cart', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: _id, count: newCount }),
+    });
     
-    setLoading(true);
-    try {
-      const res = await fetch('/api/cart', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: _id, count: newCount }),
-      });
-      
-      if (!res.ok) {
-        throw new Error(`Failed to update quantity: ${res.status}`);
-      }
-
-      // Trigger global update and refresh parent
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
-      if (onUpdate) onUpdate();
-      
-    } catch (error) {
-      console.error('Error updating product quantity:', error);
-      setAlertMessage('Error updating quantity');
-      setShowAlert(true);
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      throw new Error(`Failed to update quantity: ${res.status}`);
     }
-  };
+
+    // Trigger global update - این خط مهم است
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    
+    if (onUpdate) onUpdate();
+    
+  } catch (error) {
+    console.error('Error updating product quantity:', error);
+    setAlertMessage('Error updating quantity');
+    setShowAlert(true);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDeleteItem = async () => {
     if (loading || !session?.user?.id) return;

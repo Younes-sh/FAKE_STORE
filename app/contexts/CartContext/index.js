@@ -1,15 +1,29 @@
 // contexts/CartContext.js
-import { createContext, useContext, useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+"use client";
 
-const CartContext = createContext();
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+
+const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const { data: session } = useSession();
+
   const [cart, setCart] = useState({ products: [] });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [cartCount, setCartCount] = useState(0);
 
+  // محاسبه تعداد محصولات مختلف (نه تعداد کل آیتم‌ها)
+  const calculateUniqueProductsCount = (cartData) => {
+    if (!cartData?.products || !Array.isArray(cartData.products)) return 0;
+    
+    // تعداد محصولات مختلف = طول آرایه products
+    return cartData.products.length;
+  };
+
+  // -----------------------
+  // Fetch cart from API
+  // -----------------------
   const fetchCart = async () => {
     if (!session?.user?.id) {
       setCart({ products: [] });
@@ -17,135 +31,179 @@ export function CartProvider({ children }) {
       setLoading(false);
       return;
     }
-  
+
     setLoading(true);
     try {
-      const res = await fetch('/api/cart');
-      if (res.ok) {
-        const data = await res.json();
-        console.log('🛒 Cart data fetched:', data.cart);
-        setCart(data.cart || { products: [] });
-        
-        // تغییر: تعداد محصولات مختلف (نه تعداد کل آیتم‌ها)
-        const uniqueProductsCount = data.cart?.products?.length || 0;
-        setCartCount(uniqueProductsCount);
-      } else {
-        console.error('❌ Failed to fetch cart:', res.status);
+      const res = await fetch("/api/cart");
+      if (!res.ok) {
+        throw new Error(`Failed to fetch cart: ${res.status}`);
       }
-    } catch (error) {
-      console.error('Error fetching cart:', error);
+      
+      const data = await res.json().catch(() => ({}));
+      const cartData = data.cart || { products: [] };
+      
+      setCart(cartData);
+      
+      // 🔥 تغییر: تعداد محصولات مختلف، نه تعداد کل آیتم‌ها
+      const uniqueProductsCount = calculateUniqueProductsCount(cartData);
+      setCartCount(uniqueProductsCount);
+      
+    } catch (err) {
+      console.error("CartContext.fetchCart error:", err);
       setCart({ products: [] });
       setCartCount(0);
     } finally {
       setLoading(false);
     }
   };
-  
+
+  // یکبار در mount و هر بار که session تغییر کند - fetch کن
   useEffect(() => {
     fetchCart();
   }, [session?.user?.id]);
 
-  // گوش دادن به رویدادهای به‌روزرسانی سبد خرید
+  // گوش دادن به event عمومی
   useEffect(() => {
-    const handleCartUpdate = () => {
-      console.log('🔄 Cart update event received');
+    const handler = () => {
+      console.log("🔄 CartContext: Received cartUpdated event, refetching...");
       fetchCart();
     };
     
-    window.addEventListener('cartUpdated', handleCartUpdate);
-    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
-  }, []);
+    window.addEventListener("cartUpdated", handler);
+    return () => window.removeEventListener("cartUpdated", handler);
+  }, [session?.user?.id]);
+
+  // -----------------------
+  // Helpers / actions
+  // -----------------------
 
   const isProductInCart = (productId) => {
-    if (!productId) return false;
-    
-    const productIdStr = productId.toString();
-    return cart.products.some(item => {
-      const itemIdStr = item._id?.toString();
-      return itemIdStr === productIdStr;
-    });
+    if (!productId || !cart?.products) return false;
+    const pid = productId.toString();
+    return cart.products.some((p) => (p._id || "").toString() === pid);
   };
 
   const addToCart = async (product) => {
     if (!session?.user?.id) return false;
-  
+
+    if (!product?.productId) {
+      console.error("addToCart: productId is missing", product);
+      return false;
+    }
+
     try {
       const res = await fetch('/api/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product }),
+        body: JSON.stringify(product),
       });
-      
-      if (res.ok) {
-        // به‌روزرسانی فوری وضعیت local
-        const updatedRes = await fetch('/api/cart');
-        if (updatedRes.ok) {
-          const data = await updatedRes.json();
-          setCart(data.cart || { products: [] });
-          
-          // محاسبه تعداد کل محصولات
-          const totalCount = data.cart?.products?.reduce((sum, item) => sum + (item.count || 1), 0) || 0;
-          setCartCount(totalCount);
-        }
-        
-        window.dispatchEvent(new CustomEvent('cartUpdated'));
-        return true;
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to add to cart: ${res.status} - ${errorText}`);
       }
-      return false;
+
+      // فوراً cart را refresh کن
+      await fetchCart();
+      
+      // رویداد global را dispatch کن
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+      
+      console.log("✅ Product added to cart, count updated");
+      return true;
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error("❌ addToCart error:", error);
       return false;
     }
   };
-  //  Increase Quantity
-  const increaseQuantity = async (productId) => {
+
+  const updateQuantity = async (productId, count) => {
     if (!session?.user?.id) return false;
-  
     try {
-      const res = await fetch('/api/cart/increase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, count }),
+      });
+      
+      if (!res.ok) return false;
+      
+      // 🔥 تغییر: فقط cart را refresh کن اما cartCount تغییر نمی‌کند
+      // چون تعداد محصولات مختلف تغییری نکرده
+      await fetchCart();
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+      
+      console.log("✅ Quantity updated, cart refreshed");
+      return true;
+    } catch (err) {
+      console.error("updateQuantity error:", err);
+      return false;
+    }
+  };
+
+  const removeFromCart = async (productId) => {
+    if (!session?.user?.id) return false;
+    try {
+      const res = await fetch("/api/cart", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
       });
       
-      if (res.ok) {
-        // فقط cart را به‌روزرسانی کنیم اما cartCount را تغییر ندهیم
-        const updatedRes = await fetch('/api/cart');
-        if (updatedRes.ok) {
-          const data = await updatedRes.json();
-          setCart(data.cart || { products: [] });
-          // نکته: cartCount تغییر نمی‌کند چون تعداد محصولات یکسان است
-        }
-        
-        window.dispatchEvent(new CustomEvent('cartUpdated'));
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Error increasing quantity:', error);
+      if (!res.ok) return false;
+      
+      // فوراً cart را refresh کن
+      await fetchCart();
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+      
+      return true;
+    } catch (err) {
+      console.error("removeFromCart error:", err);
       return false;
     }
   };
-  return (
-    <CartContext.Provider value={{ 
-      cart, 
-      loading, 
-      cartCount,
-      fetchCart, 
-      isProductInCart,
-      addToCart,
-      increaseQuantity,
-      setCartCount 
-    }}>
-      {children}
-    </CartContext.Provider>
-  );
+
+  const clearCart = async () => {
+    if (!session?.user?.id) return false;
+    try {
+      const res = await fetch("/api/cart/clear", { method: "DELETE" });
+      if (!res.ok) return false;
+      await fetchCart();
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
+      return true;
+    } catch (err) {
+      console.error("clearCart error:", err);
+      return false;
+    }
+  };
+
+  // -----------------------
+  // Provider value
+  // -----------------------
+  const value = {
+    cart,
+    cartCount, // 🔥 این حالا تعداد محصولات مختلف است
+    loading,
+    fetchCart,
+    isProductInCart,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+    // اضافه کردن تابع کمکی برای محاسبه تعداد کل آیتم‌ها اگر نیاز بود
+    getTotalItemsCount: () => {
+      if (!cart?.products) return 0;
+      return cart.products.reduce((total, item) => total + (item.count || 0), 0);
+    }
+  };
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
+export function useCart() {
+  const ctx = useContext(CartContext);
+  if (!ctx) {
+    throw new Error("useCart must be used within CartProvider");
   }
-  return context;
-};
+  return ctx;
+}

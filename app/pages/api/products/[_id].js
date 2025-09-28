@@ -1,49 +1,68 @@
 // pages/api/products/[id].js
-import mongoose from "@/lib/dbConnect"; 
+import dbConnect from "@/lib/dbConnect"; 
 import Product from "@/models/product";
 import { isValidObjectId } from "mongoose";
 
 export default async function handler(req, res) {
-   mongoose()
-   const {_id} = req.query;
-
-   if(isValidObjectId(_id)) {
-        if(req.method == "GET") {
-            const product = await Product.findById(_id)
-            if(!product) return res.status(404).json({message: "Product not found", data: null});
-            else return res.status(200).json({message: "Product", data: product});
-        } 
-        else if (req.method === "POST") {
-            const result = await Product.findByIdAndUpdate(_id, req.body);
-            if(!result) {
-                res.status(404).json({message: "Product not found", data: null})
-            }
-            else {
-                res.status(200).json({ message: "Product updated", data: result })
-            }
-        }
-        else if (req.method === "PUT") {
-            const result = await Product.findByIdAndUpdate(_id, req.body, {new: true});
-            if(!result) {
-                res.status(404).json({message: "Product not found", data: null})
-            }
-            else {
-                res.status(200).json({ message: "Product updated", data: result })
-            }
-        }
-        else if (req.method === "DELETE") {
-            const result = await Product.findByIdAndDelete(_id);
-            if(!result) {
-                res.status(404).json({message: "Product not found", data: null})
-            }
-            else {
-                res.status(200).json({ message: "Product deleted", data: null })
-            }
-        }
-   }
-   else {
-    res.status(404).json({message: "Invalid product id", data: null})
-   }
+  try {
+    await dbConnect();
     
+    // 🔥 اصلاح: استفاده از id به جای _id در پارامتر
+    const { id } = req.query;
 
+    console.log('🔍 Products API called with id:', id);
+    console.log('🔍 Method:', req.method);
+
+    if (!id || !isValidObjectId(id)) {
+      console.error('❌ Invalid product ID:', id);
+      return res.status(400).json({ 
+        success: false,
+        message: "Invalid product id", 
+        data: null 
+      });
+    }
+
+    switch (req.method) {
+      case "GET":
+        try {
+          const product = await Product.findById(id);
+          if (!product) {
+            console.error('❌ Product not found:', id);
+            return res.status(404).json({ 
+              success: false,
+              message: "Product not found", 
+              data: null 
+            });
+          }
+          
+          console.log('✅ Product found:', product.productName);
+          return res.status(200).json({ 
+            success: true,
+            message: "Product found", 
+            data: product 
+          });
+        } catch (error) {
+          console.error('❌ Error in GET:', error);
+          return res.status(500).json({ 
+            success: false,
+            message: "Server error", 
+            error: error.message 
+          });
+        }
+
+      default:
+        res.setHeader('Allow', ['GET']);
+        return res.status(405).json({ 
+          success: false,
+          message: `Method ${req.method} Not Allowed` 
+        });
+    }
+  } catch (error) {
+    console.error("❌ General error in products API:", error);
+    return res.status(500).json({ 
+      success: false,
+      message: "Server error", 
+      error: error.message 
+    });
+  }
 }

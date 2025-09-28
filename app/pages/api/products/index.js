@@ -1,3 +1,4 @@
+// pages/api/products/index.js
 import MongoDB from "@/lib/dbConnect";
 import Product from "@/models/product";
 
