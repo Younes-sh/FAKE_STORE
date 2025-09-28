@@ -1,5 +1,5 @@
-import Order from '@/models/Order';
-import Cart from '@/models/Cart';
+import Order from '@/models/order';
+import Cart from '@/models/cart';
 import dbConnect from '@/lib/dbConnect';
 import { getToken } from 'next-auth/jwt';
 
