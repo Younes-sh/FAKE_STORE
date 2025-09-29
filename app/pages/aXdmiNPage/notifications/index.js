@@ -4,7 +4,7 @@ import { useSession, getSession } from 'next-auth/react';
 import AdminLayout from '../../../Components/Admin/AdminLayout/Layout';
 import Style from './Notifications.module.css';
 
-export default function AdminNotificationsPage() {
+export default function index() {
   const { data: session } = useSession({ required: true });
   const [notifications, setNotifications] = useState([]);
   const [showForm, setShowForm] = useState(false);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Style from './Notifications.module.css';
 
-export default function Notifications() {
+export default function index() {
   const { data: session, status } = useSession({ required: true });
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
