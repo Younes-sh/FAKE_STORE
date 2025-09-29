@@ -3,7 +3,7 @@
 .container {
   padding: 20px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 100px auto;
 }
 
 .header {
@@ -131,6 +131,8 @@
   border-left: 4px solid #4299e1;
   transition: all 0.2s ease;
   position: relative;
+  background-color: #d1391342;
+
 }
 
 .notificationItem:hover {

@@ -91,7 +91,7 @@ export default function NotificationsPage() {
 
   return (
       <div className={Style.container}>
-        <h1>Notifications</h1>
+        <h1 className={Style.header}>Notifications</h1>
         
         {error && (
           <div className={Style.error}>
