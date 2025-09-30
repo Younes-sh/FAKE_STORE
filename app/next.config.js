@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // حذف distDir: 'build'
   env: {
     NEXTAUTH_DEBUG: process.env.NODE_ENV === 'development' ? 'true' : 'false',
   },
