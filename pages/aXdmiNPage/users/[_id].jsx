@@ -3,13 +3,11 @@ import { useState, useEffect } from "react";
 import AdminNavbar from "@/Components/Admin/AdminLayout/Layout";
 import { AlertModal } from "@/Components/AlertModal/AlertModal";
 import Style from './singleUser.module.css';
-import { io } from "socket.io-client";
 import { useSession, getSession } from "next-auth/react";
 
 export default function User({ dataUser }) {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [socket, setSocket] = useState(null);
 
   const safeAddress = dataUser?.address ?? { street: '', city: '', postalCode: '', country: '' };
   const [userData, setUserData] = useState({
@@ -40,26 +38,8 @@ export default function User({ dataUser }) {
 }, [session, status, router]);
 
 
-  // Socket.IO
-  useEffect(() => {
-    const newSocket = io();
-    setSocket(newSocket);
-    return () => newSocket.close();
-  }, []);
+ 
 
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("user-update", (data) => {
-      if (data._id === userData._id) setUserData(prev => ({ ...prev, ...data }));
-    });
-    socket.on("user-delete", (data) => {
-      if (data._id === userData._id) router.push("/aXdmiNPage/users");
-    });
-    return () => {
-      socket.off("user-update");
-      socket.off("user-delete");
-    };
-  }, [socket, userData._id, router]);
 
   const formattedDate = userData?.createdAt
     ? new Date(userData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
