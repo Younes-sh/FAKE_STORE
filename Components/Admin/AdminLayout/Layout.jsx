@@ -6,90 +6,85 @@ import AdminSidebar from '../Sidebar/Sidebar';
 import Style from './AdminLayout.module.css';
 
 export default function AdminLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Logic for auto-setting sidebar state
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setSidebarOpen(true);
-      } else {
-        setSidebarOpen(false);
-      }
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const allowedRoles = ['admin', 'editor'];
 
-  // Redirect if not authenticated or not authorized
-  useEffect(() => {
-    if (status === 'loading') return;
-    
-    const allowedRoles = ['admin', 'editor'];
-    const userRole = session?.user?.role;
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
 
-    if (!session?.user) {
-      router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
-    } else if (!allowedRoles.includes(userRole)) {
-      router.push('/');
-    }
-  }, [session, status, router, pathname]);
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth > 768);
+    };
 
-  // Navigation items
-  const navItems = [
-    { href: "/aXdmiNPage", label: "Dashboard", icon: "📊" },
-    { href: "/aXdmiNPage/postProduct", label: "New Products", icon: "🆕" },
-    { href: "/aXdmiNPage/products", label: "Manage Products", icon: "📦" },
-    { href: "/aXdmiNPage/users", label: "Users", icon: "👥" },
-    { href: "/aXdmiNPage/message", label: "Messages", icon: "✉️" },
-    { href: "/aXdmiNPage/notifications", label: "Create Notifications", icon: "🔔" },
-    { href: "/aXdmiNPage/setting", label: "Settings", icon: "⚙️" },
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
-  ];
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  if (status === 'loading') {
-    return (
-      <div className={Style.loadingContainer}>
-        <div className={Style.loadingSpinner}></div>
-      </div>
-    );
-  }
-  
-  const allowedRoles = ['admin', 'editor'];
-  if (!session || !allowedRoles.includes(session.user.role)) {
-    return null;
-  }
+  // Redirect logic
+  useEffect(() => {
+    if (status === 'loading') return;
 
-  return (
-    <div className={Style.adminContainer}>
-      <AdminSidebar 
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        user={session.user}
-        navItems={navItems}
-      />
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
+    } else if (!allowedRoles.includes(session.user.role)) {
+      router.push('/');
+    }
+  }, [session, status, router, pathname]);
 
-      <main className={`${Style.adminMain} ${sidebarOpen ? Style.mainOpen : Style.mainClosed}`}>
-        <header className={Style.adminHeader}>
-          <button 
-            className={Style.mobileMenuBtn}
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            {sidebarOpen ? '✕' : '☰'}
-          </button>
-          <h1>{navItems.find(item => item.href === pathname)?.label || 'Dashboard'}</h1>
-        </header>
-        
-        <div className={Style.contentWrapper}>
-          {children}
-        </div>
-      </main>
-    </div>
-  );
+  if (status === 'loading') {
+    return (
+      <div className={Style.loadingContainer}>
+        <div className={Style.loadingSpinner}></div>
+      </div>
+    );
+  }
+
+  if (!session || !allowedRoles.includes(session.user.role)) {
+    return null;
+  }
+
+  const navItems = [
+    { href: "/aXdmiNPage", label: "Dashboard", icon: "📊" },
+    { href: "/aXdmiNPage/postProduct", label: "New Products", icon: "🆕" },
+    { href: "/aXdmiNPage/products", label: "Manage Products", icon: "📦" },
+    { href: "/aXdmiNPage/users", label: "Users", icon: "👥" },
+    { href: "/aXdmiNPage/message", label: "Messages", icon: "✉️" },
+    { href: "/aXdmiNPage/notifications", label: "Create Notifications", icon: "🔔" },
+    { href: "/aXdmiNPage/setting", label: "Settings", icon: "⚙️" },
+  ];
+
+  const currentNav = navItems.find(item => pathname.startsWith(item.href));
+
+  return (
+    <div className={Style.adminContainer}>
+      <AdminSidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        user={session.user}
+        navItems={navItems}
+      />
+
+      <main className={`${Style.adminMain} ${sidebarOpen ? Style.mainOpen : Style.mainClosed}`}>
+        <header className={Style.adminHeader}>
+          <button
+            className={Style.mobileMenuBtn}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? '✕' : '☰'}
+          </button>
+          <h1>{currentNav?.label || 'Dashboard'}</h1>
+        </header>
+
+        <div className={Style.contentWrapper}>
+          {children}
+        </div>
+      </main>
+    </div>
+  );
 }
