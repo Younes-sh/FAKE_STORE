@@ -8,61 +8,27 @@ import UserImage from "@/public/user.png";
 import Tabs from "@/Components/Profile/TabProfile/TabProfile";
 import { useRouter } from "next/router";
 import Footer from "@/Components/Footer";
-import { io } from "socket.io-client";
 
 export default function ProfilePage() {
   const { data: session, update } = useSession();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const router = useRouter();
-  const [socket, setSocket] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false); // حالت جدید برای ردیابی حذف کاربر
 
   /* -------------------------
      اتصال به Socket.IO
   -------------------------- */
   useEffect(() => {
-    if (session) {
-      const newSocket = io({ path: `${process.env.NEXT_PUBLIC_APP_URL}/api/socket` });
-      setSocket(newSocket);
-
-      return () => {
-        newSocket.disconnect();
-      };
-    }
+    
   }, [session]);
 
   /* -------------------------
      گوش دادن به ایونت‌ها
   -------------------------- */
   useEffect(() => {
-    if (!socket || !session) return;
-
-    // وقتی پروفایل کاربر آپدیت شد (مثلاً role تغییر کرد)
-    socket.on("user-update", (data) => {
-      if (data._id === session.user.id) {
-        // به جای reload کل صفحه → آپدیت session
-        update({
-          ...session,
-          user: { ...session.user, ...data },
-        });
-      }
-    });
-
-    // وقتی کاربر حذف شد → signOut و redirect به login
-    socket.on("user-delete", async (data) => {
-      if (data._id === session.user.id) {
-        setIsDeleted(true); // علامتگذاری که کاربر حذف شده
-        await signOut({ redirect: false }); // خروج بدون ریدایرکت خودکار
-        router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login?message=account_deleted`); // ریدایرکت به صفحه login با پیام
-      }
-    });
-
-    return () => {
-      socket.off("user-update");
-      socket.off("user-delete");
-    };
-  }, [socket, session, update, router]);
+    
+  }, [ session, update, router]);
 
   /* -------------------------
      حذف اکانت (کاربر خودش)
