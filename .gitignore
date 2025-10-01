@@ -45,4 +45,4 @@ next-env.d.ts
 bash.exe.stackdump
 desktop.ini
 *.log
-*.swp
+*.swp.env
