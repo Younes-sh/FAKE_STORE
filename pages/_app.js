@@ -3,7 +3,6 @@ import NavbarBeforLogin from "@/Components/Navbar/NavbarBeforLogin";
 import NavbarAfterLogin from "@/Components/Navbar/NavbarAfterLogin";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useState, createContext, useEffect } from "react";
-import { io } from "socket.io-client";
 import { signOut } from "next-auth/react";
 import "../styles/globals.css";
 import { CartProvider } from '@/contexts/CartContext';
@@ -18,32 +17,6 @@ function Layout({ children }) {
   const [connected, setConnected] = useState(false);
 
 
-useEffect(() => {
-  if (!session?.user?.id) return;
-  if (!socket) socket = io({ path: `/api/socket` });
-
-  if (!connected) {
-    socket.emit("join", session.user.id);
-    setConnected(true);
-  }
-
-  socket.on("role-changed", async () => {
-    console.log("Role changed, updating session...");
-    await update();
-  });
-
-  socket.on("user-delete", (data) => {
-    if (data._id === session.user.id) {
-      // حذف کاربر → ساین اوت اجباری
-      signOut({ callbackUrl: `/login` });
-    }
-  });
-
-  return () => {
-    socket.off("role-changed");
-    socket.off("user-delete");
-  };
-}, [session, update, connected]);
 
 
   const renderNavbar = () => {
