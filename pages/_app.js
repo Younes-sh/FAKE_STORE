@@ -10,7 +10,6 @@ import { Analytics } from '@vercel/analytics/next';
 
 
 export const AppContext = createContext();
-let socket;
 
 function Layout({ children }) {
   const { data: session, status, update } = useSession();
