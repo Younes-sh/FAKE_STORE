@@ -1,23 +1,33 @@
-// pages/api/products/[id].js
 import dbConnect from "@/lib/dbConnect"; 
 import Product from "@/models/product";
-import { isValidObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
   try {
     await dbConnect();
     
-    // 🔥 اصلاح: استفاده از id به جای _id در پارامتر
+    // استفاده از id به جای _id - چون در URL از [id] استفاده شده
     const { id } = req.query;
 
     console.log('🔍 Products API called with id:', id);
-    console.log('🔍 Method:', req.method);
+    console.log('🔍 Full query:', req.query);
 
-    if (!id || !isValidObjectId(id)) {
-      console.error('❌ Invalid product ID:', id);
+    // بررسی وجود id
+    if (!id || id === 'undefined') {
+      console.error('❌ No product ID provided');
       return res.status(400).json({ 
         success: false,
-        message: "Invalid product id", 
+        message: "Product ID is required", 
+        data: null 
+      });
+    }
+
+    // بررسی معتبر بودن ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.error('❌ Invalid MongoDB ObjectId:', id);
+      return res.status(400).json({ 
+        success: false,
+        message: "Invalid product id format", 
         data: null 
       });
     }
@@ -25,9 +35,12 @@ export default async function handler(req, res) {
     switch (req.method) {
       case "GET":
         try {
+          console.log('🔍 Searching for product with id:', id);
+          
           const product = await Product.findById(id);
+          
           if (!product) {
-            console.error('❌ Product not found:', id);
+            console.error('❌ Product not found in database:', id);
             return res.status(404).json({ 
               success: false,
               message: "Product not found", 
@@ -42,7 +55,7 @@ export default async function handler(req, res) {
             data: product 
           });
         } catch (error) {
-          console.error('❌ Error in GET:', error);
+          console.error('❌ Database error in GET:', error);
           return res.status(500).json({ 
             success: false,
             message: "Server error", 

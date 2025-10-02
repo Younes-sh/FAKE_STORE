@@ -7,43 +7,45 @@
   padding: 20px;
   z-index: 3;
   margin-top: 50px;
-    /* background-color: #f1f1f1;   */
 }
   
   .image {
     width: 40%;
     margin-right: 20px;
     height: auto;
-    /* border: solid 2px #ccc; */
-    /* border-left: transparent; */
-    /* border-bottom: transparent; */
-    /* border-top: transparent; */
+    border: solid 2px #ccc;
+    border-left: transparent;
+    border-bottom: transparent;
+    border-top: transparent;
     cursor: pointer;
     position: relative; /* اضافه شده برای موقعیت دهی imageMaximize */
   }
+  .image img {
+    width: 100%;
+    height: 100%;
+  }
   .imageMaximize {
-    width: 780px; /* یا هر اندازه دلخواه */
-    height: 900px; /* یا هر اندازه دلخواه */
-    border: solid 2px #ccc;
+    width: 650px; /* یا هر اندازه دلخواه */
+    height: 650px; /* یا هر اندازه دلخواه */
+    border: solid 2px #cccccc48;
     position: absolute;
+    margin-top: 140px;
     top: 100px; /* یا هر موقعیت دلخواه */
     border-radius: 7px;
-    background-color: rgb(255,255,255);
     overflow: hidden;
   }
   .imageMaximizeContainer {
-    margin: 290px 350px;
-    padding: 50px;
-    position: absolute;
-    width: 500px; /* یا هر اندازه دلخواه */
+    width: 100%; /* یا هر اندازه دلخواه */
+    height: 100%; /* یا هر اندازه دلخواه */
     height: auto; /* یا هر اندازه دلخواه */
     border-radius: 7px;
     object-fit: contain;
   }
   .imageMaximize img {
+    width: 100%;
+    height: 100%;    
     object-fit: cover;
-    height: auto;
-    position: absolute;
+    margin: 330px 200px;
   }
   
 

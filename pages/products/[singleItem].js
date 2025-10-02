@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from "react";
-import Image from "next/image";
 import Style from "./singleItem.module.css";
 import Link from "next/link";
 import { useRouter } from 'next/router';
@@ -15,8 +14,8 @@ export default function SingleItem({ dataProduct }) {
   const [isInCart, setIsInCart] = useState(false);
   const [adding, setAdding] = useState(false); // برای جلوگیری از دابل کلیک/نمایش لودینگ
 
-    const isProduction = process.env.NODE_ENV === 'production';
-    const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+  const isProduction = process.env.NODE_ENV === 'production';
+  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
   // یک‌بار روی mount چک می‌کنیم آیا این محصول در سبد هست
   useEffect(() => {
@@ -89,10 +88,6 @@ export default function SingleItem({ dataProduct }) {
     }
   };
 
-  // const buyNowHandler = () => {
-  //   router.push(`/checkout?productId=${dataProduct._id}`);
-  // };
-
   return (
     <div className='container main'>
       <div className={Style.singleItem}>
@@ -107,12 +102,11 @@ export default function SingleItem({ dataProduct }) {
             })
           }
         >
-          <Image
+          {/* جایگزینی Image با img ساده */}
+          <img
             src={dataProduct.image}
             alt={dataProduct.section}
-            width={16}
-            height={9}
-            layout="responsive"
+            className={Style.productImage}
           />
         </div>
 
@@ -129,7 +123,7 @@ export default function SingleItem({ dataProduct }) {
               <b>Model</b> {dataProduct.model}
             </p>
             <p>
-              <b></b> {dataProduct.description}
+              <b>Description</b> {dataProduct.description}
             </p>
           </div>
 
@@ -144,17 +138,17 @@ export default function SingleItem({ dataProduct }) {
           {showMaxiImage && (
             <div className={Style.imageMaximize}>
               <div className={Style.imageMaximizeContainer}>
-                <Image
+                <img
                   src={dataProduct.image}
                   alt={dataProduct.section}
-                  width={3}
-                  height={1}
-                  layout="responsive"
                   style={{
                     position: "absolute",
                     left: -mousePosition.x,
                     top: -mousePosition.y,
-                    transform: "scale(2)",
+                    transform: "scale(1.5)",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
                   }}
                 />
               </div>
@@ -171,7 +165,7 @@ export default function SingleItem({ dataProduct }) {
         >
           {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
         </button>
-        <Link href={'/products'} className={Style.btnBack}>Back to </Link>
+        <Link href={'/products'} className={Style.btnBack}>Back to Products</Link>
       </div>
     </div>
   );
