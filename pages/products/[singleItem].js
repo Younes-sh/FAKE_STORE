@@ -1,92 +1,104 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import Style from "./singleItem.module.css";
 import Link from "next/link";
 import { useRouter } from 'next/router';
 import { AppContext } from "@/pages/_app";
+import { useCart } from '@/contexts/CartContext';
 
 export default function SingleItem({ dataProduct }) {
   const router = useRouter();
   const { setAddToCard } = useContext(AppContext);
+  const { addToCart, isProductInCart, loading: cartLoading } = useCart();
+  
   const [showMaxiImage, setShowMaxiImage] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [adding, setAdding] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false); // وضعیت جدید
   
-  // آیا این محصول در سبد خرید هست؟
-  const [isInCart, setIsInCart] = useState(false);
-  const [adding, setAdding] = useState(false); // برای جلوگیری از دابل کلیک/نمایش لودینگ
+  const imageMaximizeRef = useRef(null);
 
-  const isProduction = process.env.NODE_ENV === 'production';
-  const baseUrl = isProduction ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+  // بررسی اینکه آیا محصول در سبد هست
+  const isInCart = dataProduct?._id ? isProductInCart(dataProduct._id) : false;
 
-  // یک‌بار روی mount چک می‌کنیم آیا این محصول در سبد هست
+  // وقتی محصول در سبد قرار می‌گیرد، addedToCart را true کنیم
   useEffect(() => {
-    let ignore = false;
-
-    const checkInCart = async () => {
-      try {
-        const res = await fetch(`${baseUrl}/api/cart`);
-        if (!res.ok) return; // اگر لاگین نیست یا اروری بود، بی‌خیال
-        const data = await res.json();
-        const exists = (data.cart?.products || []).some(p => p._id === dataProduct._id);
-        if (!ignore) setIsInCart(exists);
-      } catch (e) {
-        // بی‌سر و صدا
-      }
-    };
-
-    checkInCart();
-    return () => { ignore = true; };
-  }, [dataProduct._id]);
+    if (isInCart) {
+      setAddedToCart(true);
+    }
+  }, [isInCart]);
 
   const addProductBtn = async () => {
-    if (adding) return;
+    if (adding || !dataProduct || addedToCart) return; // غیرفعال اگر قبلاً اضافه شده
     setAdding(true);
 
     try {
-      // اول ببین الان چند تا از همین محصول توی سبد هست
-      const res = await fetch(`${baseUrl}/api/cart`);
-      const cartData = await res.json();
-      const current = cartData.cart?.products?.find(p => p._id === dataProduct._id);
+      const productToSend = {
+        productId: dataProduct._id,
+        productName: dataProduct.productName,
+        price: dataProduct.price,
+        count: 1,
+        image: dataProduct.image,
+        description: dataProduct.description,
+        model: dataProduct.model,
+        section: dataProduct.section
+      };
 
-      const nextCount = current ? current.count + 1 : 1;
+      const success = await addToCart(productToSend);
 
-      const response = await fetch(`${baseUrl}/api/cart`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          products: [{
-            _id: dataProduct._id,
-            productName: dataProduct.productName,
-            price: dataProduct.price,
-            count: nextCount,
-            totalPrice: dataProduct.price * nextCount,
-            image: dataProduct.image,
-            description: dataProduct.description,
-            model: dataProduct.model,
-            section: dataProduct.section
-          }]
-        })
-      });
-
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'خطا در افزودن به سبد خرید');
-      }
-
-      // اگر برای اولین بار اضافه شد، شمارنده‌ی Navbar رو یک واحد زیاد کن
-      if (!current) {
+      if (success && !isInCart) {
         setAddToCard(prev => prev + 1);
+        setAddedToCart(true); // بعد از موفقیت، وضعیت را تغییر بده
       }
 
-      // از این به بعد دکمه باید "Add again" شود
-      setIsInCart(true);
+      if (!success) {
+        alert('خطا در افزودن به سبد خرید');
+      }
 
     } catch (error) {
       console.error("❌ خطا در افزودن به سبد خرید:", error);
-      // می‌تونی toast/alert بزنی
+      alert('خطا در افزودن به سبد خرید');
     } finally {
       setAdding(false);
     }
   };
+
+  const handleMouseMove = (e) => {
+    if (!showMaxiImage) return;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      setShowMaxiImage(false);
+    };
+  }, []);
+
+  if (!dataProduct) {
+    return (
+      <div className='container main'>
+        <div className={Style.singleItem}>
+          <div className={Style.errorState}>
+            <h2>محصول یافت نشد</h2>
+            <p>محصولی که به دنبال آن هستید وجود ندارد یا حذف شده است.</p>
+            <Link href={'/products'} className={Style.btnBack}>
+              ← بازگشت به محصولات
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // تعیین وضعیت دکمه
+  const isButtonDisabled = adding || cartLoading || addedToCart;
+  const buttonText = adding ? 'Adding...' : 
+                    addedToCart ? 'Added to Cart ✓' : 
+                    'Add to Cart';
 
   return (
     <div className='container main'>
@@ -95,57 +107,61 @@ export default function SingleItem({ dataProduct }) {
           className={Style.image}
           onMouseEnter={() => setShowMaxiImage(true)}
           onMouseLeave={() => setShowMaxiImage(false)}
-          onMouseMove={(e) =>
-            setMousePosition({
-              x: e.nativeEvent.offsetX,
-              y: e.nativeEvent.offsetY,
-            })
-          }
+          onMouseMove={handleMouseMove}
         >
-          {/* جایگزینی Image با img ساده */}
           <img
             src={dataProduct.image}
-            alt={dataProduct.section}
+            alt={dataProduct.productName}
             className={Style.productImage}
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
           />
         </div>
 
         <div className={Style.text}>
-          <p>
-            <b>Name</b> {dataProduct.productName}
-          </p>
-          <hr />
+          <h1 className={Style.productName}>{dataProduct.productName}</h1>
+          <hr className={Style.divider} />
           <div className={Style.info}>
-            <p>
-              <b>Price</b> {dataProduct.price} $
-            </p>
-            <p>
-              <b>Model</b> {dataProduct.model}
-            </p>
-            <p>
-              <b>Description</b> {dataProduct.description}
-            </p>
+            <div className={Style.infoItem}>
+              <span className={Style.label}>Price:</span>
+              <span className={Style.value}>{dataProduct.price} $</span>
+            </div>
+            <div className={Style.infoItem}>
+              <span className={Style.label}>Model:</span>
+              <span className={Style.value}>{dataProduct.model}</span>
+            </div>
+            <div className={Style.infoItem}>
+              <span className={Style.label}>Category:</span>
+              <span className={Style.value}>{dataProduct.section}</span>
+            </div>
+            <div className={Style.infoItem}>
+              <span className={Style.label}>Description:</span>
+              <p className={Style.description}>{dataProduct.description}</p>
+            </div>
           </div>
 
-          {/* نشان "داخل سبد" (دلخواه) */}
-          {isInCart && (
-            <div style={{ fontSize: 12, marginBottom: 6, color: '#16a34a' }}>
-              ✓ This item is in your cart
+          {addedToCart && (
+            <div className={Style.cartStatus}>
+              ✓ This product was successfully added to cart
             </div>
           )}
 
-          {/* Maximize image */}
           {showMaxiImage && (
-            <div className={Style.imageMaximize}>
+            <div 
+              className={Style.imageMaximize}
+              ref={imageMaximizeRef}
+              onClick={() => setShowMaxiImage(false)}
+            >
               <div className={Style.imageMaximizeContainer}>
                 <img
                   src={dataProduct.image}
-                  alt={dataProduct.section}
+                  alt={dataProduct.productName}
                   style={{
                     position: "absolute",
-                    left: -mousePosition.x,
-                    top: -mousePosition.y,
-                    transform: "scale(1.5)",
+                    left: `-${mousePosition.x * 0.5}px`,
+                    top: `-${mousePosition.y * 0.5}px`,
+                    transform: "scale(1.8)",
                     width: "100%",
                     height: "100%",
                     objectFit: "cover"
@@ -159,28 +175,32 @@ export default function SingleItem({ dataProduct }) {
 
       <div className={Style.buttonContainer}>
         <button 
-          className={`${Style.button} ${Style.btnAddtoCard}`}
+          className={`${Style.button} ${Style.btnAddtoCard} ${
+            addedToCart ? Style.addedToCart : ''
+          } ${adding ? Style.loading : ''}`}
           onClick={addProductBtn}
-          disabled={adding}
+          disabled={isButtonDisabled}
         >
-          {adding ? 'Adding…' : (isInCart ? 'Add again' : 'Add to Cart')}
+          {adding && <span className={Style.spinner}></span>}
+          {buttonText}
         </button>
-        <Link href={'/products'} className={Style.btnBack}>Back to Products</Link>
+        <Link href={'/products'} className={Style.btnBack}>
+          Back to Products
+        </Link>
       </div>
     </div>
   );
 }
 
+// getServerSideProps بدون تغییر...
 export async function getServerSideProps(context) {
   try {
     const { req, params } = context;
     const { singleItem } = params;
     
-    // Get the correct base URL for both production and development
     let baseUrl;
     
     if (process.env.NODE_ENV === 'production') {
-      // Use the request headers to get the correct host
       const host = req.headers.host;
       const protocol = req.headers['x-forwarded-proto'] || 'https';
       baseUrl = `${protocol}://${host}`;
@@ -193,16 +213,13 @@ export async function getServerSideProps(context) {
     const res = await fetch(`${baseUrl}/api/products/${singleItem}`);
     
     if (!res.ok) {
-      throw new Error(`API responded with status ${res.status}`);
+      return { notFound: true };
     }
     
     const data = await res.json();
     
-    // Handle case where product is not found
     if (!data || !data.data) {
-      return {
-        notFound: true,
-      };
+      return { notFound: true };
     }
     
     return {
@@ -213,10 +230,6 @@ export async function getServerSideProps(context) {
     
   } catch (error) {
     console.error('Error fetching product:', error);
-    
-    // Return 404 page if product not found
-    return {
-      notFound: true,
-    };
+    return { notFound: true };
   }
 }
