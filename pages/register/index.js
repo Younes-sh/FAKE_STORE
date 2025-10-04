@@ -14,54 +14,72 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-
+  const getBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+      return window.location.origin;
+    }
+    return '';
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // pages/register.js - اضافه کردن console.log
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
-  setIsLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
-  console.log("🔄 Registration form submitted:", formData);
+    try {
+      const baseUrl = getBaseUrl();
+      const apiUrl = `${baseUrl}/api/auth/register`;
+      
+      console.log("🌐 API URL:", apiUrl);
+      console.log("📝 Form Data:", formData);
 
-  try {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    const data = await response.json();
-    console.log("📨 Registration response:", data);
+      console.log("📨 Response Status:", response.status);
+      
+      const data = await response.json();
+      console.log("📨 Response Data:", data);
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Registration failed');
+      if (!response.ok) {
+        throw new Error(data.message || `Registration failed with status ${response.status}`);
+      }
+
+      console.log("✅ Registration successful");
+      router.push(`/verify?email=${encodeURIComponent(formData.email)}`);
+      
+    } catch (err) {
+      console.error("❌ Registration error:", err);
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        setError('Network error: Cannot connect to server. Please check your internet connection.');
+      } else {
+        setError(err.message || 'Something went wrong during registration');
+      }
+    } finally {
+      setIsLoading(false);
     }
-
-    console.log("✅ Registration successful, redirecting to verify");
-    router.push(`/verify?email=${encodeURIComponent(formData.email)}`);
-    
-  } catch (err) {
-    console.error("❌ Registration error:", err);
-    setError(err.message || 'Something went wrong');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div className={styles.registerPage}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <h2 className={styles.title}>Create an Account</h2>
         
-        {error && <div className={styles.error}>{error}</div>}
+        {error && (
+          <div className={styles.error}>
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
         <div className={styles.formGroup}>
           <label htmlFor="username" className={styles.label}>Username</label>
@@ -74,6 +92,7 @@ const handleSubmit = async (e) => {
             required
             className={styles.input}
             disabled={isLoading}
+            placeholder="Enter your username"
           />
         </div>
 
@@ -88,6 +107,7 @@ const handleSubmit = async (e) => {
             required
             className={styles.input}
             disabled={isLoading}
+            placeholder="Enter your email"
           />
         </div>
 
@@ -103,6 +123,7 @@ const handleSubmit = async (e) => {
             minLength={8}
             className={styles.input}
             disabled={isLoading}
+            placeholder="Enter your password (min. 8 characters)"
           />
         </div>
 
