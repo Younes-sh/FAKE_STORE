@@ -10,6 +10,11 @@ export default function NavProfile() {
     const OpenMenuProfile = () => setIsOpen(!isOpen);
     const CloseMenuProfile = () => setIsOpen(false);
 
+    const handleSignOut = () => {
+        const baseUrl = window.location.origin; // گرفتن آدرس اصلی سایت
+        signOut({ callbackUrl: `${baseUrl}/login` });
+    };
+
     if (status === "loading") return null;
 
     // نقش کاربر را به حروف کوچک تبدیل کنید
@@ -37,7 +42,7 @@ export default function NavProfile() {
 
                     <br /><br /><br />
 
-                    <button onClick={() => signOut({ callbackUrl: '/login' })}>
+                    <button onClick={handleSignOut}>
                         Logout
                     </button>
                 </div>
