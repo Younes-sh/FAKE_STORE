@@ -30,6 +30,13 @@ export default function ProfilePage() {
     
   }, [ session, update, router]);
 
+  // Logout function
+
+  const handleSignOut = () => {
+    const baseUrl = window.location.origin; // گرفتن آدرس اصلی سایت
+    signOut({ callbackUrl: `${baseUrl}/login` });
+  };
+
   /* -------------------------
      حذف اکانت (کاربر خودش)
   -------------------------- */
@@ -145,7 +152,7 @@ export default function ProfilePage() {
                 Edit Profile
               </button>
               <button
-                onClick={() => signOut({ callbackUrl: "/login" })}
+                onClick={handleSignOut}
                 className={`${Styles.btn} ${Styles.dangerBtn}`}
               >
                 Logout
