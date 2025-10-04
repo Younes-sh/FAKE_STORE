@@ -100,14 +100,6 @@ export default function ProfilePage() {
         <div className={Styles.profileCard}>
           {/* Profile Header */}
           <div className={Styles.profileHeader}>
-            {/* <Image
-              src={UserImage}
-              alt="User Avatar"
-              className={Styles.avatar}
-              width={100}
-              height={100}
-              priority
-            />  */}
             <div className={Styles.avatarWrapper}>
               <Image.default 
               src={UserImage} 
