@@ -32,11 +32,11 @@ export default function ProfilePage() {
 
   // Logout function
 
-  const handleSignOut = () => {
-    const baseUrl = window.location.origin; // گرفتن آدرس اصلی سایت
-    signOut({ callbackUrl: `${baseUrl}/login` });
-  };
-
+  const handleSignOut = async () => {
+    await signOut();
+    // بعد از signOut، دستی redirect کنید
+    window.location.href = '/login';
+};
   /* -------------------------
      حذف اکانت (کاربر خودش)
   -------------------------- */

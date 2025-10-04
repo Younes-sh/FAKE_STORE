@@ -10,10 +10,11 @@ export default function NavProfile() {
     const OpenMenuProfile = () => setIsOpen(!isOpen);
     const CloseMenuProfile = () => setIsOpen(false);
 
-    const handleSignOut = () => {
-        const baseUrl = window.location.origin; // گرفتن آدرس اصلی سایت
-        signOut({ callbackUrl: `${baseUrl}/login` });
-    };
+    const handleSignOut = async () => {
+    await signOut();
+    // بعد از signOut، دستی redirect کنید
+    window.location.href = '/login';
+};
 
     if (status === "loading") return null;
 
