@@ -12,11 +12,11 @@ export default async function handler(req, res) {
 
   const { username, email, password } = req.body;
 
-  console.log("📝 Registration attempt:", { username, email });
+  // console.log("📝 Registration attempt:", { username, email });
 
   try {
     await dbConnect();
-    console.log("✅ Database connected");
+    // console.log("✅ Database connected");
 
     // بررسی وجود کاربر
     const existingUser = await User.findOne({ 
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     if (existingUser) {
       console.log("❌ User already exists");
       return res.status(422).json({ 
-        message: "این ایمیل یا نام‌کاربری قبلاً ثبت شده است." 
+        message: "This email or username is already registered." 
       });
     }
 
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
       console.log("✅ Verification email sent");
       
       return res.status(201).json({
-        message: "کاربر ایجاد شد. کُد تأیید به ایمیل ارسال شد.",
+        message: "User created. Verification code sent to email.",
         email: email.toLowerCase(),
         next: `/verify?email=${encodeURIComponent(email.toLowerCase())}`
       });
@@ -70,14 +70,14 @@ export default async function handler(req, res) {
       await User.findByIdAndDelete(newUser._id);
       
       return res.status(500).json({ 
-        message: "خطا در ارسال ایمیل. لطفاً دوباره تلاش کنید." 
+        message: "Error sending email. Please try again." 
       });
     }
 
   } catch (err) {
     console.error("❌ Registration error:", err);
     return res.status(500).json({ 
-      message: "خطای سرور. لطفاً بعداً تلاش کنید." 
+      message: "Server error. Please try again later." 
     });
   }
 }

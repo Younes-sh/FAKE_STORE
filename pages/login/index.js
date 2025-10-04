@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // اضافه کردن setIsLoading
   const router = useRouter();
   
   // استفاده از هوک useSession برای بررسی وضعیت لاگین کاربر
@@ -17,29 +18,39 @@ export default function LoginPage() {
   
   // اگر کاربر قبلا لاگین کرده باشد، به صفحه پروفایل هدایت می‌شود
   useEffect(() => {
-    
     if (session) {
       router.push(`/profile`);
     }
-  }, [session]);
-
+  }, [session, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-      callbackUrl: '/profile',
-    });
+    try {
+      const result = await signIn('credentials', {
+        email: email, // استفاده از stateهای مستقیم
+        password: password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      console.error("Login error:", result.error);
-      setError('Email or password is incorrect');
+      if (result?.error) {
+        // اگر خطای verify ایمیل بود
+        if (result.error.includes('verify your email')) {
+          throw new Error('Please verify your email before logging in. Check your inbox.');
+        }
+        throw new Error(result.error);
+      }
+
+      if (result?.ok) {
+        router.push('/');
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
     }
-
   };
 
   if (status === 'loading') {
@@ -82,6 +93,7 @@ export default function LoginPage() {
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               <div className={styles.inputGroup}>
@@ -98,6 +110,7 @@ export default function LoginPage() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -106,9 +119,9 @@ export default function LoginPage() {
               <button
                 type="submit"
                 className={styles.loginButton}
-                disabled={status === 'loading'}
+                disabled={isLoading || status === 'loading'}
               >
-                {status === 'loading' ? 'Processing...' : 'Login'}
+                {isLoading ? 'Processing...' : 'Login'}
               </button>
             </div>
           </form>
@@ -121,8 +134,6 @@ export default function LoginPage() {
               <span>Forgot your password?</span>
             </Link>
           </div>
-
-          
         </div>
       </div>
     </div>

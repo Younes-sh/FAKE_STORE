@@ -43,12 +43,17 @@ export const authOptions = {
             return null;
           }
 
+          // 🔥 چک کردن verify ایمیل - مهم!
+          if (!user.emailVerified) {
+            console.log("❌ Email not verified");
+            throw new Error("Please verify your email before logging in");
+          }
+
           if (!user.isActive) {
             console.log("❌ User not active");
             return null;
           }
 
-          // 🔥 تست: چک کردن مستقیم پسورد
           console.log("🔑 Comparing passwords...");
           const isValid = await bcrypt.compare(credentials.password, user.password);
           console.log("🔑 Password valid:", isValid);
@@ -70,6 +75,10 @@ export const authOptions = {
 
         } catch (error) {
           console.error("❌ Auth error:", error);
+          // اگر خطای verify ایمیل بود، آن را برگردان
+          if (error.message.includes("verify your email")) {
+            throw error;
+          }
           return null;
         }
       }
@@ -106,7 +115,7 @@ export const authOptions = {
       return session;
     }
   },
-  debug: true, // 🔥 فعال کردن دیباگ
+  debug: true,
 };
 
 export default NextAuth(authOptions);
