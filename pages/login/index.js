@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import styles from './LoginPage.module.css';
 import Image from 'next/image';
-// import loginImage from "../../../public/watch.jpg"
+import loginImage from '../../public/asset/watch.jpg';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -50,7 +50,15 @@ export default function LoginPage() {
     <div className={styles.loginContainer}>
       <div className={styles.loginImageSection}>
         <div className={styles.loginImagePlaceholder}>
-          {/* <Image src={loginImage} alt="Login Image" className={styles.loginImage} /> */}
+         <Image.default 
+          src={loginImage} 
+          alt="Login Image" 
+          className={styles.loginImage}
+          priority={true}
+          fill={true}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          style={{ objectFit: 'cover' }}  
+        />
         </div>
       </div>
       
