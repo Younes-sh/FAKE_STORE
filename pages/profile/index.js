@@ -101,8 +101,18 @@ export default function ProfilePage() {
               height={100}
               priority
             />  */}
+            <div className={Styles.avatarWrapper}>
+              <Image.default 
+              src={UserImage} 
+              alt="User Avatar" 
+              className={Styles.avatar}
+              priority={true}
+              fill={true}
+              // sizes="(max-width: 100px) 100vw, (max-width: 100px) 50vw, 33vw"
+              style={{ objectFit: 'cover' }}  
+            />
+            </div>
             
-
 
             <div className={Styles.userInfo}>
               <h1 className={Styles.userName}>{session.user.username}</h1>

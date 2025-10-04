@@ -28,11 +28,15 @@
   text-align: center;
   position: relative;
 }
+.avatarWrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1rem;
+}
 
 .avatar {
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
   margin-bottom: 1rem;
   border: 3px solid white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
