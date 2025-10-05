@@ -77,7 +77,7 @@ export default function SingleItemDashboard({dataProduct}) {
         <div className={Style.singleItemPage}>
           <div className={Style.image}>
             {image ? (
-              <Image 
+              <Image.default 
                 src={image} 
                 alt={productName} 
                 width={16} 

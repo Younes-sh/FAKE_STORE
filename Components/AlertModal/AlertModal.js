@@ -84,7 +84,7 @@ export const AlertModal = ({
 
           {imageUrl && (
             <div className={style.imageContainer}>
-              <Image
+              <Image.default
                 src={imageUrl}
                 alt="Modal image"
                 className={style.image}
