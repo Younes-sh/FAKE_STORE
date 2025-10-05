@@ -137,6 +137,44 @@
   text-decoration: none;
 }
 
+
+
+/* استایل‌های جدید برای قابلیت نمایش پسورد */
+.passwordInputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.passwordToggle:hover {
+  color: #333;
+}
+
+.passwordToggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* اطمینان از اینکه input پسورد فضای کافی برای آیکون دارد */
+.passwordInputContainer .loginInput {
+  padding-right: 45px;
+}
+
 @media (max-width: 768px) {
   .loginContainer {
     flex-direction: column;
