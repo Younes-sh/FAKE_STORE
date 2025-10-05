@@ -20,7 +20,7 @@ export default function OrderSuccess() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/orders/${orderId}`);
+        const res = await fetch(`/api/orders/${orderId}`);
         if (!res.ok) throw new Error('Order not found');
         const data = await res.json();
         setOrder(data.order);
@@ -127,9 +127,9 @@ export default function OrderSuccess() {
               <div key={index} className={styles.productItem}>
                 {/* there is a image error */}
                 
-                {/* <div className={styles.productImage}>
+                <div className={styles.productImage}>
                   {item.image ? (
-                    <Image
+                    <Image.default
                       src={item.image}
                       alt={item.name || 'Product'}
                       width={80}
@@ -142,7 +142,7 @@ export default function OrderSuccess() {
                       <FiShoppingBag size={24} />
                     </div>
                   )}
-                </div> */}
+                </div>
                 <div className={styles.productDetails}>
                   <h4>{item.name || 'Unnamed Product'}</h4>
                   <div className={styles.productMeta}>
