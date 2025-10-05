@@ -78,7 +78,7 @@ export default function AdminLayout({ children }) {
           >
             {sidebarOpen ? '✕' : '☰'}
           </button>
-          <h1>{currentNav?.label || 'Dashboard'}</h1>
+          <h1 className={Style.adminHeaderTitle}>{currentNav?.label}</h1>
         </header>
 
         <div className={Style.contentWrapper}>
