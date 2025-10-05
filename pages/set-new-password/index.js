@@ -12,6 +12,8 @@ export default function SetNewPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false); // حالت جدید برای پسورد جدید
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // حالت جدید برای تأیید پسورد
   const router = useRouter();
 
   useEffect(() => {
@@ -83,6 +85,14 @@ export default function SetNewPassword() {
     }
   };
 
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.formSection}>
@@ -93,27 +103,67 @@ export default function SetNewPassword() {
           
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.inputGroup}>
-              <input
-                type="password"
-                placeholder="New password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                className={styles.input}
-                minLength={6}
-              />
+              <div className={styles.passwordInputContainer}>
+                <input
+                  type={showNewPassword ? 'text' : 'password'}
+                  placeholder="New password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  className={styles.input}
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={toggleNewPasswordVisibility}
+                  disabled={isLoading}
+                >
+                  {showNewPassword ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
             
             <div className={styles.inputGroup}>
-              <input
-                type="password"
-                placeholder="Confirm new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className={styles.input}
-                minLength={6}
-              />
+              <div className={styles.passwordInputContainer}>
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className={styles.input}
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  className={styles.passwordToggle}
+                  onClick={toggleConfirmPasswordVisibility}
+                  disabled={isLoading}
+                >
+                  {showConfirmPassword ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             <button
