@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Style from './singleItem.module.css';
 import Link from "next/link";
@@ -17,16 +17,40 @@ export default function SingleItemDashboard({dataProduct}) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
 
-  const IDProduct = useRouter();
-  const ID = IDProduct.query.singleProduct;
   const router = useRouter();
+  const ID = router.query.singleProduct;
+
+  // اضافه کردن useEffect برای چک ID و لود اولیه
+  useEffect(() => {
+    if (router.isReady && ID) {
+      console.log('Product ID:', ID); // برای دیباگ
+    } else {
+      console.log('ID not ready or undefined'); // برای دیباگ
+    }
+  }, [router.isReady, ID]);
 
   const handleImageUploaded = (imageUrl) => {
     setImage(imageUrl);
   };
 
+  // تابع برای ساخت baseUrl در کلاینت
+  const getBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+      return `${window.location.protocol}//${window.location.host}`;
+    }
+    return ''; // در SSR خالی
+  };
+
   const btnSave = async () => {
-    const res = await fetch(`/api/products/${ID}`, {
+    if (!ID) {
+      console.error('Product ID is missing');
+      return;
+    }
+
+    const baseUrl = getBaseUrl();
+    const apiUrl = baseUrl ? `${baseUrl}/api/products/${ID}` : `/api/products/${ID}`;
+
+    const res = await fetch(apiUrl, {
       method: "PUT",
       body: JSON.stringify({
         productName,
@@ -44,17 +68,27 @@ export default function SingleItemDashboard({dataProduct}) {
      if (res.ok) {
       setShowSaveModal(true); // نمایش مودال موفقیت
     } else {
-      console.error('Failed to update product');
+      console.error('Failed to update product:', await res.text());
     }
   }
 
   const handleDelete = async () => {
-    const res = await fetch(`/api/products/${ID}`, {
+    if (!ID) {
+      console.error('Product ID is missing');
+      return;
+    }
+
+    const baseUrl = getBaseUrl();
+    const apiUrl = baseUrl ? `${baseUrl}/api/products/${ID}` : `/api/products/${ID}`;
+
+    const res = await fetch(apiUrl, {
       method: "DELETE"
     });
 
     if (res.ok) {
       router.push(`/aXdmiNPage/products/`);
+    } else {
+      console.error('Failed to delete product:', await res.text());
     }
   }
 
