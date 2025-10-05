@@ -148,10 +148,10 @@ export default function index() {
           <div className={Style.modal} onClick={() => setSelectedNotification(null)}>
             <div className={Style.modalContent} onClick={(e) => e.stopPropagation()}>
               <h2>{selectedNotification.notification?.title || 'No title'}</h2>
-              <p>{selectedNotification.notification?.message || 'No message'}</p>
+              <p className={Style.modalMessage}>{selectedNotification.notification?.message || 'No message'}</p>
               <div className={Style.modalActions}>
                 <button onClick={() => setSelectedNotification(null)}>Close</button>
-                <button onClick={() => deleteNotification(selectedNotification._id)}>
+                <button className={Style.deleteBtn} onClick={() => deleteNotification(selectedNotification._id)}>
                   Delete
                 </button>
               </div>

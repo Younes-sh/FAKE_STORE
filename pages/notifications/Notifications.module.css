@@ -131,13 +131,15 @@
   border-left: 4px solid #4299e1;
   transition: all 0.2s ease;
   position: relative;
-  background-color: #d1391342;
+  background-color: #a9c8e2cc;
 
 }
 
 .notificationItem:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #02060e;
+  cursor: pointer;
 }
 
 .notificationItem[data-type="info"] {
@@ -356,4 +358,71 @@
 
 .retryButton:hover {
   background-color: #45a049;
+}
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.notificationFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  font-size: 12px;
+}
+
+/* modal */
+
+.modal {
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background-color: rgba(119, 116, 116, 0.356);
+  display: flex;
+  /* justify-content: center; */
+  z-index: 1000;
+}
+.modalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modalMessage {
+  margin: 20px 0;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.modalActions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.modalActions .deleteBtn {
+  background-color: #f56565;
+  color: white;
+}
+.modalActions .deleteBtn:hover {
+  background-color: #e53e3e;
 }
