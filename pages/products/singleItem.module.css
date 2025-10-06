@@ -5,6 +5,7 @@
   gap: 3rem;
   margin: 2rem 0;
   align-items: start;
+  position: relative;
 }
 
 @media (max-width: 768px) {
@@ -14,36 +15,104 @@
   }
 }
 
-.image {
+/* بخش تصویر */
+.imageSection {
+  position: relative;
+  z-index: 2;
+}
+
+.imageContainer {
   position: relative;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  cursor: zoom-in;
+  cursor: crosshair;
+  aspect-ratio: 1 / 1;
 }
 
 .productImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
   border-radius: 12px;
+  transition: all 0.3s ease;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+}
+
+/* تصویر بزرگ‌شده */
+.zoomedImage {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.95);
+  transition: all 0.3s ease;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.zoomedImage.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  left: -50px;
+  right: auto;
+  width: calc(100% + 300px);
+  height: calc(100% + 100px);
+  top: -50px;
+  bottom: -50px;
+}
+
+.zoomOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 3;
+  border-radius: 12px;
+}
+
+.zoomOverlay.active {
+  opacity: 1;
+}
+
+/* محتوای متنی سمت راست */
+.textContent {
+  padding: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* وقتی تصویر بزرگ می‌شود، محتوای سمت راست کمی به پایین می‌رود */
+.imageContainer:hover ~ .textContent {
+  transform: translateY(10px);
   transition: transform 0.3s ease;
 }
 
-.image:hover .productImage {
-  transform: scale(1.02);
-}
-
-.text {
-  padding: 1rem;
-  position: relative; /* اضافه شده */
-}
-
 .productName {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
 .divider {
@@ -69,6 +138,7 @@
   font-weight: 600;
   color: #374151;
   min-width: 100px;
+  flex-shrink: 0;
 }
 
 .value {
@@ -85,37 +155,15 @@
 .cartStatus {
   background-color: #dcfce7;
   color: #166534;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   font-weight: 500;
   margin: 1rem 0;
-  display: inline-block;
-}
-
-/* تصحیح imageMaximize */
-.imageMaximize {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  pointer-events: none; /* اضافه شده */
-}
-
-.imageMaximizeContainer {
-  position: relative;
-  width: 80%;
-  height: 80%;
-  max-width: 800px;
-  max-height: 600px;
-  border-radius: 12px;
-  overflow: hidden;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease;
 }
 
 .buttonContainer {
@@ -124,10 +172,11 @@
   margin-top: 2rem;
   padding: 2rem 0;
   border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
 }
 
 .button {
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -138,6 +187,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  min-height: 48px;
+  flex: 1;
+  min-width: 140px;
 }
 
 .btnAddtoCard {
@@ -148,6 +200,7 @@
 .btnAddtoCard:hover:not(:disabled) {
   background-color: #2563eb;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .btnAddtoCard:disabled {
@@ -156,12 +209,15 @@
   transform: none;
 }
 
-.btnAddtoCard.inCart {
+.btnAddtoCard.addedToCart {
   background-color: #10b981;
+  cursor: not-allowed;
 }
 
-.btnAddtoCard.inCart:hover:not(:disabled) {
-  background-color: #059669;
+.btnAddtoCard.addedToCart:hover {
+  background-color: #10b981;
+  transform: none;
+  cursor: not-allowed;
 }
 
 .btnAddtoCard.loading {
@@ -171,18 +227,23 @@
 .btnBack {
   background-color: #6b7280;
   color: white;
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 48px;
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
 }
 
 .btnBack:hover {
   background-color: #4b5563;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 .spinner {
@@ -199,9 +260,15 @@
   100% { transform: rotate(360deg); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .errorState {
   text-align: center;
   padding: 3rem 1rem;
+  grid-column: 1 / -1;
 }
 
 .errorState h2 {
@@ -214,17 +281,42 @@
   margin-bottom: 2rem;
 }
 
-/* اضافه کردن استایل جدید به singleItem.module.css */
-
-.btnAddtoCard.addedToCart {
-  background-color: #10b981;
-  cursor: not-allowed;
+/* برای موبایل بزرگنمایی را غیرفعال می‌کنیم */
+@media (max-width: 768px) {
+  .zoomedImage {
+    display: none;
+  }
+  
+  .imageContainer {
+    cursor: default;
+    overflow: hidden;
+  }
+  
+  .zoomOverlay {
+    display: none;
+  }
+  
+  .imageContainer:hover ~ .textContent {
+    transform: none;
+  }
 }
 
-.btnAddtoCard.addedToCart:hover {
-  background-color: #10b981;
-  transform: none;
-  cursor: not-allowed;
+/* بهبود برای موبایل کوچک */
+@media (max-width: 480px) {
+  .buttonContainer {
+    flex-direction: column;
+  }
+  
+  .button, .btnBack {
+    width: 100%;
+  }
+  
+  .infoItem {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .label {
+    min-width: auto;
+  }
 }
-
-/* بقیه استایل‌ها مانند قبل... */
