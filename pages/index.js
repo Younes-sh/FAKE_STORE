@@ -1,29 +1,35 @@
+// pages/index.js
 import Head from "next/head";
-import Header from "@/Components/HomePage/Header/Header";
-import SectionOne from "@/Components/HomePage/Section1/SectionOne";
-import Section2 from "@/Components/HomePage/Section2/Section2";
-import Section3 from "@/Components/HomePage/Section3/Section3";
+import Hero from "@/Components/HomePage/Hero";
+import Collections from "@/Components/HomePage/Collections/";
+import WhyChooseUs from "@/Components/HomePage/WhyChooseUs/";
+import ProductsShowcase from "@/Components/HomePage/ProductsShowcase/";
+import Testimonials from "@/Components/HomePage/Testimonials/";
+// Carousel
+import Carousel from "@/Components/Carousel/Slider.jsx";
 // Footer
 import Footer from "@/Components/Footer";
 
 
+
 export default function Home() {
   return (
-    <div className="Home">
+    <>
       <Head>
-        <title>Fake Store</title>
-        <meta name="description" content="Store gold silver watch" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Luxury Jewelry | Premium Collections</title>
+        <meta name="description" content="Discover our exclusive jewelry collections crafted with precision and elegance" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className=" main">
-        <Header />
-        <SectionOne />
-        <Section2 />
-        <Section3 />
-      </div>
 
-      <Footer />
-    </div>
+      <main>
+        <Hero />
+        <Collections />
+        <Carousel />
+        <WhyChooseUs />
+        <ProductsShowcase />
+        <Testimonials />
+        <Footer />
+      </main>
+    </>
   );
 }
