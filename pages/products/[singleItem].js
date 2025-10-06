@@ -140,6 +140,23 @@ export default function SingleItem({ dataProduct }) {
               <p className={Style.description}>{dataProduct.description}</p>
             </div>
           </div>
+          {/* Buttons */}
+
+          <div className={Style.buttonContainer}>
+        <button 
+          className={`${Style.button} ${Style.btnAddtoCard} ${
+            addedToCart ? Style.addedToCart : ''
+          } ${adding ? Style.loading : ''}`}
+          onClick={addProductBtn}
+          disabled={isButtonDisabled}
+        >
+          {adding && <span className={Style.spinner}></span>}
+          {buttonText}
+        </button>
+        <Link href={'/products'} className={Style.btnBack}>
+          Back to Products
+        </Link>
+      </div>
 
           {addedToCart && (
             <div className={Style.cartStatus}>
@@ -171,22 +188,6 @@ export default function SingleItem({ dataProduct }) {
             </div>
           )}
         </div>
-      </div>
-
-      <div className={Style.buttonContainer}>
-        <button 
-          className={`${Style.button} ${Style.btnAddtoCard} ${
-            addedToCart ? Style.addedToCart : ''
-          } ${adding ? Style.loading : ''}`}
-          onClick={addProductBtn}
-          disabled={isButtonDisabled}
-        >
-          {adding && <span className={Style.spinner}></span>}
-          {buttonText}
-        </button>
-        <Link href={'/products'} className={Style.btnBack}>
-          Back to Products
-        </Link>
       </div>
     </div>
   );
