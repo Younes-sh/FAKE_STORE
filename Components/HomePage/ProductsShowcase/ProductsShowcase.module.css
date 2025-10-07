@@ -1,14 +1,12 @@
-/* components/ProductsShowcase/ProductsShowcase.module.css */
 .productsShowcase {
   background-color: white;
-  padding: 0 0 100px;
+  padding: 100px 0 80px;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  
 }
 
 .categoriesGrid {
@@ -24,20 +22,22 @@
   transition: all 0.6s ease;
   border-radius: 10px;
   padding: 15px;
+  position: relative;
 }
 
 .categoryItem.slideIn {
   opacity: 1;
   transform: translateX(0);
-  margin-top: -200px;
+  margin-top: 0;
 }
 
 .categoryImage {
+  position: relative;
   height: 200px;
-  background-size: cover;
-  background-position: center;
   margin-bottom: 15px;
   transition: transform 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .categoryItem:hover .categoryImage {
@@ -49,16 +49,139 @@
   color: #333;
   font-weight: 400;
   letter-spacing: 1px;
+  margin: 0;
+  padding: 10px 0;
 }
 
-@media (max-width: 992px) {
+/* تبلت بزرگ */
+@media (max-width: 1200px) {
   .categoriesGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  
+  .categoryImage {
+    height: 180px;
   }
 }
 
+/* تبلت */
+@media (max-width: 992px) {
+  .categoriesGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .categoryImage {
+    height: 160px;
+  }
+  
+  .categoryItem h3 {
+    font-size: 1.1rem;
+  }
+  
+  .productsShowcase {
+    padding: 0 0 60px;
+  }
+}
+
+/* تبلت کوچک */
+@media (max-width: 768px) {
+  .categoriesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .categoryImage {
+    height: 150px;
+  }
+  
+  .categoryItem {
+    padding: 12px;
+  }
+  
+  .categoryItem h3 {
+    font-size: 1rem;
+    letter-spacing: 0.8px;
+  }
+  
+  .container {
+    padding: 0 15px;
+  }
+}
+
+/* موبایل */
 @media (max-width: 576px) {
   .categoriesGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .categoryImage {
+    height: 140px;
+  }
+  
+  .categoryItem {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .categoryItem h3 {
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    padding: 8px 0;
+  }
+  
+  .productsShowcase {
+    padding: 0 0 50px;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
+}
+
+/* موبایل بسیار کوچک */
+@media (max-width: 375px) {
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .categoryImage {
+    height: 160px;
+  }
+  
+  .categoryItem {
+    padding: 15px;
+  }
+  
+  .categoryItem h3 {
+    font-size: 1rem;
+  }
+}
+
+/* بهبود انیمیشن برای موبایل */
+@media (prefers-reduced-motion: reduce) {
+  .categoryItem {
+    transition: opacity 0.6s ease;
+    transform: none !important;
+  }
+  
+  .categoryItem:hover .categoryImage {
+    transform: none;
+  }
+}
+
+/* پشتیبانی از حالت landscape موبایل */
+@media (max-width: 768px) and (orientation: landscape) {
+  .categoriesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .categoryImage {
+    height: 120px;
   }
 }

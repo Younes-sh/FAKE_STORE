@@ -1,6 +1,5 @@
-/* components/Testimonials/Testimonials.module.css */
 .testimonials {
-  padding: 100px 0;
+  padding: 80px 0;
   background-color: #f9f9f9;
 }
 
@@ -28,12 +27,15 @@
 .testimonialItem {
   background: white;
   padding: 30px;
-  border-radius: 5px;
+  border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   text-align: center;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .testimonialItem.fadeIn {
@@ -45,6 +47,7 @@
   color: #ffc107;
   font-size: 1.2rem;
   margin-bottom: 15px;
+  line-height: 1;
 }
 
 .testimonialItem p {
@@ -52,19 +55,250 @@
   line-height: 1.6;
   margin-bottom: 20px;
   color: #555;
+  flex-grow: 1;
+  margin-top: 0;
 }
 
 .testimonialItem h4 {
   color: #333;
   font-weight: 500;
+  margin: 0;
 }
 
+/* تبلت بزرگ */
+@media (max-width: 1200px) {
+  .testimonials {
+    padding: 70px 0;
+  }
+  
+  .testimonialsGrid {
+    gap: 25px;
+  }
+  
+  .testimonialItem {
+    padding: 25px;
+  }
+  
+  .testimonials h2 {
+    font-size: 2.3rem;
+    margin-bottom: 50px;
+  }
+}
+
+/* تبلت */
+@media (max-width: 992px) {
+  .testimonials {
+    padding: 60px 0;
+  }
+  
+  .testimonialsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+  
+  .testimonialItem {
+    padding: 25px 20px;
+  }
+  
+  .testimonials h2 {
+    font-size: 2.1rem;
+    margin-bottom: 45px;
+    letter-spacing: 2px;
+  }
+  
+  .testimonialItem p {
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+  
+  .testimonialItem h4 {
+    font-size: 0.95rem;
+  }
+}
+
+/* تبلت کوچک */
 @media (max-width: 768px) {
+  .testimonials {
+    padding: 50px 0;
+  }
+  
   .testimonialsGrid {
     grid-template-columns: 1fr;
+    gap: 25px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .testimonialItem {
+    padding: 30px 25px;
   }
   
   .testimonials h2 {
     font-size: 2rem;
+    margin-bottom: 40px;
+    letter-spacing: 1.5px;
+  }
+  
+  .container {
+    padding: 0 25px;
+  }
+}
+
+/* موبایل */
+@media (max-width: 576px) {
+  .testimonials {
+    padding: 40px 0;
+  }
+  
+  .testimonialsGrid {
+    gap: 20px;
+  }
+  
+  .testimonialItem {
+    padding: 25px 20px;
+  }
+  
+  .testimonials h2 {
+    font-size: 1.8rem;
+    margin-bottom: 35px;
+    letter-spacing: 1px;
+  }
+  
+  .stars {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+  
+  .testimonialItem p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+  
+  .testimonialItem h4 {
+    font-size: 0.9rem;
+  }
+  
+  .container {
+    padding: 0 20px;
+  }
+}
+
+/* موبایل بسیار کوچک */
+@media (max-width: 375px) {
+  .testimonials {
+    padding: 30px 0;
+  }
+  
+  .testimonialsGrid {
+    gap: 18px;
+  }
+  
+  .testimonialItem {
+    padding: 20px 15px;
+  }
+  
+  .testimonials h2 {
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+  }
+  
+  .stars {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .testimonialItem p {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  
+  .testimonialItem h4 {
+    font-size: 0.85rem;
+  }
+  
+  .container {
+    padding: 0 15px;
+  }
+}
+
+/* حالت landscape موبایل */
+@media (max-width: 768px) and (orientation: landscape) {
+  .testimonials {
+    padding: 40px 0;
+  }
+  
+  .testimonialsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: none;
+  }
+  
+  .testimonialItem {
+    padding: 20px 15px;
+  }
+  
+  .testimonialItem p {
+    font-size: 0.8rem;
+  }
+}
+
+/* صفحات با ارتفاع زیاد */
+@media (min-height: 1000px) {
+  .testimonials {
+    padding: 100px 0;
+  }
+  
+  .testimonialsGrid {
+    gap: 40px;
+  }
+  
+  .testimonialItem {
+    padding: 40px 30px;
+  }
+}
+
+/* بهبود دسترسی - کاهش انیمیشن */
+@media (prefers-reduced-motion: reduce) {
+  .testimonialItem {
+    transition: opacity 0.6s ease;
+    transform: none !important;
+  }
+}
+
+/* بهینه‌سازی برای نمایش‌های بزرگ */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1300px;
+  }
+  
+  .testimonialsGrid {
+    gap: 40px;
+  }
+  
+  .testimonialItem {
+    padding: 40px 35px;
+  }
+  
+  .testimonialItem p {
+    font-size: 1.1rem;
+  }
+  
+  .testimonialItem h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* تضمین ارتفاع یکسان برای کارت‌ها */
+.testimonialsGrid {
+  align-items: stretch;
+}
+
+.testimonialItem {
+  min-height: 200px;
+}
+
+@media (max-width: 768px) {
+  .testimonialItem {
+    min-height: auto;
   }
 }

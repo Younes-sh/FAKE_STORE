@@ -1,6 +1,6 @@
-/* components/Hero/Hero.module.css */
 .hero {
   height: 100vh;
+  min-height: 600px; /* حداقل ارتفاع برای موبایل */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,12 +20,14 @@
                   url('../../../public/asset/Backgrounds/bohemian.png');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed; /* بهبود اثر پارالکس در موبایل */
   z-index: -1;
 }
 
 .heroContent {
   max-width: 800px;
   padding: 0 20px;
+  width: 90%; /* عرض نسبی برای موبایل */
 }
 
 .hero h1 {
@@ -51,6 +53,7 @@
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
+  min-width: 200px; /* حداقل عرض برای دکمه */
 }
 
 .ctaButton:hover {
@@ -58,12 +61,91 @@
   color: black;
 }
 
+/* تبلت - صفحه متوسط */
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: 3rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .hero p {
+    font-size: 1.1rem;
+  }
+}
+
+/* تبلت کوچک */
 @media (max-width: 768px) {
+  .hero {
+    min-height: 500px;
+  }
+  
   .hero h1 {
     font-size: 2.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
   }
   
   .hero p {
     font-size: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0 10px;
+  }
+  
+  .ctaButton {
+    padding: 10px 25px;
+    font-size: 0.9rem;
+    min-width: 180px;
+  }
+}
+
+/* موبایل */
+@media (max-width: 480px) {
+  .hero {
+    min-height: 450px;
+    padding: 0 15px;
+  }
+  
+  .heroContent {
+    padding: 0 10px;
+    width: 95%;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  
+  .ctaButton {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    min-width: 160px;
+    letter-spacing: 0.5px;
+  }
+  
+  .heroBackground {
+    background-attachment: scroll; /* غیرفعال کردن fixed background در موبایل */
+  }
+}
+
+/* موبایل بسیار کوچک */
+@media (max-width: 320px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .hero p {
+    font-size: 0.85rem;
+  }
+  
+  .ctaButton {
+    min-width: 140px;
+    padding: 8px 16px;
   }
 }

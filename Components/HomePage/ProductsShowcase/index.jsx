@@ -1,7 +1,6 @@
-// Components/HomePage/ProductsShowcase.js
 import { useRef, useEffect, useState } from 'react';
 import styles from './ProductsShowcase.module.css';
-import Image from 'next/image'; // import درست
+import Image from 'next/image';
 
 const ProductsShowcase = () => {
   const sectionRef = useRef(null);
@@ -14,7 +13,10 @@ const ProductsShowcase = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.3 }
+      { 
+        threshold: 0.2,
+        rootMargin: '50px' // لود زودتر انیمیشن
+      }
     );
 
     if (sectionRef.current) {
@@ -29,11 +31,31 @@ const ProductsShowcase = () => {
   }, []);
 
   const categories = [
-    { name: "RING", image: "/asset/Ring/Ring.jpg" }, 
-    { name: "EARRING", image: "/asset/Earring/Earring.jpg" },
-    { name: "BRACELET", image: "/asset/BRACELET/BRACELET.avif" },
-    { name: "NECKLACE", image: "/asset/Necklace/Necklace.jpg" },
-    { name: "WATCH", image: "/asset/watch.jpg" }
+    { 
+      name: "RING", 
+      image: "/asset/Ring/Ring.jpg",
+      sizes: "(max-width: 375px) 280px, (max-width: 576px) 160px, (max-width: 768px) 320px, (max-width: 992px) 240px, (max-width: 1200px) 200px, 180px"
+    }, 
+    { 
+      name: "EARRING", 
+      image: "/asset/Earring/Earring.jpg",
+      sizes: "(max-width: 375px) 280px, (max-width: 576px) 160px, (max-width: 768px) 320px, (max-width: 992px) 240px, (max-width: 1200px) 200px, 180px"
+    },
+    { 
+      name: "BRACELET", 
+      image: "/asset/BRACELET/BRACELET.avif",
+      sizes: "(max-width: 375px) 280px, (max-width: 576px) 160px, (max-width: 768px) 320px, (max-width: 992px) 240px, (max-width: 1200px) 200px, 180px"
+    },
+    { 
+      name: "NECKLACE", 
+      image: "/asset/Necklace/Necklace.jpg",
+      sizes: "(max-width: 375px) 280px, (max-width: 576px) 160px, (max-width: 768px) 320px, (max-width: 992px) 240px, (max-width: 1200px) 200px, 180px"
+    },
+    { 
+      name: "WATCH", 
+      image: "/asset/watch.jpg",
+      sizes: "(max-width: 375px) 280px, (max-width: 576px) 160px, (max-width: 768px) 320px, (max-width: 992px) 240px, (max-width: 1200px) 200px, 180px"
+    }
   ];
 
   return (
@@ -49,11 +71,11 @@ const ProductsShowcase = () => {
               <div className={styles.categoryImage}>
                 <Image 
                   src={category.image} 
-                  alt={`${category.name} jewelry collection`} // بهبود alt
-                  fill={true} // جایگزین layout="fill"
-                  style={{ objectFit: 'cover' }} // جایگزین objectFit
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // برای responsive
-                  priority={false} // lazy loading پیش‌فرض
+                  alt={`${category.name} jewelry collection`}
+                  fill={true}
+                  style={{ objectFit: 'cover' }}
+                  sizes={category.sizes}
+                  priority={index < 2} // لود سریع دو تصویر اول
                 />
               </div>
               <h3>{category.name}</h3>

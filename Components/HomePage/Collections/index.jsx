@@ -1,4 +1,3 @@
-// components/HomePage/Collections.js
 import { useRef, useEffect, useState } from 'react';
 import styles from './Collections.module.css';
 import Image from 'next/image';
@@ -14,7 +13,10 @@ const Collections = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.3 }
+      { 
+        threshold: 0.2,
+        rootMargin: '50px'
+      }
     );
 
     if (sectionRef.current) {
@@ -28,32 +30,58 @@ const Collections = () => {
     };
   }, []);
 
+  const collections = [
+    {
+      className: 'Diamond',
+      src: '/asset/Collection/Diamond.jpeg',
+      alt: 'Diamond Collection',
+      title: 'Eternal Diamond',
+      description: 'Exquisite diamond pieces that capture light and attention',
+      delay: '0s'
+    },
+    {
+      className: 'Golden',
+      src: '/asset/Collection/Golden.jpg',
+      alt: 'Gold Collection',
+      title: 'Golden Heritage',
+      description: 'Timeless gold jewelry with modern elegance',
+      delay: '0.2s'
+    },
+    {
+      className: 'Pearl',
+      src: '/asset/Collection/Pearl.jpeg',
+      alt: 'Pearl Collection',
+      title: 'Pearl Essence',
+      description: 'Lustrous pearls in contemporary designs',
+      delay: '0.4s'
+    }
+  ];
+
   return (
     <section className={styles.collections} ref={sectionRef}>
       <div className={styles.container}>
         <h2>OUR NEW COLLECTIONS</h2>
         <div className={styles.collectionsGrid}>
-          <div className={`Diamond ${styles.collectionItem} ${isVisible ? styles.fadeIn : ''}`}>
-            <div className={styles.collectionImage}>
-              <Image src="/asset/Collection/Diamond.jpeg" alt="Diamond Collection" layout="fill" objectFit="cover" />
+          {collections.map((collection, index) => (
+            <div 
+              key={index}
+              className={`${collection.className} ${styles.collectionItem} ${isVisible ? styles.fadeIn : ''}`}
+              style={{ animationDelay: collection.delay }}
+            >
+              <div className={styles.collectionImage}>
+                <Image 
+                  src={collection.src} 
+                  alt={collection.alt}
+                  fill={true}
+                  style={{ objectFit: 'cover' }}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={index === 0} // لود سریع اولین تصویر
+                />
+              </div>
+              <h3>{collection.title}</h3>
+              <p>{collection.description}</p>
             </div>
-            <h3>Eternal Diamond</h3>
-            <p>Exquisite diamond pieces that capture light and attention</p>
-          </div>
-          <div className={`Golden ${styles.collectionItem} ${isVisible ? styles.fadeIn : ''}`} style={{animationDelay: '0.2s'}}>
-            <div className={styles.collectionImage}>
-              <Image src="/asset/Collection/Golden.jpg" alt="Gold Collection" layout="fill" objectFit="cover" />
-            </div>
-            <h3>Golden Heritage</h3>
-            <p>Timeless gold jewelry with modern elegance</p>
-          </div>
-          <div className={`Pearl ${styles.collectionItem} ${isVisible ? styles.fadeIn : ''}`} style={{animationDelay: '0.4s'}}>
-            <div className={styles.collectionImage}>
-              <Image src="/asset/Collection/Pearl.jpeg" alt="Pearl Collection" layout="fill" objectFit="cover" />
-            </div>
-            <h3>Pearl Essence</h3>
-            <p>Lustrous pearls in contemporary designs</p>
-          </div>
+          ))}
         </div>
       </div>
     </section>
