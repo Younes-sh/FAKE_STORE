@@ -1,4 +1,3 @@
-// components/HomePage/Testimonials
 import { useRef, useEffect, useState } from 'react';
 import styles from './Testimonials.module.css';
 
@@ -13,7 +12,10 @@ const Testimonials = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.3 }
+      { 
+        threshold: 0.2,
+        rootMargin: '50px'
+      }
     );
 
     if (sectionRef.current) {
@@ -51,8 +53,11 @@ const Testimonials = () => {
         <h2>HOW OUR CLIENTS FEEL</h2>
         <div className={styles.testimonialsGrid}>
           {testimonials.map((testimonial, index) => (
-            <div key={index} className={`${styles.testimonialItem} ${isVisible ? styles.fadeIn : ''}`} 
-                 style={{animationDelay: `${index * 0.2}s`}}>
+            <div 
+              key={index} 
+              className={`${styles.testimonialItem} ${isVisible ? styles.fadeIn : ''}`} 
+              style={{animationDelay: `${index * 0.15}s`}}
+            >
               <div className={styles.stars}>
                 {'★'.repeat(testimonial.rating)}
               </div>

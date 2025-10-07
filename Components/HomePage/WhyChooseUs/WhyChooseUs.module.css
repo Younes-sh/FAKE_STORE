@@ -1,11 +1,15 @@
-/* components/WhyChooseUs/WhyChooseUs.module.css */
 .whyChooseUs {
   width: 100%;
   min-height: 100vh;
-  padding: 100px 0 120px;
+  padding: 80px 0 100px;
   position: relative;
   overflow: hidden;
   color: white;
+   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                  url('../../../public/asset/Backgrounds/woman_wearing.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .parallaxBg {
@@ -14,11 +18,7 @@
   left: 0;
   width: 100%;
   height: 140%;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                  url('../../../public/asset/Backgrounds/woman_wearing.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+ 
   z-index: -1;
 }
 
@@ -28,6 +28,10 @@
   padding: 0 20px;
   position: relative;
   z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .whyChooseUs h2 {
@@ -49,6 +53,7 @@
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease;
+  padding: 20px;
 }
 
 .featureItem.fadeIn {
@@ -65,14 +70,253 @@
 .featureItem p {
   line-height: 1.6;
   color: #ddd;
+  margin: 0;
 }
 
+/* تبلت بزرگ */
+@media (max-width: 1200px) {
+  .whyChooseUs {
+    padding: 70px 0 90px;
+    min-height: 90vh;
+  }
+  
+  .featuresGrid {
+    gap: 35px;
+  }
+  
+  .whyChooseUs h2 {
+    font-size: 2.3rem;
+    margin-bottom: 50px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.4rem;
+  }
+  
+  .featureItem p {
+    font-size: 0.95rem;
+  }
+}
+
+/* تبلت */
+@media (max-width: 992px) {
+  .whyChooseUs {
+    padding: 60px 0 80px;
+    min-height: 80vh;
+  }
+  
+  .featuresGrid {
+    gap: 30px;
+  }
+  
+  .whyChooseUs h2 {
+    font-size: 2.1rem;
+    margin-bottom: 45px;
+    letter-spacing: 2px;
+  }
+  
+  .featureItem {
+    padding: 15px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+  
+  .featureItem p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .parallaxBg {
+    background-attachment: scroll; /* غیرفعال کردن fixed در تبلت */
+  }
+}
+
+/* تبلت کوچک */
 @media (max-width: 768px) {
+  .whyChooseUs {
+    padding: 50px 0 70px;
+    min-height: auto;
+  }
+  
   .featuresGrid {
     grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 600px;
+    margin: 0 auto;
   }
   
   .whyChooseUs h2 {
     font-size: 2rem;
+    margin-bottom: 40px;
+    letter-spacing: 1.5px;
+  }
+  
+  .featureItem {
+    padding: 25px 20px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+  
+  .featureItem p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  .container {
+    padding: 0 25px;
+  }
+}
+
+/* موبایل */
+@media (max-width: 576px) {
+  .whyChooseUs {
+    padding: 40px 0 60px;
+  }
+  
+  .featuresGrid {
+    gap: 25px;
+  }
+  
+  .whyChooseUs h2 {
+    font-size: 1.8rem;
+    margin-bottom: 35px;
+    letter-spacing: 1px;
+  }
+  
+  .featureItem {
+    padding: 20px 15px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+  
+  .featureItem p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .container {
+    padding: 0 20px;
+  }
+  
+  .parallaxBg {
+    height: 120%; /* کاهش ارتفاع background در موبایل */
+  }
+}
+
+/* موبایل بسیار کوچک */
+@media (max-width: 375px) {
+  .whyChooseUs {
+    padding: 30px 0 50px;
+  }
+  
+  .featuresGrid {
+    gap: 20px;
+  }
+  
+  .whyChooseUs h2 {
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+  }
+  
+  .featureItem {
+    padding: 18px 12px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .featureItem p {
+    font-size: 0.85rem;
+  }
+  
+  .container {
+    padding: 0 15px;
+  }
+}
+
+/* حالت landscape موبایل */
+@media (max-width: 768px) and (orientation: landscape) {
+  .whyChooseUs {
+    min-height: 100vh;
+    padding: 40px 0;
+  }
+  
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: none;
+  }
+  
+  .featureItem {
+    padding: 15px 10px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.2rem;
+  }
+  
+  .featureItem p {
+    font-size: 0.8rem;
+  }
+}
+
+/* صفحات با ارتفاع زیاد */
+@media (min-height: 1000px) {
+  .whyChooseUs {
+    min-height: 70vh;
+    padding: 100px 0;
+  }
+  
+  .featuresGrid {
+    gap: 50px;
+  }
+  
+  .featureItem {
+    padding: 30px 25px;
+  }
+}
+
+/* بهبود دسترسی - کاهش انیمیشن */
+@media (prefers-reduced-motion: reduce) {
+  .featureItem {
+    transition: opacity 0.6s ease;
+    transform: none !important;
+  }
+  
+  .parallaxBg {
+    transform: none !important;
+  }
+}
+
+/* بهینه‌سازی برای نمایش‌های بزرگ */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1300px;
+  }
+  
+  .featuresGrid {
+    gap: 50px;
+  }
+  
+  .featureItem {
+    padding: 30px 25px;
+  }
+  
+  .featureItem h3 {
+    font-size: 1.6rem;
+  }
+  
+  .featureItem p {
+    font-size: 1.1rem;
   }
 }

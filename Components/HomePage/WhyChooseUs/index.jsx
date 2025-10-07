@@ -1,4 +1,3 @@
-// Components/HomePage/WhyChooseUs.js
 import { useRef, useEffect, useState } from 'react';
 import styles from './WhyChooseUs.module.css';
 
@@ -8,7 +7,8 @@ const WhyChooseUs = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (sectionRef.current) {
+      if (sectionRef.current && window.innerWidth > 768) {
+        // غیرفعال کردن پارالکس در موبایل برای عملکرد بهتر
         const scrolled = window.pageYOffset;
         const rate = scrolled * -0.3;
         sectionRef.current.style.transform = `translateY(${rate}px)`;
@@ -19,12 +19,17 @@ const WhyChooseUs = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          window.addEventListener('scroll', handleScroll);
+          if (window.innerWidth > 768) {
+            window.addEventListener('scroll', handleScroll);
+          }
         } else {
           window.removeEventListener('scroll', handleScroll);
         }
       },
-      { threshold: 0.2 }
+      { 
+        threshold: 0.2,
+        rootMargin: '50px'
+      }
     );
 
     if (sectionRef.current) {
@@ -65,8 +70,11 @@ const WhyChooseUs = () => {
         <h2>WHY CHOOSE OUR BRAND</h2>
         <div className={styles.featuresGrid}>
           {features.map((feature, index) => (
-            <div key={index} className={`${styles.featureItem} ${isVisible ? styles.fadeIn : ''}`} 
-                 style={{animationDelay: `${index * 0.1}s`}}>
+            <div 
+              key={index} 
+              className={`${styles.featureItem} ${isVisible ? styles.fadeIn : ''}`} 
+              style={{animationDelay: `${index * 0.1}s`}}
+            >
               <h3>{feature.title}</h3>
               <p>{feature.description}</p>
             </div>
