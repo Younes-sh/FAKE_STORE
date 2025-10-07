@@ -33,7 +33,7 @@ const ProductsShowcase = () => {
     { name: "EARRING", image: "/asset/Earring/Earring.jpg" },
     { name: "BRACELET", image: "/asset/BRACELET/BRACELET.avif" },
     { name: "NECKLACE", image: "/asset/Necklace/Necklace.jpg" },
-    { name: "WATCH", image: "/asset/Watch.jpg" }
+    { name: "WATCH", image: "/asset/watch.jpg" }
   ];
 
   return (
